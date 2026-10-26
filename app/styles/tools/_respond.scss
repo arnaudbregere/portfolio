@@ -1,0 +1,16 @@
+@use '../settings/breakpoints' as bp;
+
+// Mobile first : styles de base pour petit écran, enrichis vers le haut.
+@mixin respond-up($size) {
+  @if $size == s {
+    @media (min-width: bp.$bp-s) { @content; }
+  } @else if $size == m {
+    @media (min-width: bp.$bp-m) { @content; }
+  } @else if $size == l {
+    @media (min-width: bp.$bp-l) { @content; }
+  } @else if $size == xl {
+    @media (min-width: bp.$bp-xl) { @content; }
+  } @else {
+    @error 'respond-up : taille inconnue #{$size}';
+  }
+}

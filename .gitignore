@@ -1,0 +1,30 @@
+# Nuxt
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+
+# Dépendances
+node_modules
+
+# Tests
+coverage
+test-results
+playwright-report
+.playwright
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Divers
+*.log
+.DS_Store
+.idea
+.fleet
+
+# Binaire vendored du skill impeccable (téléchargé, pas versionné)
+.claude/skills/impeccable/scripts/bin/

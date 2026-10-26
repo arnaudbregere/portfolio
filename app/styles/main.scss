@@ -1,0 +1,8 @@
+// ITCSS : spécificité croissante. Ne jamais inverser cet ordre.
+@use 'settings/tokens';
+@use 'settings/breakpoints';
+@use 'generic/reset';
+@use 'elements/elements';
+@use 'objects/objects';
+@use 'components/components';
+@use 'utilities/utilities';
