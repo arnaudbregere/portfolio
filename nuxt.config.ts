@@ -4,6 +4,12 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/eslint', '@nuxtjs/color-mode'],
 
+  app: {
+    head: {
+      htmlAttrs: { lang: 'fr' },
+    },
+  },
+
   // Thème : clair par défaut, bascule persistée, pas de flash au chargement.
   colorMode: {
     preference: 'system',
