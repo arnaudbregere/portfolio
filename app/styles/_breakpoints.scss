@@ -1,0 +1,21 @@
+// Seul emploi de variables Sass pour des valeurs de design : le CSS natif
+// n'accepte pas de custom property dans une media query.
+$bp-s: 30em; // 480px
+$bp-m: 48em; // 768px
+$bp-l: 64em; // 1024px
+$bp-xl: 80em; // 1280px
+
+// Mobile first : styles de base pour petit écran, enrichis vers le haut.
+@mixin respond-up($size) {
+  @if $size == s {
+    @media (min-width: $bp-s) { @content; }
+  } @else if $size == m {
+    @media (min-width: $bp-m) { @content; }
+  } @else if $size == l {
+    @media (min-width: $bp-l) { @content; }
+  } @else if $size == xl {
+    @media (min-width: $bp-xl) { @content; }
+  } @else {
+    @error 'respond-up : taille inconnue #{$size}';
+  }
+}
