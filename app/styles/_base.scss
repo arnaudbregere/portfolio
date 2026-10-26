@@ -1,5 +1,15 @@
+/**
+ * `color-scheme` suit le thème choisi, et non celui du système : avec
+ * `color-scheme: light dark`, un visiteur qui demande le thème clair sous un
+ * système sombre obtiendrait des widgets natifs sombres.
+ */
 html {
-  color-scheme: light dark;
+  color-scheme: light;
+  scrollbar-color: var(--color-line-strong) var(--color-bg);
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
@@ -13,11 +23,19 @@ body {
   transition: background-color var(--dur-base) var(--ease-out);
 }
 
+/* Non thémée, la sélection trahit une page assemblée plutôt que construite. */
+::selection {
+  background-color: var(--color-ink);
+  color: var(--color-ink-fg);
+}
+
 h1,
 h2,
-h3 {
+h3,
+h4 {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: var(--display-weight);
+  font-stretch: var(--display-stretch);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-display);
   text-transform: uppercase;
@@ -27,6 +45,7 @@ h3 {
 h1 { font-size: var(--step-5); }
 h2 { font-size: var(--step-3); }
 h3 { font-size: var(--step-1); }
+h4 { font-size: var(--step-0); }
 
 p {
   max-width: var(--measure);
@@ -39,7 +58,40 @@ a {
   text-underline-offset: 0.2em;
 }
 
+/* Tout nombre se lit en colonnes : chiffres tabulaires par défaut. */
+td,
+th,
+time,
+data,
+output {
+  font-variant-numeric: tabular-nums;
+}
+
+hr {
+  height: 0;
+  margin: 0;
+  border: 0;
+  border-top: var(--rule);
+}
+
 :focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
+}
+
+/**
+ * Masque visuel : lu par les technologies d'assistance, jamais affiché.
+ * `left: 0` est indispensable — sans ancrage, la position absolue se résout à
+ * la place qu'aurait occupée l'élément, ce qui allonge la largeur de
+ * défilement du document depuis l'intérieur d'une zone défilable.
+ */
+.visually-hidden {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

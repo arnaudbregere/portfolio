@@ -1,18 +1,21 @@
 /**
- * Design tokens — custom properties CSS (thémables à l'exécution).
- * Toute valeur consommée par un composant vient d'ici. Pas de littéral
- * de couleur, d'espacement ou de durée dans un fichier de composant.
- * Contrastes documentés dans DESIGN.md.
+ * Design tokens — custom properties CSS, donc thémables à l'exécution.
+ * Toute valeur consommée par un composant vient d'ici : aucun littéral de
+ * couleur, d'espacement, de durée ou de taille de texte dans un composant.
+ * Les ratios de contraste de chaque couple sont calculés par la formule
+ * WCAG 2.1. DESIGN.md les consignera et la planche `/_ds` les vérifiera à
+ * l'exécution ; ni l'un ni l'autre n'existe encore à ce commit.
  */
 :root {
-  /* Couleurs — thème clair */
-  --color-bg: #ffffff;
-  --color-bg-subtle: #f4f4f2;
-  --color-fg: #0a0a0a;
-  --color-fg-muted: #5c5c5c;
-  --color-line: #e2e2de;
-  --color-accent: #0a0a0a;
-  --color-accent-fg: #ffffff;
+  /* Couleurs — thème clair, « papier » */
+  --color-bg: #f7f4ef;
+  --color-bg-subtle: #ede8e0;
+  --color-fg: #14120f;
+  --color-fg-muted: #6b655c;
+  --color-line: #d6cfc4;
+  --color-line-strong: #8c857a;
+  --color-ink: #b3122b;
+  --color-ink-fg: #ffffff;
   --color-focus: #1a5fff;
 
   /* Espacement — échelle 4px */
@@ -26,12 +29,21 @@
   --space-2xl: 6rem;
   --space-3xl: 9rem;
 
-  /* Typographie */
-  --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-ui: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --tracking-display: 0.08em;
-  --tracking-ui: 0.02em;
-  --leading-tight: 1.05;
+  /* Typographie — une famille, deux registres */
+  --font-display: 'Archivo Variable', 'Archivo', helvetica, arial, sans-serif;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', roboto, helvetica, arial,
+    sans-serif;
+
+  /* Axes variables du registre d'affichage */
+  --display-weight: 800;
+  --display-stretch: 112%;
+  --label-weight: 600;
+  --label-stretch: 100%;
+
+  --tracking-display: -0.01em;
+  --tracking-label: 0.06em;
+  --tracking-ui: 0;
+  --leading-tight: 1.02;
   --leading-normal: 1.6;
 
   /* Échelle typographique fluide */
@@ -44,6 +56,9 @@
   --step-5: clamp(2.33rem, 1.74rem + 2.96vw, 4.21rem);
   --step-6: clamp(2.8rem, 1.91rem + 4.43vw, 5.61rem);
 
+  /* Les libellés en capitales ne sont pas fluides : 13px, comme la référence */
+  --size-label: 0.8125rem;
+
   /* Mise en page */
   --measure: 68ch;
   --page-gutter: var(--space-s);
@@ -55,19 +70,24 @@
   --dur-slow: 480ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Divers */
-  --radius-pill: 999px;
-  --border-hairline: 1px solid var(--color-line);
+  /* Surfaces dessinées par le navigateur, à thémer depuis la palette */
+  caret-color: var(--color-ink);
+  accent-color: var(--color-ink);
+
+  /* Filets — la page se divise par des traits, jamais par des cartes */
+  --rule: 1px solid var(--color-line);
+  --rule-strong: 1px solid var(--color-line-strong);
 }
 
-/* Thème sombre — @nuxtjs/color-mode pose .dark sur <html> */
+/* Thème sombre, « presse » — @nuxtjs/color-mode pose .dark sur <html> */
 .dark {
-  --color-bg: #0a0a0a;
-  --color-bg-subtle: #141414;
-  --color-fg: #f2f2f0;
-  --color-fg-muted: #9a9a96;
-  --color-line: #2a2a2a;
-  --color-accent: #f2f2f0;
-  --color-accent-fg: #0a0a0a;
+  --color-bg: #121110;
+  --color-bg-subtle: #1c1a18;
+  --color-fg: #f2efe9;
+  --color-fg-muted: #9c958a;
+  --color-line: #2e2b27;
+  --color-line-strong: #7a7369;
+  --color-ink: #ff5c72;
+  --color-ink-fg: #121110;
   --color-focus: #7aa2ff;
 }
