@@ -1,6 +1,7 @@
 // Le SCSS global ne porte que ce qui ne peut pas être scopé dans un composant :
-// les tokens, la remise à zéro et les styles d'éléments. Tout le reste vit dans
-// le `<style scoped>` du composant qui en a besoin.
+// les tokens, la police, la remise à zéro et les styles d'éléments. Tout le
+// reste vit dans le `<style scoped>` du composant qui en a besoin.
 @use 'tokens';
+@use 'fonts';
 @use 'reset';
 @use 'base';

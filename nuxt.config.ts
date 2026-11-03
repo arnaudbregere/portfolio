@@ -7,6 +7,17 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'fr' },
+      link: [
+        // Seule police chargée du site : préchargée pour écourter la fenêtre
+        // de `font-display: swap` sur le titre de première vue.
+        {
+          rel: 'preload',
+          as: 'font',
+          type: 'font/woff2',
+          href: '/fonts/archivo-variable-latin.woff2',
+          crossorigin: '',
+        },
+      ],
     },
   },
 
