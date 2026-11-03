@@ -35,6 +35,20 @@ export default defineNuxtConfig({
 
   css: ['~/styles/main.scss'],
 
+  // Origine du site, seule source des URL canoniques, du plan du site et du
+  // fichier robots. Surchargeable par `NUXT_PUBLIC_SITE_URL` au déploiement.
+  runtimeConfig: {
+    public: {
+      siteUrl: 'https://arnaud-bregere.fr',
+    },
+  },
+
+  nitro: {
+    prerender: {
+      routes: ['/sitemap.xml', '/robots.txt'],
+    },
+  },
+
   typescript: {
     strict: true,
     typeCheck: false, // lancé séparément par `npm run typecheck`
