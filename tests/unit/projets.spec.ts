@@ -50,3 +50,26 @@ describe('contenu des projets', () => {
     }
   })
 })
+
+describe('visuels des projets', () => {
+  it('décrit chaque capture par un texte alternatif et une légende', () => {
+    for (const project of projects) {
+      for (const image of project.images ?? []) {
+        expect(image.alt.length).toBeGreaterThan(20)
+        expect(image.caption).not.toBe('')
+        // `public/projets/` entrerait en collision avec la route `/projets` :
+        // Nitro sert le dossier et redirige vers `/projets/`.
+        expect(image.src.startsWith('/visuels/')).toBe(true)
+      }
+    }
+  })
+
+  it('donne à chaque capture ses dimensions, contre le décalage de mise en page', () => {
+    for (const project of projects) {
+      for (const image of project.images ?? []) {
+        expect(image.width).toBeGreaterThan(0)
+        expect(image.height).toBeGreaterThan(0)
+      }
+    }
+  })
+})

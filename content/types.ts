@@ -51,6 +51,17 @@ export type ProjectLink = {
   url: string
 }
 
+export type ProjectImage = {
+  /** Chemin servi depuis `public/`. */
+  src: string
+  /** Texte alternatif : une propriété du contenu, jamais improvisée en template. */
+  alt: string
+  /** Légende visible sous l'image. Dit ce qu'on regarde, pas ce qu'on voit. */
+  caption: string
+  width: number
+  height: number
+}
+
 export type Project = {
   slug: string
   title: string
@@ -64,6 +75,11 @@ export type Project = {
   result: string
   stack: readonly string[]
   links: readonly ProjectLink[]
+  /**
+   * Captures de l'application. Vide quand l'interface appartient à un
+   * employeur : `PRODUCT.md` interdit la capture d'une interface client.
+   */
+  images?: readonly ProjectImage[]
   /** Mis en avant sur l'accueil. */
   featured: boolean
 }

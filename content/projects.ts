@@ -26,6 +26,22 @@ export const projects: readonly Project[] = [
       { label: 'Application en ligne', url: 'https://japan-react.vercel.app' },
       { label: 'Code source', url: 'https://github.com/arnaudbregere/japan-react' },
     ],
+    images: [
+      {
+        src: '/visuels/japan-manga-explorer/accueil.webp',
+        alt: 'Page d’accueil sombre, titre « Explorez mangas et lieux incontournables du Japon » et quatre couvertures de mangas.',
+        caption: 'Accueil : deux entrées, les mangas ou les lieux.',
+        width: 1440,
+        height: 814,
+      },
+      {
+        src: '/visuels/japan-manga-explorer/liste-mangas.webp',
+        alt: 'Liste de mangas en grille de quatre colonnes, avec champ de recherche, note et genres sous chaque couverture.',
+        caption: 'Liste des mangas : recherche, note et genres, paginée.',
+        width: 1440,
+        height: 770,
+      },
+    ],
     featured: true,
   },
   {
@@ -53,6 +69,22 @@ export const projects: readonly Project[] = [
     links: [
       { label: 'Application en ligne', url: 'https://agenda-app-event.onrender.com' },
       { label: 'Code source', url: 'https://github.com/arnaudbregere/agenda-app-event' },
+    ],
+    images: [
+      {
+        src: '/visuels/agenda-app-event/vue-mois.webp',
+        alt: 'Vue mensuelle de novembre 2026, événements colorés par catégorie, panneau latéral avec mini-calendrier et filtres.',
+        caption: 'Vue mois : les catégories filtrent depuis le panneau latéral.',
+        width: 1440,
+        height: 814,
+      },
+      {
+        src: '/visuels/agenda-app-event/vue-semaine.webp',
+        alt: 'Vue hebdomadaire du 2 au 8 novembre 2026, événements placés sur une grille horaire, journées entières en haut.',
+        caption: 'Vue semaine : grille horaire, journées entières en bandeau.',
+        width: 1440,
+        height: 814,
+      },
     ],
     featured: true,
   },

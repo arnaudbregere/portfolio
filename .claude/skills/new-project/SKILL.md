@@ -29,7 +29,9 @@ est une propriété du contenu.
 
 ## 3. Visuels
 
-Déposer les images dans `public/projets/<slug>/`. Les servir par `<NuxtImg>`
+Déposer les images dans `public/visuels/<slug>/` — **jamais** dans
+`public/projets/` : Nitro sert `public/` en statique, et un dossier de ce nom
+capterait la route `/projets`, redirigée dès lors vers `/projets/`. Les servir par `<NuxtImg>`
 avec `width`, `height` et `loading` explicites. Viser moins de 200 Ko par
 image après conversion.
 

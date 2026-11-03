@@ -29,6 +29,33 @@ defineProps<{ project: Project }>()
       <slot />
     </div>
 
+    <section
+      v-if="project.images?.length"
+      class="o-project__section"
+      aria-labelledby="apercu"
+    >
+      <h2 id="apercu">Aperçu</h2>
+
+      <!-- Toutes les captures sur la page : rien derrière une flèche ou un
+           clic. La preuve se lit au défilement. -->
+      <figure v-for="image in project.images" :key="image.src" class="o-project__figure">
+        <!-- Pas de `sizes` : les fichiers sont déjà bornés à 1440 px et
+             pèsent moins de 100 Ko. Un `srcset` ajouterait des variantes
+             inutiles. `densities="1"` écarte la variante 2x, qui ne ferait
+             qu'agrandir une source déjà bornée à 1440 px. -->
+        <NuxtImg
+          class="o-project__image"
+          :src="image.src"
+          :alt="image.alt"
+          :width="image.width"
+          :height="image.height"
+          densities="1"
+          loading="lazy"
+        />
+        <figcaption>{{ image.caption }}</figcaption>
+      </figure>
+    </section>
+
     <section class="o-project__section" aria-labelledby="solution">
       <h2 id="solution">Solution</h2>
       <p>{{ project.solution }}</p>
@@ -88,6 +115,23 @@ defineProps<{ project: Project }>()
 
 .o-project__section p {
   margin-top: var(--space-s);
+}
+
+.o-project__figure {
+  margin: var(--space-l) 0 0;
+}
+
+.o-project__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: var(--rule);
+}
+
+.o-project__figure figcaption {
+  margin-top: var(--space-2xs);
+  color: var(--color-fg-muted);
+  font-size: var(--step--1);
 }
 
 .o-project__stack {
