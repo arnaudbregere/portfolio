@@ -36,5 +36,16 @@ export default defineNuxtConfig({
     typeCheck: false, // lancé séparément par `npm run typecheck`
   },
 
+  // La planche de spécimen ne part pas en production.
+  $production: {
+    hooks: {
+      'pages:extend'(pages) {
+        const index = pages.findIndex((page) => page.path === '/_ds')
+
+        if (index !== -1) pages.splice(index, 1)
+      },
+    },
+  },
+
   future: { compatibilityVersion: 4 },
 })

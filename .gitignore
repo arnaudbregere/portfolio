@@ -28,3 +28,8 @@ playwright-report
 
 # Binaire vendored du skill impeccable (téléchargé, pas versionné)
 .claude/skills/impeccable/scripts/bin/
+
+# Impeccable : le contrat de direction (.impeccable/surfaces/) est versionné,
+# les preuves d'inspection et l'état de build ne le sont pas.
+.impeccable/review/
+.impeccable/build/
