@@ -46,6 +46,28 @@ export type Education = {
   url?: string
 }
 
+export type ProjectLink = {
+  label: string
+  url: string
+}
+
+export type Project = {
+  slug: string
+  title: string
+  /** Année ou intervalle, tel qu'il s'affiche. */
+  year: string
+  role: string
+  /** Une phrase, du point de vue de l'utilisateur ou de l'entreprise. */
+  problem: string
+  solution: string
+  /** Mesurable. Un projet sans résultat mesurable n'est pas prêt à paraître. */
+  result: string
+  stack: readonly string[]
+  links: readonly ProjectLink[]
+  /** Mis en avant sur l'accueil. */
+  featured: boolean
+}
+
 export type SkillGroup = {
   title: string
   skills: readonly string[]
