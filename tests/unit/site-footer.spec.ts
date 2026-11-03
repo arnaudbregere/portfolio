@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { siteNav } from '~~/content/nav'
+import { profileLinks, siteNav } from '~~/content/nav'
 import SiteFooter from '~/components/organisms/SiteFooter.vue'
 import ThemeToggle from '~/components/atoms/ThemeToggle.vue'
 
@@ -40,10 +40,16 @@ describe('SiteFooter', () => {
     )
   })
 
-  it('expose le dépôt public et la bascule de thème', async () => {
+  it('expose les profils publics et la bascule de thème', async () => {
     const footer = await mountSuspended(SiteFooter)
+    const links = footer.findAll('a[rel~="me"]')
 
-    expect(footer.get('a[href^="https://github.com/"]').text()).toBe('GitHub')
+    expect(links.map((link) => link.attributes('href'))).toEqual(
+      profileLinks.map((link) => link.to),
+    )
+    expect(links.map((link) => link.text())).toEqual(
+      profileLinks.map((link) => link.label),
+    )
     expect(footer.findComponent(ThemeToggle).exists()).toBe(true)
   })
 })

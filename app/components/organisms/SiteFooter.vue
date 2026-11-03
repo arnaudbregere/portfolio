@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { siteNav } from '~~/content/nav'
+import { profileLinks, siteNav } from '~~/content/nav'
 
 const year = new Date().getFullYear()
 </script>
@@ -16,8 +16,8 @@ const year = new Date().getFullYear()
 
     <div class="o-footer__aside">
       <ul class="o-footer__external">
-        <li>
-          <a href="https://github.com/arnaudbregere" rel="me noopener">GitHub</a>
+        <li v-for="link in profileLinks" :key="link.to">
+          <a :href="link.to" rel="me noopener">{{ link.label }}</a>
         </li>
       </ul>
       <ThemeToggle />
