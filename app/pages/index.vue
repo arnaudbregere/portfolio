@@ -1,17 +1,166 @@
 <script setup lang="ts">
+import { cvFile, experiences, profile } from '~~/content/cv'
+import { siteNav } from '~~/content/nav'
+
 useSeoMeta({
-  title: 'Arnaud Brégère — Développeur front-end',
+  title: 'Arnaud Brégère — Développeur front-end senior',
   description:
-    "Portfolio d'Arnaud Brégère, développeur front-end Vue 3 / Nuxt : projets, parcours et CV.",
+    'Développeur front-end senior, Vue 3 et Nuxt, six ans chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV et contact.',
 })
+
+/**
+ * L'ancienneté se calcule, elle ne se recopie pas : une année écrite en dur
+ * devient fausse au premier janvier suivant.
+ */
+const firstFrontEndRole = '2019-10'
+const yearsOfFrontEnd = computed(() => {
+  const start = new Date(`${firstFrontEndRole}-01T00:00:00Z`)
+  const months =
+    (Date.now() - start.getTime()) / (1000 * 60 * 60 * 24 * 365.25 / 12)
+  return Math.floor(months / 12)
+})
+
+const currentRole = experiences[0]!
+const contact = siteNav.find((item) => item.to === '/contact')!
 </script>
 
 <template>
-  <article>
-    <h1>Arnaud Brégère</h1>
-    <p>
-      Développeur front-end. Je mesure ce que je livre, et ce site en fait
-      partie.
+  <article class="home">
+    <h1 class="home__name">{{ profile.name }}</h1>
+    <p class="home__tagline">{{ profile.tagline }}</p>
+
+    <p class="home__pitch">
+      {{ profile.role }}. {{ yearsOfFrontEnd }} ans de Vue et de Nuxt chez
+      {{ currentRole.company }}, sur
+      {{ currentRole.summary.toLocaleLowerCase('fr-FR') }}
     </p>
+
+    <p class="home__download">
+      <CvLink :href="cvFile.path" :format="cvFile.format" :size-kb="cvFile.sizeKb" />
+    </p>
+
+    <section class="home__section" aria-labelledby="reperes">
+      <h2 id="reperes">Repères</h2>
+
+      <dl class="home__facts">
+        <div class="home__fact">
+          <dt>Expérience front-end</dt>
+          <dd>{{ yearsOfFrontEnd }} ans</dd>
+        </div>
+        <div class="home__fact">
+          <dt>Dans le métier depuis</dt>
+          <dd>2009</dd>
+        </div>
+        <div class="home__fact">
+          <dt>Terrain</dt>
+          <dd>Figaro Classifieds, Groupe La Poste, BrandAlley, RueDuCommerce</dd>
+        </div>
+        <div class="home__fact">
+          <dt>Socle</dt>
+          <dd>Vue 3, Nuxt, TypeScript, accessibilité RGAA, référencement</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="home__section" aria-labelledby="joindre">
+      <h2 id="joindre">{{ profile.availability }}</h2>
+
+      <p class="home__pitch">
+        Le plus simple est le formulaire ; l’e-mail direct marche aussi.
+      </p>
+
+      <p class="home__actions">
+        <NuxtLink class="home__action" :to="contact.to">{{ contact.label }}</NuxtLink>
+        <a class="home__action" :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+      </p>
+    </section>
   </article>
 </template>
+
+<style scoped lang="scss">
+@use '../styles/breakpoints' as bp;
+
+/* Le nom est le seul élément à sortir de l'échelle de texte courante : il
+   ouvre la page et rien d'autre ne le concurrence. */
+.home__name {
+  font-size: var(--step-6);
+  line-height: 1;
+}
+
+.home__tagline {
+  max-width: var(--measure);
+  margin-top: var(--space-m);
+  color: var(--color-fg-muted);
+  font-size: var(--step-2);
+}
+
+.home__pitch {
+  max-width: var(--measure);
+  margin-top: var(--space-m);
+}
+
+.home__download {
+  margin-top: var(--space-l);
+}
+
+.home__section {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-m);
+  border-top: var(--rule-strong);
+}
+
+.home__facts {
+  margin: 0;
+}
+
+/* Un repère par ligne, séparé par un filet : la liste se lit en diagonale
+   sans devenir une grille de cartes. */
+.home__fact {
+  display: grid;
+  gap: var(--space-3xs);
+  padding: var(--space-s) 0;
+  border-bottom: var(--rule);
+}
+
+.home__fact dt {
+  color: var(--color-fg-muted);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.home__fact dd {
+  margin: 0;
+  font-size: var(--step-1);
+}
+
+.home__fact {
+  @include bp.respond-up(m) {
+    grid-template-columns: 16rem 1fr;
+    gap: var(--space-m);
+    align-items: baseline;
+  }
+}
+
+.home__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+  margin-top: var(--space-m);
+}
+
+.home__action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-2xs) var(--space-s);
+  border: var(--rule-strong);
+  color: var(--color-fg);
+  text-decoration: none;
+}
+
+.home__action:hover {
+  background-color: var(--color-fg);
+  color: var(--color-bg);
+}
+</style>
