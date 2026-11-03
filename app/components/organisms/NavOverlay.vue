@@ -58,6 +58,14 @@ watch(() => route.fullPath, () => {
 <style scoped lang="scss">
 @use '../../styles/breakpoints' as bp;
 
+/**
+ * Ouverture et fermeture animées sans une ligne de JavaScript : `@starting-style`
+ * donne l'état d'avant l'ouverture, et `allow-discrete` laisse `display` et
+ * `overlay` participer à la transition — sans quoi le menu disparaîtrait d'un
+ * coup à la fermeture, avant d'avoir pu s'effacer.
+ *
+ * Le mouvement n'ajoute aucune information : le menu est lisible à l'arrêt.
+ */
 .o-nav {
   width: 100%;
   max-width: none;
@@ -68,9 +76,39 @@ watch(() => route.fullPath, () => {
   border: 0;
   background-color: var(--color-bg);
   color: var(--color-fg);
+  opacity: 0;
+  translate: 0 -0.5rem;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    translate var(--dur-base) var(--ease-out),
+    display var(--dur-base) allow-discrete,
+    overlay var(--dur-base) allow-discrete;
+
+  &[open] {
+    opacity: 1;
+    translate: 0 0;
+
+    @starting-style {
+      opacity: 0;
+      translate: 0 -0.5rem;
+    }
+  }
 
   &::backdrop {
     background-color: var(--color-bg);
+    opacity: 0;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      display var(--dur-base) allow-discrete,
+      overlay var(--dur-base) allow-discrete;
+  }
+
+  &[open]::backdrop {
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+    }
   }
 }
 
@@ -136,6 +174,33 @@ watch(() => route.fullPath, () => {
     &.router-link-active {
       color: var(--color-ink);
     }
+  }
+}
+
+/* Les rubriques entrent l'une après l'autre, 40 ms d'écart : assez pour donner
+   le sens de lecture, trop peu pour faire attendre. */
+.o-nav[open] .o-nav__body li {
+  animation: nav-entry var(--dur-base) var(--ease-out) backwards;
+}
+
+@for $i from 1 through 6 {
+  .o-nav__body li:nth-child(#{$i}) {
+    animation-delay: #{40ms * $i};
+  }
+}
+
+@keyframes nav-entry {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+/* La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
+   cette remise à zéro, le menu resterait vide le temps du décalage. */
+@media (prefers-reduced-motion: reduce) {
+  .o-nav__body li {
+    animation-delay: 0ms !important;
   }
 }
 
