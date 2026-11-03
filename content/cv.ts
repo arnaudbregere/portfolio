@@ -7,16 +7,16 @@
  * (« +40 % de Core Web Vitals », « 5+ développeurs formés ») n'ont pas été
  * reprises faute de source.
  *
- * Le numéro de téléphone et l'adresse postale du PDF ne figurent pas ici :
- * une page publique les expose aux aspirateurs d'adresses. Le contact passe
- * par l'e-mail et par le formulaire.
+ * L'adresse postale du PDF ne figure pas ici : une page publique n'a pas à
+ * porter le domicile de qui que ce soit. Le téléphone y est, par décision du
+ * 03/11/2026, et seulement sur `/a-propos`.
  */
 
 import type { CvFile, Education, Experience, Profile, SkillGroup } from './types'
 
 export const profile: Profile = {
   name: 'Arnaud Brégère',
-  role: 'Développeur front-end',
+  role: 'Développeur front-end senior',
   /** Les quatre axes de l'en-tête du CV, dans le même ordre. */
   tagline: 'Front-end, design system, frameworks JavaScript et outils d’IA.',
   intro: [
@@ -26,6 +26,7 @@ export const profile: Profile = {
   ],
   location: 'Paris',
   email: 'arnaud.bregere@gmail.com',
+  phone: '06 07 98 52 85',
   availability: 'À l’écoute d’opportunités en CDI, à Paris ou en télétravail hybride.',
 }
 
@@ -67,7 +68,7 @@ export const experiences: readonly Experience[] = [
   },
   {
     company: 'Groupe La Poste',
-    role: 'Développeur front-end',
+    role: 'Développeur front-end senior',
     start: '2018-09',
     end: '2019-10',
     location: 'Paris',

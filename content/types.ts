@@ -16,6 +16,8 @@ export type Profile = {
   intro: readonly string[]
   location: string
   email: string
+  /** Affiché tel quel ; `tel:` est construit par le composant. */
+  phone: string
   availability: string
 }
 
