@@ -128,6 +128,9 @@ notation bas niveau non.
 - Échelle fluide `--step--1` à `--step-6`, en `clamp()`.
 - `font-variant-numeric: tabular-nums` partout où un chiffre apparaît. Les
   chiffres sont de la preuve, ils doivent s'aligner en colonne.
+- **Le chapeau est le paragraphe qui suit le titre**, stylé par `h1 + p` dans
+  `_base.scss` : `--step-1` en texte secondaire. Aucune classe ne nomme ce que
+  la structure exprime déjà.
 
 **Poids réel : 90 104 octets** (88 Ko). Ce n'est pas le poids annoncé lors du
 choix de la police (~30 Ko) : aucun `fonttools` n'est disponible sur la machine
@@ -146,6 +149,9 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
 
 - `--measure: 68ch` — longueur de ligne maximale du texte courant.
 - `--page-max: 90rem`, `--page-gutter: var(--space-s)`.
+- **Le cadrage appartient au gabarit.** `app/layouts/default.vue` pose la
+  gouttière et la largeur maximale ; aucune page ne repose les siennes, sans
+  quoi deux pages dérivent l'une de l'autre au premier ajustement.
 - Mobile first. Le mixin `respond-up()` de `app/styles/_breakpoints.scss` est le
   **seul** emploi de variables Sass pour une valeur de design : le CSS natif
   n'accepte pas de custom property dans une media query.
@@ -165,7 +171,48 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
 
-## 6. Mouvement
+## 6. Navigation
+
+**Le menu est plein écran à toutes les largeurs.** Aucune barre de liens ne
+s'affiche dans l'en-tête au-dessus d'un point de rupture. Trois raisons :
+
+- C'est la forme des deux références épinglées.
+- Le rang s'encode dans la taille du texte. Une barre horizontale impose quatre
+  libellés de même taille, donc une hiérarchie plate — l'inverse de la règle de
+  forme.
+- Une seule forme existe, donc une seule à dessiner, à tester et à maintenir
+  accessible.
+
+**Chaque rubrique porte son rang**, de `01` à `04`, en chiffres tabulaires et au
+corps des libellés. C'est la figure numérotée du contrat de direction : la
+hausse empruntée à la planche de brevet, qui reporte sur le numéro et sur
+l'encre la charge que le monde de référence fait porter à la photographie.
+
+**Le menu est un `<dialog>` ouvert par `showModal()`.** Le piège à focus, la
+fermeture par `Échap` et la restitution du focus au déclencheur sont alors
+tenus par le navigateur. `PRODUCT.md` exige les trois ; les réécrire à la main
+n'ajouterait rien et introduirait l'endroit précis où ce code se casse.
+
+**L'en-tête suit le défilement.** Sur une page longue, un menu qu'il faut
+remonter chercher n'est pas un menu. L'en-tête reste donc collant, sur le fond
+de page et sous un filet.
+
+**Le pied de page porte la navigation en clair.** `PRODUCT.md` exige que le
+site reste lisible sans JavaScript, et une surcouche plein écran ne s'ouvre pas
+sans lui. Le pied de page est le chemin de repli ; il n'est pas la navigation
+principale.
+
+**La rubrique courante passe à l'encre**, dans le menu comme dans le pied de
+page. `NuxtLink` pose `aria-current="page"` : l'information ne repose jamais
+sur la seule couleur.
+
+**La bascule de thème est un bouton unique, nommé par son action** — « Thème
+sombre » quand le thème courant est clair. Un groupe de deux boutons
+`aria-pressed` a été écarté : avant le premier clic la préférence vaut
+`system`, et un `aria-pressed="true"` affirmerait un choix que le visiteur n'a
+pas fait.
+
+## 7. Mouvement
 
 `--dur-fast` 120 ms, `--dur-base` 240 ms, `--dur-slow` 480 ms,
 `--ease-out: cubic-bezier(0.22, 1, 0.36, 1)`.
@@ -174,7 +221,7 @@ Toute transition se neutralise sous `prefers-reduced-motion: reduce`. Aucune
 animation ne porte d'information : elle accompagne un changement d'état déjà
 lisible sans elle.
 
-## 7. Organisation du code
+## 8. Organisation du code
 
 **Un seul système : Atomic Design.** ITCSS a été abandonné le 26/10/2026 —
 faire tourner deux systèmes d'organisation en parallèle dupliquait les règles,
@@ -200,7 +247,23 @@ pour cette raison : `Input` et `Button` ne servaient qu'au formulaire de
 contact, dont le fournisseur n'est pas tranché (issue
 [#5](https://github.com/arnaudbregere/portfolio/issues/5)).
 
-## 8. Périmètre de design
+Les composants nés depuis le sont chacun de la page ou du gabarit qui les
+utilise, dans le même commit :
+
+```
+app/components/
+├── atoms/ThemeToggle.vue       bascule clair / sombre
+└── organisms/
+    ├── SiteHeader.vue          nom, bouton de menu, filet
+    ├── NavOverlay.vue          menu plein écran
+    └── SiteFooter.vue          navigation en clair, profils, bascule
+content/nav.ts                  rubriques et profils — source unique
+```
+
+Les noms sont plats : `nuxt.config.ts` pose `pathPrefix: false`. Le niveau
+Atomic Design range le fichier, il ne préfixe pas son nom.
+
+## 9. Périmètre de design
 
 - **Le CV n'est qu'un document à télécharger.** La page `/cv` en HTML que
   `PRODUCT.md` spécifiait est hors périmètre depuis le 26/10/2026.
