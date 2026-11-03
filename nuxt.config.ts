@@ -4,6 +4,23 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/eslint', '@nuxtjs/color-mode'],
 
+  app: {
+    head: {
+      htmlAttrs: { lang: 'fr' },
+      link: [
+        // Seule police chargée du site : préchargée pour écourter la fenêtre
+        // de `font-display: swap` sur le titre de première vue.
+        {
+          rel: 'preload',
+          as: 'font',
+          type: 'font/woff2',
+          href: '/fonts/archivo-variable-latin.woff2',
+          crossorigin: '',
+        },
+      ],
+    },
+  },
+
   // Thème : clair par défaut, bascule persistée, pas de flash au chargement.
   colorMode: {
     preference: 'system',
@@ -17,6 +34,17 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     typeCheck: false, // lancé séparément par `npm run typecheck`
+  },
+
+  // La planche de spécimen ne part pas en production.
+  $production: {
+    hooks: {
+      'pages:extend'(pages) {
+        const index = pages.findIndex((page) => page.path === '/_ds')
+
+        if (index !== -1) pages.splice(index, 1)
+      },
+    },
   },
 
   future: { compatibilityVersion: 4 },

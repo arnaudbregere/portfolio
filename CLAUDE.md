@@ -13,8 +13,8 @@ Déploiement cible : Render (service web unique).
 
 ```
 portfolio/
-├── app/          UI Nuxt — components (Atomic Design), pages, layouts, composables, styles (ITCSS)
-├── content/      Contenu typé en TypeScript (projets, parcours, CV) — source unique
+├── app/          UI Nuxt — components (Atomic Design), pages, layouts, composables, styles, utils
+├── content/      Contenu typé en TypeScript (projets, parcours) — source unique
 ├── server/       Routes Nitro et services (créé au besoin, pas avant)
 ├── tests/unit/   Vitest
 └── e2e/          Playwright (package npm indépendant, créé en P6)
@@ -26,9 +26,10 @@ Règles détaillées par domaine : @.claude/rules/frontend.md,
 
 ## Environnement
 
-- **Node 22** obligatoire (`.nvmrc`). Nuxt 4.6 refuse Node 20. Avant toute
-  commande npm dans une session neuve :
-  `export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use`.
+- **Node 22** obligatoire (`.nvmrc`). Sous Node 20, Nuxt 4.6 émet un
+  avertissement et poursuit — ce n'est pas un refus. `package.json` reprend la
+  plage que `nuxt` déclare lui-même. Avant toute commande npm dans une session
+  neuve : `export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use`.
 - Versions verrouillées par `package.json` : `vue-router` doit rester en **5.x**
   (Nuxt 4.6 génère un `tsconfig` qui référence `vue-router/volar/*`, absent de
   la 4.x — `npm run typecheck` casse sinon), `vitest` en **5.x** avec

@@ -1,0 +1,93 @@
+/**
+ * Design tokens — custom properties CSS, donc thémables à l'exécution.
+ * Toute valeur consommée par un composant vient d'ici : aucun littéral de
+ * couleur, d'espacement, de durée ou de taille de texte dans un composant.
+ * Les ratios de contraste de chaque couple sont calculés par la formule
+ * WCAG 2.1. DESIGN.md les consignera et la planche `/_ds` les vérifiera à
+ * l'exécution ; ni l'un ni l'autre n'existe encore à ce commit.
+ */
+:root {
+  /* Couleurs — thème clair, « papier » */
+  --color-bg: #f7f4ef;
+  --color-bg-subtle: #ede8e0;
+  --color-fg: #14120f;
+  --color-fg-muted: #6b655c;
+  --color-line: #d6cfc4;
+  --color-line-strong: #8c857a;
+  --color-ink: #b3122b;
+  --color-ink-fg: #ffffff;
+  --color-focus: #1a5fff;
+
+  /* Espacement — échelle 4px */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+  --space-3xl: 9rem;
+
+  /* Typographie — une famille, deux registres */
+  --font-display: 'Archivo Variable', 'Archivo', helvetica, arial, sans-serif;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', roboto, helvetica, arial,
+    sans-serif;
+
+  /* Axes variables du registre d'affichage */
+  --display-weight: 800;
+  --display-stretch: 112%;
+  --label-weight: 600;
+  --label-stretch: 100%;
+
+  --tracking-display: -0.01em;
+  --tracking-label: 0.06em;
+  --tracking-ui: 0;
+  --leading-tight: 1.02;
+  --leading-normal: 1.6;
+
+  /* Échelle typographique fluide */
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0: clamp(0.94rem, 0.9rem + 0.2vw, 1rem);
+  --step-1: clamp(1.13rem, 1.05rem + 0.4vw, 1.33rem);
+  --step-2: clamp(1.35rem, 1.2rem + 0.75vw, 1.78rem);
+  --step-3: clamp(1.62rem, 1.37rem + 1.26vw, 2.37rem);
+  --step-4: clamp(1.94rem, 1.55rem + 1.96vw, 3.16rem);
+  --step-5: clamp(2.33rem, 1.74rem + 2.96vw, 4.21rem);
+  --step-6: clamp(2.8rem, 1.91rem + 4.43vw, 5.61rem);
+
+  /* Les libellés en capitales ne sont pas fluides : 13px, comme la référence */
+  --size-label: 0.8125rem;
+
+  /* Mise en page */
+  --measure: 68ch;
+  --page-gutter: var(--space-s);
+  --page-max: 90rem;
+
+  /* Mouvement */
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --dur-slow: 480ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Surfaces dessinées par le navigateur, à thémer depuis la palette */
+  caret-color: var(--color-ink);
+  accent-color: var(--color-ink);
+
+  /* Filets — la page se divise par des traits, jamais par des cartes */
+  --rule: 1px solid var(--color-line);
+  --rule-strong: 1px solid var(--color-line-strong);
+}
+
+/* Thème sombre, « presse » — @nuxtjs/color-mode pose .dark sur <html> */
+.dark {
+  --color-bg: #121110;
+  --color-bg-subtle: #1c1a18;
+  --color-fg: #f2efe9;
+  --color-fg-muted: #9c958a;
+  --color-line: #2e2b27;
+  --color-line-strong: #7a7369;
+  --color-ink: #ff5c72;
+  --color-ink-fg: #121110;
+  --color-focus: #7aa2ff;
+}

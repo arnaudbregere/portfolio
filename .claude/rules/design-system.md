@@ -1,7 +1,14 @@
 # Règles design system (`app/components/`)
 
-Organisation **Atomic Design**, mobile first. `DESIGN.md` fait foi pour les
-valeurs (tokens, échelles, règles visuelles) ; ce fichier fixe la structure.
+Organisation **Atomic Design**, mobile first, seul système d'organisation du
+dépôt. `DESIGN.md` fait foi pour les valeurs (tokens, échelles, règles
+visuelles) ; ce fichier fixe la structure.
+
+**Aucun composant spéculatif.** Les niveaux ci-dessous décrivent où un composant
+*va*, pas ce qu'il faut écrire. Un composant naît de la page qui en a besoin,
+jamais pour cocher une case de phase : les six atomes écrits le 26/10/2026 ont
+été supprimés pour cette raison. Un dossier de niveau n'est créé qu'au moment où
+un fichier y entre.
 
 ## Où vit un composant
 
@@ -34,8 +41,10 @@ l'inverse**, jamais de saut vers le haut.
 
 ## Avant de créer un composant
 
-1. Vérifier qu'aucun existant ne couvre le besoin, éventuellement via une prop
+1. Nommer la page qui l'utilise **dans le même commit**. Sans cette page, le
+   composant ne doit pas être écrit.
+2. Vérifier qu'aucun existant ne couvre le besoin, éventuellement via une prop
    supplémentaire — l'ancien portfolio est mort d'une duplication de styles.
-2. Si le composant introduit une décision visuelle (couleur, échelle, rythme),
+3. Si le composant introduit une décision visuelle (couleur, échelle, rythme),
    la trancher dans `DESIGN.md` avant d'écrire le code.
-3. Écrire le test en même temps que le composant, pas après.
+4. Écrire le test en même temps que le composant, pas après.

@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: Relit un diff ou une PR du portfolio en vérifiant les conventions du dépôt (Atomic Design, ITCSS, tokens, Composition API, contenu typé sans v-html, main protégée) en plus des défauts de correction classiques. À utiliser avant de merger une PR.
+description: Relit un diff ou une PR du portfolio en vérifiant les conventions du dépôt (Atomic Design, tokens, Composition API, contenu typé sans v-html, main protégée) en plus des défauts de correction classiques. À utiliser avant de merger une PR.
 tools: Read, Grep, Glob, Bash
 model: inherit
 ---
@@ -16,11 +16,15 @@ domaines touchés, `PRODUCT.md` (section « Accessibilité et inclusion ») et
   `organisms`) ; aucune dépendance remontante ; un atome qui importe
   `content/` ou appelle `useRoute()` est un défaut bloquant ; pas de marge
   extérieure posée par le composant lui-même.
+- **Composant spéculatif** : un composant qu'aucune page n'utilise encore est un
+  défaut bloquant, même s'il est testé. Il naît de la page qui en a besoin.
 - **Tokens** : aucune valeur en dur pour une couleur, un espacement, une durée
   ou une taille de texte. Toute couleur nouvelle est documentée avec son ratio
   de contraste dans `DESIGN.md`, dans les deux thèmes.
-- **CSS** : ordre ITCSS respecté, mobile first (`respond-up`, jamais de
-  `max-width`), aucun framework CSS introduit.
+- **CSS** : le SCSS global ne porte que ce qui ne peut pas être scopé (tokens,
+  police, remise à zéro, styles d'éléments, points de rupture) ; tout le reste
+  vit dans le `<style scoped>` du composant. Mobile first (`respond-up`, jamais
+  de `max-width`), aucun framework CSS introduit.
 - **Vue** : `<script setup lang="ts">`, fonctions fléchées, pas d'Options API,
   pas de Pinia introduit sans état réellement partagé.
 - **Contenu** : aucune chaîne HTML dans `content/`, aucun `v-html` nulle part.

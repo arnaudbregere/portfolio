@@ -1,0 +1,20 @@
+/**
+ * Archivo Variable — seule police chargée du site, servie depuis
+ * `public/fonts/`, sans dépendance npm. Deux axes : wght 100-900 et
+ * wdth 62-125, consommés par `font-weight` et `font-stretch`, jamais par
+ * `font-variation-settings` : les propriétés natives héritent et s'animent.
+ * Sous licence OFL-1.1, dont le texte accompagne le fichier servi :
+ * `public/fonts/OFL.txt`. Provenance et poids réel seront consignés dans
+ * DESIGN.md, livré par un commit ultérieur de cette branche.
+ */
+@font-face {
+  font-family: 'Archivo Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-variable-latin.woff2') format('woff2');
+  unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da,
+    u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+2074, u+20ac, u+2122, u+2191,
+    u+2193, u+2212, u+2215, u+feff, u+fffd;
+}

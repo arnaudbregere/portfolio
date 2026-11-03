@@ -18,7 +18,7 @@ opposables sont dans `PRODUCT.md`, sections « Accessibilité et inclusion » et
    à leur champ, rôles et états ARIA des composants interactifs, ordre de
    tabulation, présence de `useSeoMeta` avec un `title` et une `description`
    propres à la page, données structurées JSON-LD.
-3. Contrastes : pour toute couleur de `settings/_tokens.scss` utilisée par le
+3. Contrastes : pour toute couleur de `app/styles/_tokens.scss` utilisée par le
    changement, calcule le ratio dans les deux thèmes et compare au seuil (4,5:1
    pour le texte courant, 3:1 pour le texte large et les éléments d'interface).
    Vérifie que `DESIGN.md` le consigne.

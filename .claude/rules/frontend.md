@@ -17,20 +17,32 @@
 - Métadonnées par page via `useSeoMeta`, jamais via un `useHead` global
   dupliqué.
 
-## CSS — ITCSS + Atomic, sans framework
+## CSS — styles globaux plats et styles scopés, sans framework
 
-`app/styles/` suit **ITCSS**, composé via `@use` :
+**Un seul système d'organisation : Atomic Design.** ITCSS a été abandonné le
+26/10/2026 : deux systèmes en parallèle dupliquaient les règles, et quatre de
+ses sept couches ne contenaient qu'une ligne de commentaire.
+
+Le SCSS global ne porte que ce qui ne peut pas être scopé dans un composant.
+Un fichier, une responsabilité, composés par `app/styles/main.scss` :
 
 ```
-settings → tools → generic → elements → objects → components → utilities
+app/styles/
+├── _tokens.scss       custom properties
+├── _fonts.scss        @font-face
+├── _reset.scss        remise à zéro
+├── _base.scss         styles d'éléments
+├── _breakpoints.scss  mixin respond-up()
+└── main.scss          point d'entrée
 ```
 
-- Respecter cet ordre de spécificité croissante.
+- Tout le reste vit dans le `<style scoped>` du composant qui en a besoin.
+  N'ajouter un fichier global que si la règle est impossible à scoper.
 - **Les tokens de design sont des custom properties CSS** (`--color-*`,
   `--space-*`, `--step-*`), pas des variables Sass : la thémabilité à
   l'exécution en dépend. Seuls les points de rupture restent en variables Sass
-  (`settings/_breakpoints.scss`), consommées par le mixin `respond-up()` — le
-  CSS natif n'accepte pas de custom property dans une media query.
+  (`_breakpoints.scss`), consommées par le mixin `respond-up()` — le CSS natif
+  n'accepte pas de custom property dans une media query.
 - **Mobile first** : styles de base pour petit écran, enrichis vers le haut avec
   `respond-up()`. Jamais de `max-width` en media query.
 - Aucune valeur en dur pour une couleur, un espacement, une durée ou une taille
@@ -44,19 +56,20 @@ settings → tools → generic → elements → objects → components → utili
 Les critères opposables sont dans `PRODUCT.md`, section « Accessibilité et
 inclusion ». Ici, seulement leur traduction dans ce dépôt :
 
-- `:focus-visible` est défini globalement dans `elements/_elements.scss`.
-  Jamais d'`outline: none` sans remplacement visible.
-- `prefers-reduced-motion` est traité dans `generic/_reset.scss`. Toute
-  animation ajoutée doit rester couverte par cette règle.
+- `:focus-visible` est défini globalement dans `_base.scss`. Jamais
+  d'`outline: none` sans remplacement visible.
+- `prefers-reduced-motion` est traité dans `_reset.scss`. Toute animation
+  ajoutée doit rester couverte par cette règle.
 - Les icônes rendent un `<svg aria-hidden="true">` ; si l'icône porte seule le
   sens, le bouton qui la contient porte un `aria-label`.
-- Tout ajout de couleur dans `settings/_tokens.scss` documente son ratio de
-  contraste dans `DESIGN.md`, dans les deux thèmes.
+- Tout ajout de couleur dans `_tokens.scss` documente son ratio de contraste
+  dans `DESIGN.md`, dans les deux thèmes, et rejoint les couples verrouillés
+  par `tests/unit/contrast.spec.ts`.
 
 ## Tests
 
 - Vitest (`npm test`), environnement `nuxt`, specs dans `tests/unit/`.
 - Tout atome et toute molécule a un test : rendu, props, état désactivé,
-  attributs d'accessibilité.
+  attributs d'accessibilité. Le test s'écrit en même temps que le composant.
 - Monter les composants avec `mountSuspended` de `@nuxt/test-utils/runtime`.
 - Interroger le DOM par rôle ou par texte accessible plutôt que par classe CSS.
