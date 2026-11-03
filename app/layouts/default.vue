@@ -1,9 +1,12 @@
 <template>
   <div class="o-shell">
     <a class="o-skip-link" href="#contenu">Aller au contenu</a>
+
     <main id="contenu" class="o-main" tabindex="-1">
       <slot />
     </main>
+
+    <SiteFooter />
   </div>
 </template>
 
