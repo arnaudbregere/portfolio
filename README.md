@@ -1,7 +1,7 @@
 # Portfolio — Arnaud Brégère
 
 Portfolio personnel. **Nuxt 4 / Vue 3**, design system Atomic Design mobile
-first, styles ITCSS, thème clair/sombre, tests Vitest et Playwright.
+first, thème clair/sombre, tests Vitest et Playwright.
 
 ## Prérequis
 
@@ -27,24 +27,24 @@ npm run preview    # prévisualiser le build
 
 ```
 app/
-├── components/
-│   ├── atoms/       éléments indivisibles
-│   ├── molecules/   assemblages d'atomes
-│   ├── organisms/   sections de page
-│   └── templates/   squelettes de mise en page
+├── components/      Atomic Design : atoms, molecules, organisms, templates
 ├── composables/     logique réutilisable
 ├── layouts/         enveloppes de page
 ├── pages/           routes
-└── styles/          ITCSS : settings → tools → generic → elements → objects → components → utilities
-content/             contenu éditorial typé (projets, parcours, CV)
+├── styles/          tokens, police, remise à zéro, styles d'éléments, points de rupture
+└── utils/           fonctions pures
+content/             contenu éditorial typé (projets, parcours)
 tests/unit/          tests Vitest
+
+Un dossier n'est créé qu'au moment où un fichier y entre : un composant naît de
+la page qui en a besoin.
 ```
 
 ## Documentation du projet
 
 - `CLAUDE.md` — contrat de travail, workflow git, commandes de vérification
 - `PRODUCT.md` — périmètre, rubriques, accessibilité, référencement
-- `DESIGN.md` — tokens et règles visuelles (généré en phase design system)
+- `DESIGN.md` — direction visuelle, tokens, ratios de contraste, écarts assumés
 - `.claude/rules/` — conventions par domaine
 
 ## Licence

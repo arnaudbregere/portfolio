@@ -26,7 +26,9 @@ Le site doit convaincre deux lecteurs en moins de deux minutes, sur mobile.
 | `/projets/[slug]` | fiche projet détaillée | structure imposée : contexte, problème, solution, résultat, stack, liens |
 | `/a-propos` | texte de présentation, parcours, compétences | prose lisible, pas de barres de pourcentage |
 | `/contact` | formulaire | envoie un message à arnaud.bregere@gmail.com |
-| `/cv` | CV en HTML + bouton de téléchargement PDF | le PDF pèse moins de 500 Ko |
+Le **CV n'est qu'un document à télécharger** : décision du 26/10/2026. Il n'y a
+pas de route `/cv` en HTML. Le bouton de téléchargement vit sur `/` et
+`/a-propos` ; le PDF pèse moins de 500 Ko.
 
 ## Projets retenus
 
