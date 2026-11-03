@@ -12,7 +12,7 @@
  * par l'e-mail et par le formulaire.
  */
 
-import type { Education, Experience, Profile, SkillGroup } from './types'
+import type { CvFile, Education, Experience, Profile, SkillGroup } from './types'
 
 export const profile: Profile = {
   name: 'Arnaud Brégère',
@@ -220,3 +220,10 @@ export const skillGroups: readonly SkillGroup[] = [
     ],
   },
 ]
+
+export const cvFile: CvFile = {
+  path: '/pdf/arnaud-bregere_cv.pdf',
+  format: 'PDF',
+  sizeKb: 449,
+  updated: '2026-11-03',
+}

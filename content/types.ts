@@ -48,3 +48,18 @@ export type SkillGroup = {
   title: string
   skills: readonly string[]
 }
+
+/**
+ * Le CV n'existe qu'en téléchargement : décision du 26/10/2026. Il n'y a pas
+ * de route `/cv` en HTML — le parcours lisible est sur `/a-propos`.
+ */
+export type CvFile = {
+  /** Chemin servi depuis `public/`. */
+  path: string
+  /** Format du document, annoncé au lecteur avant le clic. */
+  format: string
+  /** Poids du fichier en kilo-octets, tenu à jour avec le fichier. */
+  sizeKb: number
+  /** Date de la version servie, en ISO. */
+  updated: string
+}
