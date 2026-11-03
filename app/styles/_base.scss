@@ -52,6 +52,13 @@ p {
   text-wrap: pretty;
 }
 
+/* Le chapeau est le paragraphe qui suit le titre : pas de classe pour cela. */
+h1 + p {
+  margin-top: var(--space-m);
+  font-size: var(--step-1);
+  color: var(--color-fg-muted);
+}
+
 a {
   color: inherit;
   text-decoration-thickness: 1px;
