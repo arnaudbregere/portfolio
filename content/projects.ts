@@ -56,4 +56,19 @@ export const projects: readonly Project[] = [
     ],
     featured: true,
   },
+  {
+    slug: 'calculatrice',
+    title: 'Calculatrice',
+    year: '2026',
+    role: 'Conception et développement, seul',
+    problem:
+      'Une calculatrice web paraît triviale, et c’est ce qui la rend révélatrice : la chaîne d’opérations, la virgule, le pourcentage et la division par zéro sont des cas limites que la plupart des exercices traitent mal.',
+    solution:
+      'Une machine à états isolée dans un composable Vue 3, qui ne connaît rien du rendu. Le nombre en cours est tenu en chaîne et non en nombre, le pourcentage suit la convention des calculatrices de bureau — « 200 + 10 % » ajoute 20 — et le clavier physique fait tout ce que font les touches.',
+    result:
+      '19 tests unitaires couvrent la machine à états, cas limites compris : division par zéro, virgule unique, saisie bornée à 12 chiffres, correction d’opérateur. Aucune dépendance ajoutée, et les touches dépassent la cible tactile de 44 px exigée par le RGAA.',
+    stack: ['Vue 3', 'TypeScript', 'Vitest', 'SCSS'],
+    links: [{ label: 'Démo jouable', url: 'https://arnaud-bregere.fr/projets/calculatrice' }],
+    featured: false,
+  },
 ]
