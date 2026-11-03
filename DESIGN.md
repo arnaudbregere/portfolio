@@ -59,12 +59,20 @@ qui est sous examen et sur l'action principale unique.
 | `--color-line-strong` | Bordure de contrôle | `#8c857a` | `#7a7369` |
 | `--color-ink` | Encre d'annotation | `#b3122b` | `#ff5c72` |
 | `--color-ink-fg` | Texte sur encre | `#ffffff` | `#121110` |
-| `--color-focus` | Indicateur de focus | `#1a5fff` | `#7aa2ff` |
+| `--color-focus` | Indicateur de focus | `var(--color-fg)` | `var(--color-fg)` |
 
 Le papier est chaud plutôt que blanc pur : cela désamorce le risque d'austérité
 d'un monde privé de photographie. L'encre garde la même teinte d'un thème à
 l'autre (350° contre 353°), seulement éclaircie pour tenir son seuil sur fond
 sombre.
+
+**Le focus n'ajoute aucune couleur.** `--color-focus` renvoie à `--color-fg`.
+Un bleu dédié (`#1a5fff` en clair, `#7aa2ff` en sombre) a été écarté le
+03/11/2026 : il faisait deux couleurs saturées dans une palette qui n'en promet
+qu'une. L'indicateur se distingue donc par le trait, pas par la teinte — 3 px
+plutôt que 2 — et son décalage de 3 px le pose sur le fond de page, jamais sur
+la surface de l'élément : un bouton rempli en `--color-fg` masquerait un
+contour de la même encre.
 
 ### Contraste
 
@@ -78,7 +86,7 @@ Ratios calculés par la formule WCAG 2.1, verrouillés par
 | `ink` / `bg` | 1.4.3 | 4,5:1 | 6,30:1 | 6,31:1 |
 | `ink-fg` / `ink` | 1.4.3 | 4,5:1 | 6,91:1 | 6,31:1 |
 | `line-strong` / `bg` | 1.4.11 | 3:1 | 3,33:1 | 4,03:1 |
-| `focus` / `bg` | 1.4.11 | 3:1 | 4,64:1 | 7,58:1 |
+| `focus` / `bg` | 1.4.11 | 3:1 | 17,04:1 | 16,44:1 |
 
 `--color-line-strong` existe parce que `--color-line` ne peut pas identifier un
 contrôle. WCAG 1.4.11 exige 3:1 pour la frontière visuelle d'un composant ; le
@@ -154,7 +162,8 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   derrière un survol ou un accordéon : ni le clavier ni le tactile n'ont de
   survol.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
-- `--color-focus` est visible dans les deux thèmes et ne se supprime jamais.
+- `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
+  reprend `--color-fg` : le contraste est le plus élevé de la palette.
 
 ## 6. Mouvement
 

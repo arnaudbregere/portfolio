@@ -16,7 +16,8 @@
   --color-line-strong: #8c857a;
   --color-ink: #b3122b;
   --color-ink-fg: #ffffff;
-  --color-focus: #1a5fff;
+  /* Le focus n'ajoute aucune couleur : il reprend le texte courant. */
+  --color-focus: var(--color-fg);
 
   /* Espacement — échelle 4px */
   --space-3xs: 0.25rem;
@@ -89,5 +90,4 @@
   --color-line-strong: #7a7369;
   --color-ink: #ff5c72;
   --color-ink-fg: #121110;
-  --color-focus: #7aa2ff;
 }

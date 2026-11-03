@@ -74,8 +74,14 @@ hr {
   border-top: var(--rule);
 }
 
+/**
+ * Le focus ne se distingue pas par la couleur — il reprend le texte courant.
+ * Le trait est donc plus épais, et le décalage le pose sur le fond de page,
+ * jamais sur la surface de l'élément : un bouton rempli en `--color-fg`
+ * masquerait un contour de la même encre.
+ */
 :focus-visible {
-  outline: 2px solid var(--color-focus);
+  outline: 3px solid var(--color-focus);
   outline-offset: 3px;
 }
 
