@@ -87,7 +87,7 @@ const tokensByTheme = (): Record<'light' | 'dark', Record<string, string>> => {
     const colors: Record<string, string> = {}
 
     for (const [, name, value] of block![1]!.matchAll(
-      /(--color-[\w-]+):\s*(#[\da-f]{3,8})/gi,
+      /(--color-[\w-]+):\s*(#[\da-f]{3,8}|var\(--color-[\w-]+\))/gi,
     )) {
       colors[name!] = value!
     }
@@ -95,9 +95,26 @@ const tokensByTheme = (): Record<'light' | 'dark', Record<string, string>> => {
     return colors
   }
 
+  // Un token peut renvoyer à un autre (`--color-focus: var(--color-fg)`). Le
+  // navigateur substitue au calcul de la valeur ; ici il faut le faire.
+  const resolve = (colors: Record<string, string>) => {
+    const reference = /^var\((--color-[\w-]+)\)$/
+
+    for (const [name, value] of Object.entries(colors)) {
+      const target = reference.exec(value)?.[1]
+
+      if (target) colors[name] = colors[target]!
+    }
+
+    return colors
+  }
+
   const light = read(':root')
 
-  return { light, dark: { ...light, ...read('\\.dark') } }
+  return {
+    light: resolve({ ...light }),
+    dark: resolve({ ...light, ...read('\\.dark') }),
+  }
 }
 
 describe('seuils WCAG des couples de tokens', () => {

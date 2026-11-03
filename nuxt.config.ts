@@ -4,6 +4,10 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/eslint', '@nuxtjs/color-mode'],
 
+  // Atomic Design : le niveau est un rangement, pas un préfixe de nom.
+  // `ThemeToggle`, pas `AtomsThemeToggle`.
+  components: [{ path: '~/components', pathPrefix: false }],
+
   app: {
     head: {
       htmlAttrs: { lang: 'fr' },

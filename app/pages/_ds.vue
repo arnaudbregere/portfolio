@@ -188,10 +188,10 @@ const spaces = [
 <style scoped lang="scss">
 @use '../styles/breakpoints' as bp;
 
+/* Le cadrage appartient au gabarit : la planche ne repose ni gouttière ni
+   largeur maximale. */
 .ds {
-  max-width: var(--page-max);
-  margin-inline: auto;
-  padding: var(--space-xl) var(--page-gutter) var(--space-3xl);
+  display: grid;
 }
 
 .ds__head {
