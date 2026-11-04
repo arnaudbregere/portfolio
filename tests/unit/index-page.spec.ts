@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import { profile } from '~~/content/cv'
+import { projects } from '~~/content/projects'
 import IndexPage from '~/pages/index.vue'
 
 describe('page Accueil', () => {
@@ -24,6 +25,37 @@ describe('page Accueil', () => {
     expect(page.get('a[download]').attributes('href')).toBe('/pdf/arnaud-bregere_cv.pdf')
     expect(page.get(`a[href="mailto:${profile.email}"]`).exists()).toBe(true)
     expect(page.find('a[href="/contact"]').exists()).toBe(true)
+  })
+
+  /**
+   * Le défaut corrigé par l'issue #15 : `featured` était posé dans le contenu
+   * et lu nulle part. Ces trois tests le rendent opposable — un projet marqué
+   * ou démarqué change la page, ou un test tombe.
+   */
+  it('met en avant exactement les projets marqués `featured`', async () => {
+    const page = await mountSuspended(IndexPage)
+    const featured = projects.filter((project) => project.featured)
+
+    const titles = page.findAll('.home__project-title').map((node) => node.text())
+
+    expect(titles).toEqual(featured.map((project) => project.title))
+  })
+
+  it('lie chaque projet mis en avant à sa fiche, et renvoie à la liste', async () => {
+    const page = await mountSuspended(IndexPage)
+
+    for (const project of projects.filter((item) => item.featured)) {
+      expect(page.find(`a[href="/projets/${project.slug}"]`).exists()).toBe(true)
+    }
+    expect(page.find('a[href="/projets"]').exists()).toBe(true)
+  })
+
+  it('tient les projets non retenus hors de l’accueil', async () => {
+    const page = await mountSuspended(IndexPage)
+
+    for (const project of projects.filter((item) => !item.featured)) {
+      expect(page.find(`a[href="/projets/${project.slug}"]`).exists()).toBe(false)
+    }
   })
 
   it('garde le téléphone hors de l’accueil', async () => {
