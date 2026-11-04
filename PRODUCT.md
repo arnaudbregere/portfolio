@@ -82,11 +82,24 @@ Référence : **RGAA 4.1 / WCAG 2.1 niveau AA**. Critères opposables :
 - Données structurées JSON-LD `Person` sur l'accueil, `CreativeWork` sur chaque
   fiche projet.
 - `sitemap.xml` et `robots.txt` générés, URL canonique sur chaque page.
-- Image Open Graph par page ; les pages sont prérendues pour être indexables
-  sans exécution de JavaScript.
+- Métadonnées de partage sur chaque page : `og:title`, `og:description` et
+  `og:image`. Une seule image de partage sert le site ; chaque fiche projet lui
+  substitue sa première capture. Décision du 04/11/2026 (issue #17) : une image
+  dessinée par page demandait cinq visuels, et un de plus à chaque page
+  ajoutée, pour un gain nul sur une page dont le contenu est du texte.
+- Les pages sont prérendues pour être indexables sans exécution de
+  JavaScript.
 
 ## Données personnelles
 
 Le formulaire de contact ne collecte que le nom, l'adresse e-mail et le message,
 avec consentement explicite. Aucun cookie de mesure d'audience, donc pas de
-bandeau. Aucune adresse e-mail en clair dans le DOM.
+bandeau.
+
+L'adresse e-mail paraît en clair sur `/`, sur `/a-propos` et dans le JSON-LD
+`Person`. Cette règle renverse le 04/11/2026 (issue #17) celle d'origine, qui
+interdisait toute adresse en clair dans le DOM : le site est une pièce de
+candidature, un recruteur doit pouvoir écrire en un clic sans remplir un
+formulaire, et une adresse structurée sert le référencement. Le risque de
+collecte automatisée est connu et accepté. Le formulaire de contact est une
+commodité, pas la seule voie.
