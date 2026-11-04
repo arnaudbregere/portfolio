@@ -18,6 +18,18 @@ if (!project) {
 useSeoMeta({
   title: `${project.title} — Projet d’Arnaud Brégère`,
   description: project.problem,
+  ogTitle: `${project.title} — Projet d’Arnaud Brégère`,
+  ogDescription: project.problem,
+  ogImage: {
+    url: `${siteUrl.replace(/\/$/, '')}/visuels/og/og-projet.png`,
+    width: 1200,
+    height: 630,
+  },
+  twitterImage: {
+    url: `${siteUrl.replace(/\/$/, '')}/visuels/og/og-projet.png`,
+    width: 1200,
+    height: 630,
+  },
 })
 
 useProjectJsonLd(project, siteUrl)

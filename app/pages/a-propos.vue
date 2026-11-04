@@ -2,10 +2,25 @@
 import { cvFile, education, experiences, profile, skillGroups } from '~~/content/cv'
 import { formatPeriod } from '~/utils/period'
 
+const { siteUrl } = useRuntimeConfig().public
+
 useSeoMeta({
   title: 'À propos — Arnaud Brégère',
   description:
     'Parcours d’Arnaud Brégère, développeur front-end senior : six ans de Vue et Nuxt chez Figaro Classifieds, une formation en arts graphiques, et le CV en téléchargement.',
+  ogTitle: 'À propos — Arnaud Brégère',
+  ogDescription:
+    'Parcours d’Arnaud Brégère, développeur front-end senior : six ans de Vue et Nuxt chez Figaro Classifieds, une formation en arts graphiques, et le CV en téléchargement.',
+  ogImage: {
+    url: `${siteUrl.replace(/\/$/, '')}/visuels/og/og-a-propos.png`,
+    width: 1200,
+    height: 630,
+  },
+  twitterImage: {
+    url: `${siteUrl.replace(/\/$/, '')}/visuels/og/og-a-propos.png`,
+    width: 1200,
+    height: 630,
+  },
 })
 
 const [standfirst, ...rest] = profile.intro

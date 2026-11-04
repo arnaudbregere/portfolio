@@ -1,10 +1,25 @@
 <script setup lang="ts">
 import { projects } from '~~/content/projects'
 
+const { siteUrl } = useRuntimeConfig().public
+
 useSeoMeta({
   title: 'Projets — Arnaud Brégère',
   description:
     'Projets d’Arnaud Brégère, développeur front-end senior : problème, solution et résultat mesuré pour chacun.',
+  ogTitle: 'Projets — Arnaud Brégère',
+  ogDescription:
+    'Projets d’Arnaud Brégère, développeur front-end senior : problème, solution et résultat mesuré pour chacun.',
+  ogImage: {
+    url: `${siteUrl.replace(/\/$/, '')}/visuels/og/og-projets.png`,
+    width: 1200,
+    height: 630,
+  },
+  twitterImage: {
+    url: `${siteUrl.replace(/\/$/, '')}/visuels/og/og-projets.png`,
+    width: 1200,
+    height: 630,
+  },
 })
 </script>
 

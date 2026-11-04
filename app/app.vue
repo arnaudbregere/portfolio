@@ -39,7 +39,7 @@ useSeoMeta({
   ogUrl: canonical,
   ogLocale: 'fr_FR',
   ogSiteName: profile.name,
-  twitterCard: 'summary',
+  twitterCard: 'summary_large_image',
 })
 </script>
 

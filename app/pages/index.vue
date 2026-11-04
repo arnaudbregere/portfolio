@@ -3,10 +3,25 @@ import { cvFile, experiences, profile } from '~~/content/cv'
 import { siteNav } from '~~/content/nav'
 import { projects } from '~~/content/projects'
 
+const { siteUrl } = useRuntimeConfig().public
+
 useSeoMeta({
   title: 'Arnaud Brégère — Développeur front-end senior',
   description:
     'Développeur front-end senior, Vue 3 et Nuxt, six ans chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV et contact.',
+  ogTitle: 'Arnaud Brégère — Développeur front-end senior',
+  ogDescription:
+    'Développeur front-end senior, Vue 3 et Nuxt, six ans chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV et contact.',
+  ogImage: {
+    url: `${siteUrl.replace(/\/$/, '')}/visuels/og/og-accueil.png`,
+    width: 1200,
+    height: 630,
+  },
+  twitterImage: {
+    url: `${siteUrl.replace(/\/$/, '')}/visuels/og/og-accueil.png`,
+    width: 1200,
+    height: 630,
+  },
 })
 
 /**
