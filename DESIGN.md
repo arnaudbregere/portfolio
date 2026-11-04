@@ -167,6 +167,14 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
 - **Une surface, une passe.** La preuve reste sur la page. Rien ne se cache
   derrière un survol ou un accordéon : ni le clavier ni le tactile n'ont de
   survol.
+- **Un lien qui sort du site porte une flèche `↗`**, un cran plus petite que
+  son libellé, et s'ouvre dans un nouvel onglet. Décision du 04/11/2026
+  (issue #22) : le site est une pièce de candidature, il doit rester ouvert
+  derrière le dépôt que le lecteur part inspecter. La flèche est
+  `aria-hidden` ; la mention « nouvel onglet » l'accompagne en texte masqué
+  visuellement, parce qu'un changement de contexte sans annonce désoriente au
+  lecteur d'écran et que « page précédente » ne ramène pas en arrière dans un
+  onglet neuf. Un lien de même origine que le site n'en porte pas.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
