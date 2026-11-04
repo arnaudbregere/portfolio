@@ -55,9 +55,9 @@ const featuredProjects = projects.filter((project) => project.featured)
       <ol class="home__projects">
         <li v-for="project in featuredProjects" :key="project.slug" class="home__project">
           <h3 class="home__project-title">
-            <NuxtLink class="home__project-link" :to="`/projets/${project.slug}`">
+            <SiteLink class="home__project-link" :href="`/projets/${project.slug}`">
               {{ project.title }}
-            </NuxtLink>
+            </SiteLink>
           </h3>
 
           <p class="home__project-year">{{ project.year }}</p>
@@ -163,12 +163,6 @@ const featuredProjects = projects.filter((project) => project.featured)
 
 .home__project-link {
   color: inherit;
-  text-decoration: none;
-}
-
-.home__project-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
 }
 
 .home__project-year {

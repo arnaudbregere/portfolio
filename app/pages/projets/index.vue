@@ -19,9 +19,9 @@ useSeoMeta({
     <ol class="projects__list">
       <li v-for="project in projects" :key="project.slug" class="projects__item">
         <h2 class="projects__title">
-          <NuxtLink class="projects__link" :to="`/projets/${project.slug}`">
+          <SiteLink class="projects__link" :href="`/projets/${project.slug}`">
             {{ project.title }}
-          </NuxtLink>
+          </SiteLink>
         </h2>
 
         <p class="projects__meta">
@@ -62,12 +62,6 @@ useSeoMeta({
 
 .projects__link {
   color: inherit;
-  text-decoration: none;
-}
-
-.projects__link:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
 }
 
 .projects__meta {

@@ -9,7 +9,7 @@ const year = new Date().getFullYear()
     <nav class="o-footer__nav" aria-label="Pied de page">
       <ul>
         <li v-for="item in siteNav" :key="item.to">
-          <NuxtLink :to="item.to">{{ item.label }}</NuxtLink>
+          <SiteLink :href="item.to">{{ item.label }}</SiteLink>
         </li>
       </ul>
     </nav>
@@ -65,11 +65,6 @@ ul {
   font-weight: var(--label-weight);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
 }
 
 /* La rubrique courante se marque par l'encre, le seul emploi de couleur ici. */

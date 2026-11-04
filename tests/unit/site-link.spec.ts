@@ -28,6 +28,18 @@ describe('SiteLink', () => {
     expect(link.find('[aria-hidden="true"]').exists()).toBe(false)
   })
 
+  /**
+   * Un lien interne doit rester une navigation `vue-router` : rendre un `<a>`
+   * nu rechargerait la page entière et perdrait l'état du thème.
+   */
+  it('rend un lien de routeur pour un chemin interne', async () => {
+    const link = await mount({ href: '/projets' })
+
+    expect(link.get('a').attributes('href')).toBe('/projets')
+    expect(link.get('a').attributes('target')).toBeUndefined()
+    expect(link.findComponent({ name: 'NuxtLink' }).exists()).toBe(true)
+  })
+
   it('ajoute `rel` à `noopener` au lieu de le remplacer', async () => {
     const link = await mount({ href: 'https://github.com/arnaudbregere', rel: 'me' })
 

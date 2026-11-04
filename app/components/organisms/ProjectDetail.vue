@@ -13,7 +13,7 @@ defineProps<{ project: Project }>()
 <template>
   <article class="o-project">
     <p class="o-project__back">
-      <NuxtLink to="/projets">Retour aux projets</NuxtLink>
+      <SiteLink href="/projets">Retour aux projets</SiteLink>
     </p>
 
     <h1>{{ project.title }}</h1>

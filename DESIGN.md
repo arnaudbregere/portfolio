@@ -229,6 +229,23 @@ Toute transition se neutralise sous `prefers-reduced-motion: reduce`. Aucune
 animation ne porte d'information : elle accompagne un changement d'état déjà
 lisible sans elle.
 
+**Le soulignement d'un lien se fond en `--dur-fast`.** Décision du 04/11/2026.
+Le trait est toujours là, en `text-decoration-color: transparent` ; le survol
+et le focus le ramènent à `currentColor`. La transition porte donc sur une
+couleur, pas sur l'apparition d'un trait : rien ne se décale, et la hauteur de
+ligne ne bouge pas.
+
+**Un lien dans de la prose reste souligné en permanence**, ainsi que dans une
+liste qui mêle liens et texte : le trait y est le seul repère qui distingue le
+lien du texte sans recourir à la couleur (WCAG 1.4.1). Ces liens ne passent pas
+par `SiteLink` — la liste « Me joindre » de `/a-propos`, où la ville n'est pas
+un lien, en est le cas.
+
+La règle vit dans la molécule `SiteLink`, et nulle part ailleurs : le
+soulignement est une propriété du lien, pas de la page qui l'affiche. Tout lien
+de libellé passe par ce composant — interne comme sortant. Aucun mixin, aucune
+classe utilitaire : un seul système d'organisation, Atomic Design.
+
 ## 8. Organisation du code
 
 **Un seul système : Atomic Design.** ITCSS a été abandonné le 26/10/2026 —
