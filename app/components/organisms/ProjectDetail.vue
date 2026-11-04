@@ -13,7 +13,7 @@ defineProps<{ project: Project }>()
 <template>
   <article class="o-project">
     <p class="o-project__back">
-      <NuxtLink to="/projets">Retour aux projets</NuxtLink>
+      <SiteLink href="/projets">Retour aux projets</SiteLink>
     </p>
 
     <h1>{{ project.title }}</h1>
@@ -75,7 +75,7 @@ defineProps<{ project: Project }>()
       <h2 id="liens">Liens</h2>
       <ul class="o-project__links">
         <li v-for="link in project.links" :key="link.url">
-          <a :href="link.url" rel="noopener">{{ link.label }}</a>
+          <SiteLink :href="link.url">{{ link.label }}</SiteLink>
         </li>
       </ul>
     </section>

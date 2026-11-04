@@ -78,7 +78,7 @@ const telHref = `tel:+33${profile.phone.replace(/\s/g, '').slice(1)}`
           <p v-if="course.result" class="about__summary">{{ course.result }}</p>
 
           <p v-if="course.url" class="about__summary">
-            <a :href="course.url" rel="noopener">Voir l’application réalisée</a>
+            <SiteLink :href="course.url">Voir l’application réalisée</SiteLink>
           </p>
         </li>
       </ol>

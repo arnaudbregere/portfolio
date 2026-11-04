@@ -167,6 +167,14 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
 - **Une surface, une passe.** La preuve reste sur la page. Rien ne se cache
   derrière un survol ou un accordéon : ni le clavier ni le tactile n'ont de
   survol.
+- **Un lien qui sort du site porte une flèche `↗`**, un cran plus petite que
+  son libellé, et s'ouvre dans un nouvel onglet. Décision du 04/11/2026
+  (issue #22) : le site est une pièce de candidature, il doit rester ouvert
+  derrière le dépôt que le lecteur part inspecter. La flèche est
+  `aria-hidden` ; la mention « nouvel onglet » l'accompagne en texte masqué
+  visuellement, parce qu'un changement de contexte sans annonce désoriente au
+  lecteur d'écran et que « page précédente » ne ramène pas en arrière dans un
+  onglet neuf. Un lien de même origine que le site n'en porte pas.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
@@ -220,6 +228,23 @@ pas fait.
 Toute transition se neutralise sous `prefers-reduced-motion: reduce`. Aucune
 animation ne porte d'information : elle accompagne un changement d'état déjà
 lisible sans elle.
+
+**Le soulignement d'un lien se fond en `--dur-fast`.** Décision du 04/11/2026.
+Le trait est toujours là, en `text-decoration-color: transparent` ; le survol
+et le focus le ramènent à `currentColor`. La transition porte donc sur une
+couleur, pas sur l'apparition d'un trait : rien ne se décale, et la hauteur de
+ligne ne bouge pas.
+
+**Un lien dans de la prose reste souligné en permanence**, ainsi que dans une
+liste qui mêle liens et texte : le trait y est le seul repère qui distingue le
+lien du texte sans recourir à la couleur (WCAG 1.4.1). Ces liens ne passent pas
+par `SiteLink` — la liste « Me joindre » de `/a-propos`, où la ville n'est pas
+un lien, en est le cas.
+
+La règle vit dans la molécule `SiteLink`, et nulle part ailleurs : le
+soulignement est une propriété du lien, pas de la page qui l'affiche. Tout lien
+de libellé passe par ce composant — interne comme sortant. Aucun mixin, aucune
+classe utilitaire : un seul système d'organisation, Atomic Design.
 
 ## 8. Organisation du code
 
