@@ -2,7 +2,15 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-10-26',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/eslint', '@nuxtjs/color-mode'],
+  modules: ['@nuxt/eslint', '@nuxtjs/color-mode', '@nuxt/image'],
+
+  // Les captures sont déjà converties en WebP et bornées à 1440 px dans
+  // `public/` : le module ne sert qu'à poser les tailles servies, pas à
+  // rattraper des fichiers trop lourds.
+  image: {
+    format: ['webp'],
+    screens: { s: 480, m: 768, l: 1024, xl: 1440 },
+  },
 
   // Atomic Design : le niveau est un rangement, pas un préfixe de nom.
   // `ThemeToggle`, pas `AtomsThemeToggle`.

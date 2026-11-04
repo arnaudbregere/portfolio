@@ -3,7 +3,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import AProposPage from '~/pages/a-propos.vue'
 import ContactPage from '~/pages/contact.vue'
 import IndexPage from '~/pages/index.vue'
-import ProjetsPage from '~/pages/projets.vue'
+import ProjetsPage from '~/pages/projets/index.vue'
 
 /**
  * Les quatre rubriques publiques. Le squelette ne porte pas encore son
