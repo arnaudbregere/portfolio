@@ -75,7 +75,7 @@ defineProps<{ project: Project }>()
       <h2 id="liens">Liens</h2>
       <ul class="o-project__links">
         <li v-for="link in project.links" :key="link.url">
-          <a :href="link.url" rel="noopener">{{ link.label }}</a>
+          <SiteLink :href="link.url">{{ link.label }}</SiteLink>
         </li>
       </ul>
     </section>

@@ -17,7 +17,7 @@ const year = new Date().getFullYear()
     <div class="o-footer__aside">
       <ul class="o-footer__external">
         <li v-for="link in profileLinks" :key="link.to">
-          <a :href="link.to" rel="me noopener">{{ link.label }}</a>
+          <SiteLink :href="link.to" rel="me">{{ link.label }}</SiteLink>
         </li>
       </ul>
       <ThemeToggle />

@@ -47,8 +47,18 @@ describe('SiteFooter', () => {
     expect(links.map((link) => link.attributes('href'))).toEqual(
       profileLinks.map((link) => link.to),
     )
-    expect(links.map((link) => link.text())).toEqual(
-      profileLinks.map((link) => link.label),
+    // Le libellé est suivi de la mention masquée et de la flèche posées par
+    // `SiteLink` : on vérifie qu'il est là, pas que le texte s'y réduit.
+    for (const [index, link] of links.entries()) {
+      expect(link.text()).toContain(profileLinks[index]!.label)
+    }
+
+    // Les profils sortent du site : nouvel onglet, et `rel="me"` conservé.
+    expect(links.map((link) => link.attributes('target'))).toEqual(
+      profileLinks.map(() => '_blank'),
+    )
+    expect(links.map((link) => link.attributes('rel'))).toEqual(
+      profileLinks.map(() => 'me noopener'),
     )
     expect(footer.findComponent(ThemeToggle).exists()).toBe(true)
   })
