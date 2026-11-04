@@ -1,7 +1,8 @@
 # Portfolio — Arnaud Brégère
 
 Portfolio personnel. **Nuxt 4 / Vue 3**, design system Atomic Design mobile
-first, thème clair/sombre, tests Vitest et Playwright.
+first, thème clair/sombre, tests unitaires Vitest. La suite Playwright arrive
+avec le déploiement (issue #6).
 
 ## Prérequis
 
@@ -27,7 +28,7 @@ npm run preview    # prévisualiser le build
 
 ```
 app/
-├── components/      Atomic Design : atoms, molecules, organisms, templates
+├── components/      Atomic Design : atoms, molecules, organisms
 ├── composables/     logique réutilisable
 ├── layouts/         enveloppes de page
 ├── pages/           routes
