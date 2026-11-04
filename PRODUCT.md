@@ -21,12 +21,17 @@ Le site doit convaincre deux lecteurs en moins de deux minutes, sur mobile.
 
 | Route | Contenu | Règle |
 |---|---|---|
-| `/` | hero éditorial, trois projets mis en avant, chiffres clés, appel au contact | le logo et « Accueil » y ramènent toujours |
+| `/` | hero éditorial, deux projets mis en avant, chiffres clés, appel au contact | le logo et « Accueil » y ramènent toujours |
 | `/projets` | galerie des projets | chaque carte mène à `/projets/[slug]` |
 | `/projets/[slug]` | fiche projet détaillée | structure imposée : contexte, problème, solution, résultat, stack, liens |
 | `/projets/calculatrice` | fiche **et** démo jouable dans la page | décision du 03/11/2026 : une démo vaut mieux qu'une capture pour un exercice de base |
 | `/a-propos` | texte de présentation, parcours, compétences | prose lisible, pas de barres de pourcentage |
 | `/contact` | formulaire | envoie un message à arnaud.bregere@gmail.com |
+Les projets mis en avant sont **deux** et non trois : décision du 04/11/2026
+(issue #15). La Calculatrice est un exercice de base assumé — la hisser au rang
+de Japan Manga Explorer et d'Agenda affaiblirait la première vue, qui doit
+convaincre en moins de deux minutes. Elle reste accessible depuis `/projets`.
+
 Le **CV n'est qu'un document à télécharger** : décision du 26/10/2026. Il n'y a
 pas de route `/cv` en HTML. Le bouton de téléchargement vit sur `/` et
 `/a-propos` ; le PDF pèse moins de 500 Ko.

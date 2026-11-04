@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { cvFile, experiences, profile } from '~~/content/cv'
 import { siteNav } from '~~/content/nav'
+import { projects } from '~~/content/projects'
 
 useSeoMeta({
   title: 'Arnaud Brégère — Développeur front-end senior',
@@ -22,6 +23,13 @@ const yearsOfFrontEnd = computed(() => {
 
 const currentRole = experiences[0]!
 const contact = siteNav.find((item) => item.to === '/contact')!
+
+/**
+ * Les projets mis en avant, dans l'ordre d'affiche de `content/projects.ts` :
+ * `DESIGN.md` pose que l'ordre est la hiérarchie. `PRODUCT.md` en fixe le
+ * nombre à deux depuis le 04/11/2026.
+ */
+const featuredProjects = projects.filter((project) => project.featured)
 </script>
 
 <template>
@@ -38,6 +46,29 @@ const contact = siteNav.find((item) => item.to === '/contact')!
     <p class="home__download">
       <CvLink :href="cvFile.path" :format="cvFile.format" :size-kb="cvFile.sizeKb" />
     </p>
+
+    <section class="home__section" aria-labelledby="projets">
+      <h2 id="projets">Projets</h2>
+
+      <!-- Une liste à filets, pas une grille de cartes égales : le rang se lit
+           dans l'ordre et dans la taille du texte (`DESIGN.md`, § Formes). -->
+      <ol class="home__projects">
+        <li v-for="project in featuredProjects" :key="project.slug" class="home__project">
+          <h3 class="home__project-title">
+            <NuxtLink class="home__project-link" :to="`/projets/${project.slug}`">
+              {{ project.title }}
+            </NuxtLink>
+          </h3>
+
+          <p class="home__project-year">{{ project.year }}</p>
+          <p class="home__project-problem">{{ project.problem }}</p>
+        </li>
+      </ol>
+
+      <p class="home__actions">
+        <NuxtLink class="home__action" to="/projets">Tous les projets</NuxtLink>
+      </p>
+    </section>
 
     <section class="home__section" aria-labelledby="reperes">
       <h2 id="reperes">Repères</h2>
@@ -107,6 +138,47 @@ const contact = siteNav.find((item) => item.to === '/contact')!
   margin-top: var(--space-2xl);
   padding-top: var(--space-m);
   border-top: var(--rule-strong);
+}
+
+.home__projects {
+  margin: var(--space-m) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home__project {
+  max-width: var(--measure);
+  padding-top: var(--space-s);
+  border-top: var(--rule);
+}
+
+.home__project + .home__project {
+  margin-top: var(--space-l);
+}
+
+.home__project-title {
+  margin: 0;
+  font-size: var(--step-2);
+}
+
+.home__project-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.home__project-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.home__project-year {
+  margin-top: var(--space-3xs);
+  color: var(--color-fg-muted);
+  font-size: var(--step--1);
+}
+
+.home__project-problem {
+  margin-top: var(--space-s);
 }
 
 .home__facts {
