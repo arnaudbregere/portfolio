@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { projects } from '~~/content/projects'
+import { pageSeoMeta } from '~/utils/page-seo'
 
 const route = useRoute()
 const { siteUrl } = useRuntimeConfig().public
@@ -15,10 +16,13 @@ if (!project) {
   })
 }
 
-useSeoMeta({
-  title: `${project.title} — Projet d’Arnaud Brégère`,
-  description: project.problem,
-})
+useSeoMeta(
+  pageSeoMeta({
+    title: `${project.title} — Projet d’Arnaud Brégère`,
+    description: project.problem,
+    type: 'article',
+  }),
+)
 
 useProjectJsonLd(project, siteUrl)
 </script>

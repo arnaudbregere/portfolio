@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { projects } from '~~/content/projects'
+import { pageSeoMeta } from '~/utils/page-seo'
 
-useSeoMeta({
-  title: 'Projets — Arnaud Brégère',
-  description:
-    'Projets d’Arnaud Brégère, développeur front-end senior : problème, solution et résultat mesuré pour chacun.',
-})
+useSeoMeta(
+  pageSeoMeta({
+    title: 'Projets — Arnaud Brégère',
+    description:
+      'Projets d’Arnaud Brégère, développeur front-end senior : problème, solution et résultat mesuré pour chacun.',
+  }),
+)
 </script>
 
 <template>

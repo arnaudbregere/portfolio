@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { cvFile, education, experiences, profile, skillGroups } from '~~/content/cv'
+import { pageSeoMeta } from '~/utils/page-seo'
 import { formatPeriod } from '~/utils/period'
 
-useSeoMeta({
-  title: 'À propos — Arnaud Brégère',
-  description:
-    'Parcours d’Arnaud Brégère, développeur front-end senior : six ans de Vue et Nuxt chez Figaro Classifieds, une formation en arts graphiques, et le CV en téléchargement.',
-})
+useSeoMeta(
+  pageSeoMeta({
+    title: 'À propos — Arnaud Brégère',
+    description:
+      'Parcours d’Arnaud Brégère, développeur front-end senior : six ans de Vue et Nuxt chez Figaro Classifieds, une formation en arts graphiques, et le CV en téléchargement.',
+  }),
+)
 
 const [standfirst, ...rest] = profile.intro
 

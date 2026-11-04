@@ -2,12 +2,15 @@
 import { cvFile, experiences, profile } from '~~/content/cv'
 import { siteNav } from '~~/content/nav'
 import { projects } from '~~/content/projects'
+import { pageSeoMeta } from '~/utils/page-seo'
 
-useSeoMeta({
-  title: 'Arnaud Brégère — Développeur front-end senior',
-  description:
-    'Développeur front-end senior, Vue 3 et Nuxt, six ans chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV et contact.',
-})
+useSeoMeta(
+  pageSeoMeta({
+    title: 'Arnaud Brégère — Développeur front-end senior',
+    description:
+      'Développeur front-end senior, Vue 3 et Nuxt, six ans chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV et contact.',
+  }),
+)
 
 /**
  * L'ancienneté se calcule, elle ne se recopie pas : une année écrite en dur

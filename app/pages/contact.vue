@@ -1,9 +1,13 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Contact — Arnaud Brégère',
-  description:
-    'Écrire à Arnaud Brégère, développeur front-end Vue 3 / Nuxt, pour un poste de lead ou de senior front-end.',
-})
+import { pageSeoMeta } from '~/utils/page-seo'
+
+useSeoMeta(
+  pageSeoMeta({
+    title: 'Contact — Arnaud Brégère',
+    description:
+      'Écrire à Arnaud Brégère, développeur front-end Vue 3 / Nuxt, pour un poste de lead ou de senior front-end.',
+  }),
+)
 </script>
 
 <template>
