@@ -316,11 +316,25 @@ Cinq conditions, mesurées sur `/contact` dans Chrome 157 :
 Sous `prefers-reduced-motion: reduce`, le composable ne fait rien : masquer en
 attendant un défilement serait un mouvement de plus, pas un de moins.
 
-Le mouvement vit dans le `<style scoped>` de la page qui l'emploie. À la
-troisième page qui le reprendra, il passera dans un `app/styles/_motion.scss` :
-un `@keyframes` partagé par trois composants est le seul cas où `frontend.md`
-autorise un fichier global, parce qu'il ne peut pas être scopé. Deux copies ne
-justifient pas encore l'abstraction.
+**Cette figure est celle du site, pas celle d'une page.** Décision d'Arnaud du
+05/11/2026 : `/contact` a servi de terrain d'essai, et `/`, `/projets`,
+`/projets/[slug]` et `/a-propos` reprendront la **même** entrée — mêmes
+durées, même pas de 90 ms, même répartition entre ce qui se lit sans défiler
+et ce qui attend son arrivée. Une page qui s'anime autrement qu'une autre se
+remarque, et ce qui se remarque dans une pièce de candidature doit être le
+travail, pas le décor.
+
+En conséquence, l'outillage est déjà commun : `useRevealCascade` et
+`revealPlan` ne connaissent rien de `/contact`, ils prennent des rubriques et
+rendent des délais. Une page les adopte en marquant ses rubriques
+`data-reveal-section` et ses lignes `data-reveal-item`.
+
+Reste à partager le `@keyframes`, aujourd'hui scopé dans `contact.vue`. À la
+**deuxième** page qui le reprendra, il passera dans un
+`app/styles/_motion.scss` avec les règles qui l'accompagnent : un `@keyframes`
+partagé ne peut pas être scopé, et c'est le seul cas où `frontend.md` autorise
+un fichier global. Ne pas l'extraire avant : une seule page ne dit pas encore
+ce qui, dans ces règles, appartient au site.
 
 ## 8. Organisation du code
 
