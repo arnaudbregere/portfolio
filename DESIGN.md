@@ -246,6 +246,82 @@ soulignement est une propriété du lien, pas de la page qui l'affiche. Tout lie
 de libellé passe par ce composant — interne comme sortant. Aucun mixin, aucune
 classe utilitaire : un seul système d'organisation, Atomic Design.
 
+**Une page peut entrer en deux mouvements.** Décision du 05/11/2026, prise sur
+`/contact` (issue #5).
+
+Le premier : les textes montent d'un pas en prenant leur opacité (`opacity`
+de 0 à 1, `translate: 0 var(--space-s)` à 0), en `--dur-slow`. Le second : le
+filet qui divise la page se tire de gauche à droite (`transform: scaleX(0)`
+à 1, `transform-origin: left`), en `--dur-slow` également. La page se construit
+depuis ses lignes, cohérente avec une maquette qui divise par des traits et
+jamais par des cartes.
+
+Les quatre temps s'enchaînent à **140 ms** d'écart — titre, nom, filet, puis
+chaque coordonnée : assez pour que l'œil suive le sens de lecture, trop peu
+pour faire attendre. Une première version tenait en `--dur-base` sur 0.5 rem
+avec 60 ms d'écart ; relue sur écran, elle passait inaperçue. Un mouvement qui
+ne se voit pas ne vaut pas son code : il se règle jusqu'à être lisible, ou il
+se retire.
+
+Trois contraintes tiennent cette figure :
+
+- **`opacity` et `transform` seules.** Ce sont les deux propriétés que le
+  navigateur compose sans recalculer la mise en page. Animer une hauteur, une
+  marge ou un `top` ferait saccader un mobile d'entrée de gamme.
+- **Le filet est un pseudo-élément, pas une bordure** : une bordure ne se met
+  pas à l'échelle.
+- **Les délais se remettent à zéro** sous `prefers-reduced-motion: reduce`. La
+  règle globale de `_reset.scss` écrase les *durées*, pas les *délais* : sans
+  cette remise à zéro, la page resterait vide le temps de la cascade. Même
+  parade que dans `NavOverlay`.
+
+**Une rubrique peut entrer à son arrivée dans la fenêtre.** Même décision,
+même page. Elle **joue** alors sa cascade — titre puis lignes, 90 ms d'écart,
+même courbe qu'au chargement. Le rythme appartient à la page et non à la
+vitesse de la molette, et remonter ne rejoue rien.
+
+Une chronologie de défilement (`animation-timeline: view()`) a été essayée
+d'abord et écartée : elle *pilote* l'opacité image par image depuis la position
+de défilement, donc l'entrée se joue à la vitesse du pouce, s'inverse quand on
+remonte, et demande une plage réglée à la main que la longueur de la page peut
+rendre injouable. Un `IntersectionObserver` déclenche au lieu de piloter, et se
+passe de la réserve Firefox.
+
+Cinq conditions, mesurées sur `/contact` dans Chrome 157 :
+
+- **Le classement porte sur la rubrique entière, jamais sur ses lignes.** Une
+  rubrique à cheval sur la ligne de flottaison aurait ses premières lignes dans
+  la cascade et les suivantes en attente ; l'observateur libérerait ces
+  dernières aussitôt, avec leur propre compte à rebours, et elles
+  apparaîtraient **avant** celles du dessus. Mesuré : `Contrat` partait à 0 ms
+  quand `Statut`, juste au-dessus, attendait 1060 ms.
+- **Ce qui tient dans la fenêtre au chargement n'a pas d'arrivée à attendre.**
+  La frontière dépend de la hauteur de la fenêtre et de la longueur de la page,
+  jamais du rang de la rubrique — **elle se mesure**. `useRevealCascade` la
+  mesure au premier rendu et répartit.
+- **Le rang court d'une rubrique à l'autre.** La cascade du chargement est une
+  seule phrase, pas une suite de départs qui se chevauchent ; une rubrique en
+  attente n'y réserve aucun rang.
+- **Le défaut est l'entrée au chargement, et le JavaScript ne fait que
+  retirer.** Dans ce sens, rien ne clignote — une ligne retirée est encore à
+  l'opacité 0 quand on la retire — et une page dont le JavaScript ne s'exécute
+  jamais garde une entrée complète. L'état d'attente ne porte **aucune**
+  animation : un état stable, et non une animation figée en son milieu.
+- **La mesure attend `document.fonts.ready`.** Prise plus tôt, elle lit une
+  mise en page sans sa police : mesuré sur `/contact`, une ligne à 1039 px
+  d'une fenêtre de 1163 px était classée hors champ parce que tout descendait
+  encore. Le retard est sans danger, le premier délai de la cascade étant de
+  700 ms.
+
+Sous `prefers-reduced-motion: reduce`, le composable ne fait rien : masquer en
+attendant un défilement serait un mouvement de plus, pas un de moins.
+
+Le mouvement vit dans le `<style scoped>` de la page qui l'emploie. À la
+troisième page qui le reprendra, il passera dans un `app/styles/_motion.scss` :
+un `@keyframes` partagé par trois composants est le seul cas où `frontend.md`
+autorise un fichier global, parce qu'il ne peut pas être scopé. Deux copies ne
+justifient pas encore l'abstraction.
+
 ## 8. Organisation du code
 
 **Un seul système : Atomic Design.** ITCSS a été abandonné le 26/10/2026 —
