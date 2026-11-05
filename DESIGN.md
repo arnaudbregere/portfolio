@@ -291,8 +291,16 @@ Trois conditions, sans lesquelles la figure ne se pose pas :
 - **`prefers-reduced-motion: no-preference` entoure la règle**, et non
   l'inverse : la neutralisation globale de `_reset.scss` écrase des durées, or
   une animation de défilement n'en a pas.
-- `animation-range: entry 10% entry 90%` — la rubrique finit son entrée avant
-  d'être lue, jamais pendant.
+- **`animation-range` se mesure en `cover`, jamais en `entry`.** La plage
+  `entry` dure la hauteur de l'élément : pour une ligne de 60 px, l'entrée se
+  jouait en moins d'un cran de molette et ne se voyait pas. `cover 0% cover
+  35%` la mesure sur la hauteur de la fenêtre, soit ~380 px de défilement.
+- **Ce qui tient dans la fenêtre au chargement n'a pas de défilement à
+  attendre.** La première rubrique prolonge donc la cascade de chargement, et
+  la chronologie de défilement ne commence qu'à la deuxième. Mesuré dans
+  Chrome 157 sur une fenêtre de 1101 px : les deux lignes de la première
+  rubrique sont à 647 px et 730 px, donc achevées avant le premier cran de
+  molette si on les lui confie.
 
 Le mouvement vit dans le `<style scoped>` de la page qui l'emploie. À la
 troisième page qui le reprendra, il passera dans un `app/styles/_motion.scss` :

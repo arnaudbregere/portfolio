@@ -148,7 +148,9 @@ useSeoMeta(
 
 .contact h1,
 .contact__name,
-.contact__list--lead .contact__entry {
+.contact__list--lead .contact__entry,
+.contact__section:first-of-type .contact__title,
+.contact__section:first-of-type .contact__entry {
   animation: contact-entry var(--dur-slow) var(--ease-out) backwards;
 }
 
@@ -162,6 +164,23 @@ useSeoMeta(
 
 .contact__list--lead .contact__entry:nth-child(2) {
   animation-delay: 560ms;
+}
+
+/* La première rubrique tient dans la fenêtre au chargement sur un écran de
+   bureau : mesuré à 1163 px de haut, ses deux lignes sont à 647 px et 730 px.
+   Une chronologie de défilement les donnerait donc achevées avant le premier
+   cran de molette. Elle prolonge la cascade plutôt que d'attendre un
+   défilement qui n'aura pas lieu. */
+.contact__section:first-of-type .contact__title {
+  animation-delay: 700ms;
+}
+
+.contact__section:first-of-type .contact__entry:nth-child(1) {
+  animation-delay: 840ms;
+}
+
+.contact__section:first-of-type .contact__entry:nth-child(2) {
+  animation-delay: 980ms;
 }
 
 @keyframes contact-entry {
@@ -207,11 +226,15 @@ useSeoMeta(
        souvent déjà dans la fenêtre au chargement, donc sa progression vaut
        100 % et rien ne bouge. Ligne à ligne, tout ce qui est sous la ligne de
        flottaison entre au défilement. */
-    .contact__title,
-    .contact__section .contact__entry {
+    .contact__section:not(:first-of-type) .contact__title,
+    .contact__section:not(:first-of-type) .contact__entry {
       animation: contact-entry var(--dur-slow) var(--ease-out) both;
       animation-timeline: view();
-      animation-range: entry 0% entry 60%;
+      /* `cover` et non `entry` : la plage `entry` dure la hauteur de
+         l'élément, soit ~60 px pour une ligne — l'animation se jouait en
+         moins d'un cran de molette. `cover` la mesure sur la hauteur de la
+         fenêtre, et 35 % en font ~380 px de défilement. */
+      animation-range: cover 0% cover 35%;
     }
   }
 }
