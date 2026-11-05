@@ -29,6 +29,7 @@ useSeoMeta(
       <div class="contact__entry">
         <dt class="contact__label">Téléphone</dt>
         <dd class="contact__value">
+          <Icon name="phone" />
           <a :href="telHref(profile.phone)">{{ profile.phone }}</a>
         </dd>
       </div>
@@ -36,6 +37,7 @@ useSeoMeta(
       <div class="contact__entry">
         <dt class="contact__label">E-mail</dt>
         <dd class="contact__value">
+          <Icon name="mail" />
           <a :href="`mailto:${profile.email}`">{{ profile.email }}</a>
         </dd>
       </div>
@@ -130,6 +132,9 @@ useSeoMeta(
 }
 
 .contact__list--lead .contact__value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
   font-size: var(--step-2);
 }
 
@@ -197,10 +202,16 @@ useSeoMeta(
    Firefox ne le sert pas encore à ce jour. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .contact__section {
+    /* Le titre **et chaque ligne** portent leur propre chronologie, et non la
+       rubrique entière : sur un écran de bureau, une rubrique entière tient
+       souvent déjà dans la fenêtre au chargement, donc sa progression vaut
+       100 % et rien ne bouge. Ligne à ligne, tout ce qui est sous la ligne de
+       flottaison entre au défilement. */
+    .contact__title,
+    .contact__section .contact__entry {
       animation: contact-entry var(--dur-slow) var(--ease-out) both;
       animation-timeline: view();
-      animation-range: entry 10% entry 90%;
+      animation-range: entry 0% entry 60%;
     }
   }
 }
