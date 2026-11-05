@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { projects } from '~~/content/projects'
+import { absoluteUrl, pageSeoMeta } from '~/utils/page-seo'
 
 const route = useRoute()
 const { siteUrl } = useRuntimeConfig().public
@@ -15,10 +16,15 @@ if (!project) {
   })
 }
 
-useSeoMeta({
-  title: `${project.title} — Projet d’Arnaud Brégère`,
-  description: project.problem,
-})
+useSeoMeta(
+  pageSeoMeta({
+    title: `${project.title} — Projet d’Arnaud Brégère`,
+    description: project.problem,
+    type: 'article',
+    image: project.ogImage ? absoluteUrl(project.ogImage, siteUrl) : undefined,
+    imageAlt: `${project.title}, projet d’Arnaud Brégère`,
+  }),
+)
 
 useProjectJsonLd(project, siteUrl)
 </script>

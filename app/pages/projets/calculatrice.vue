@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { projects } from '~~/content/projects'
+import { absoluteUrl, pageSeoMeta } from '~/utils/page-seo'
 
 /**
  * Fiche de la calculatrice, démo comprise. La route statique l'emporte sur
@@ -9,10 +10,15 @@ const { siteUrl } = useRuntimeConfig().public
 
 const project = projects.find((item) => item.slug === 'calculatrice')!
 
-useSeoMeta({
-  title: `${project.title} — Projet d’Arnaud Brégère`,
-  description: project.problem,
-})
+useSeoMeta(
+  pageSeoMeta({
+    title: `${project.title} — Projet d’Arnaud Brégère`,
+    description: project.problem,
+    type: 'article',
+    image: project.ogImage ? absoluteUrl(project.ogImage, siteUrl) : undefined,
+    imageAlt: `${project.title}, projet d’Arnaud Brégère`,
+  }),
+)
 
 useProjectJsonLd(project, siteUrl)
 </script>

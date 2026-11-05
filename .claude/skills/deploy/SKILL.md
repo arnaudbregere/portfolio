@@ -37,7 +37,7 @@ Les quatre doivent passer. En plus :
 ## Après le déploiement
 
 - [ ] La page d'accueil répond en 200.
-- [ ] Les cinq rubriques sont accessibles et le logo ramène à l'accueil.
+- [ ] Les quatre rubriques sont accessibles et le logo ramène à l'accueil.
 - [ ] Le téléchargement du CV fonctionne.
 - [ ] La bascule de thème persiste après rechargement.
 - [ ] `/sitemap.xml` et `/robots.txt` répondent.

@@ -12,6 +12,7 @@ import type { Project } from './types'
 export const projects: readonly Project[] = [
   {
     slug: 'japan-manga-explorer',
+    ogImage: '/og/japan-manga-explorer.png',
     title: 'Japan Manga Explorer',
     year: '2026',
     role: 'Conception et développement, seul',
@@ -46,6 +47,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: 'agenda-app-event',
+    ogImage: '/og/agenda-app-event.png',
     title: 'Agenda',
     year: '2026',
     role: 'Conception et développement, seul',

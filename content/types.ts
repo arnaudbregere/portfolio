@@ -80,6 +80,15 @@ export type Project = {
    * employeur : `PRODUCT.md` interdit la capture d'une interface client.
    */
   images?: readonly ProjectImage[]
+  /**
+   * Image de partage de la fiche, 1200 × 630, servie depuis `public/og/`.
+   * Absente, la fiche retombe sur l'image du site.
+   *
+   * Ce n'est pas une capture de `images` : les captures sont en WebP, que
+   * LinkedIn ne restitue pas, et leur rapport n'est pas celui qu'attendent les
+   * aperçus de lien. `scripts/og-card.js` compose l'image au bon format.
+   */
+  ogImage?: string
   /** Mis en avant sur l'accueil. */
   featured: boolean
 }
