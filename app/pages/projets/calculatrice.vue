@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { projects } from '~~/content/projects'
-import { pageSeoMeta } from '~/utils/page-seo'
+import { absoluteUrl, pageSeoMeta } from '~/utils/page-seo'
 
 /**
  * Fiche de la calculatrice, démo comprise. La route statique l'emporte sur
@@ -15,6 +15,8 @@ useSeoMeta(
     title: `${project.title} — Projet d’Arnaud Brégère`,
     description: project.problem,
     type: 'article',
+    image: project.ogImage ? absoluteUrl(project.ogImage, siteUrl) : undefined,
+    imageAlt: `${project.title}, projet d’Arnaud Brégère`,
   }),
 )
 

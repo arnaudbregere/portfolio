@@ -8,7 +8,21 @@ export type PageSeo = {
    * qu'elle décrit une réalisation datée et non le site.
    */
   type?: 'website' | 'article'
+  /**
+   * Image de partage propre à la page, en URL absolue. Absente, la page garde
+   * celle du site, posée par `app.vue`.
+   */
+  image?: string
+  /** Texte alternatif de cette image. Obligatoire dès qu'une image est posée. */
+  imageAlt?: string
 }
+
+/**
+ * Une URL absolue, seule forme qu'acceptent les aperçus de lien : un chemin
+ * relatif n'a pas d'origine pour le robot de LinkedIn ou d'une messagerie.
+ */
+export const absoluteUrl = (path: string, siteUrl: string) =>
+  `${siteUrl.replace(/\/$/, '')}${path}`
 
 /**
  * Les métadonnées d'une page, partage compris.
@@ -22,10 +36,19 @@ export type PageSeo = {
  * `twitter:title` et `twitter:description` ne sont pas posées : la carte
  * retombe sur les balises Open Graph quand elles manquent.
  */
-export const pageSeoMeta = ({ title, description, type = 'website' }: PageSeo) => ({
+export const pageSeoMeta = ({
+  title,
+  description,
+  type = 'website',
+  image,
+  imageAlt,
+}: PageSeo) => ({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
   ogType: type,
+  // L'image et son alternative vont ensemble : une carte de projet décrite
+  // comme celle du site annoncerait la mauvaise image au lecteur d'écran.
+  ...(image ? { ogImage: image, ogImageAlt: imageAlt } : {}),
 })

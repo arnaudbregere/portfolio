@@ -22,8 +22,12 @@ Le contenu éditorial du site vit dans `content/`, en **TypeScript typé**.
   la page vaut mieux qu'une capture.
 - **`cover` a été retiré de cette liste le 04/11/2026** (issue #16). Le champ
   n'a jamais existé, ni dans le type ni dans une fiche : la règle décrivait un
-  modèle abandonné avant P4 au profit de `images`. Son seul usage encore
-  défendable serait une image Open Graph par projet, que traite l'issue #17 :
-  le champ naîtra avec elle s'il s'avère nécessaire, pas avant.
+  modèle abandonné avant P4 au profit de `images`. Il n'est pas né : l'issue
+  #17 a livré `ogImage` à sa place le 04/11/2026.
+- **`ogImage` porte l'image de partage d'une fiche**, 1200 × 630, servie depuis
+  `public/og/`. Ce n'est pas une capture de `images` : les captures sont en
+  WebP, que LinkedIn ne restitue pas, et leur rapport n'est pas celui d'une
+  grande carte. `scripts/og-card.js` compose l'image, capture comprise. Le
+  champ est facultatif : sans lui, la fiche retombe sur l'image du site.
 - Les fichiers de `content/` ne contiennent aucune logique : uniquement des
   constantes typées exportées.

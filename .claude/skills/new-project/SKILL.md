@@ -35,7 +35,22 @@ capterait la route `/projets`, redirigée dès lors vers `/projets/`. Les servir
 avec `width`, `height` et `loading` explicites. Viser moins de 200 Ko par
 image après conversion.
 
-## 4. Vérifier
+## 4. Image de partage
+
+Composer la carte 1200 × 630 de la fiche, puis renseigner `ogImage` dans
+`content/projects.ts` :
+
+```bash
+node scripts/og-card.js --out <slug> --figure 02 \
+  --title "Titre|sur deux lignes" --note "Le résultat mesuré" \
+  --shot public/visuels/<slug>/<capture>.webp
+```
+
+Sans elle, la fiche partagée reprend l'image du site. Ne pas pointer `ogImage`
+vers une capture de `images` : elles sont en WebP, que LinkedIn ne restitue
+pas.
+
+## 5. Vérifier
 
 ```bash
 npm run lint && npm run typecheck && npm test && npm run build
@@ -47,5 +62,6 @@ npm run lint && npm run typecheck && npm test && npm run build
 - [ ] Données structurées JSON-LD `CreativeWork` présentes.
 - [ ] `title` et `description` propres à la fiche.
 - [ ] Le test de rendu de la fiche passe.
+- [ ] `og:title`, `og:description` et `og:image` sont servies par la fiche.
 
 Puis lancer l'agent `a11y-seo-auditor` sur la nouvelle page avant la PR.

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { profile } from '~~/content/cv'
 import { profileLinks } from '~~/content/nav'
+import { absoluteUrl } from '~/utils/page-seo'
 
 const route = useRoute()
 const { siteUrl } = useRuntimeConfig().public
@@ -34,12 +35,25 @@ useHead({
   script: [{ type: 'application/ld+json', innerHTML: personJsonLd }],
 })
 
+/**
+ * Image de partage du site, reprise par toute page qui n'en pose pas une.
+ * Une fiche projet la remplace par la sienne (`content/projects.ts`).
+ */
+const shareImage = computed(() => absoluteUrl('/og/arnaud-bregere.png', siteUrl))
+
 useSeoMeta({
   ogType: 'website',
   ogUrl: canonical,
   ogLocale: 'fr_FR',
   ogSiteName: profile.name,
-  twitterCard: 'summary',
+  ogImage: shareImage,
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
+  ogImageType: 'image/png',
+  ogImageAlt: `${profile.name}, ${profile.role.toLowerCase()}`,
+  // Toutes les images de partage font 1200 × 630 : la grande carte est leur
+  // format, la vignette carrée les rognerait.
+  twitterCard: 'summary_large_image',
 })
 </script>
 
