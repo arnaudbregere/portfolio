@@ -9,7 +9,9 @@
  *
  * L'adresse postale du PDF ne figure pas ici : une page publique n'a pas à
  * porter le domicile de qui que ce soit. Le téléphone y est, par décision du
- * 03/11/2026, et seulement sur `/a-propos`.
+ * 03/11/2026. Il paraissait alors seulement sur `/a-propos` ; depuis le
+ * 05/11/2026 (issue #5) il paraît aussi sur `/contact`, qui a remplacé son
+ * formulaire par les coordonnées en clair.
  */
 
 import type { CvFile, Education, Experience, Profile, SkillGroup } from './types'

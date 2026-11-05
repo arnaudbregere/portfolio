@@ -246,6 +246,34 @@ soulignement est une propriété du lien, pas de la page qui l'affiche. Tout lie
 de libellé passe par ce composant — interne comme sortant. Aucun mixin, aucune
 classe utilitaire : un seul système d'organisation, Atomic Design.
 
+**Une page peut entrer en deux mouvements.** Décision du 05/11/2026, prise sur
+`/contact` (issue #5).
+
+Le premier : les textes montent d'un demi-pas en prenant leur opacité
+(`opacity` de 0 à 1, `translate: 0 0.5rem` à 0), en `--dur-base`, décalés de
+60 ms l'un sur l'autre. Le second : le filet qui divise la page se tire de
+gauche à droite (`transform: scaleX(0)` à 1, `transform-origin: left`) en
+`--dur-slow`. La page se construit depuis ses lignes, cohérente avec une
+maquette qui divise par des traits et jamais par des cartes.
+
+Trois contraintes tiennent cette figure :
+
+- **`opacity` et `transform` seules.** Ce sont les deux propriétés que le
+  navigateur compose sans recalculer la mise en page. Animer une hauteur, une
+  marge ou un `top` ferait saccader un mobile d'entrée de gamme.
+- **Le filet est un pseudo-élément, pas une bordure** : une bordure ne se met
+  pas à l'échelle.
+- **Les délais se remettent à zéro** sous `prefers-reduced-motion: reduce`. La
+  règle globale de `_reset.scss` écrase les *durées*, pas les *délais* : sans
+  cette remise à zéro, la page resterait vide le temps de la cascade. Même
+  parade que dans `NavOverlay`.
+
+Le mouvement vit dans le `<style scoped>` de la page qui l'emploie. À la
+troisième page qui le reprendra, il passera dans un `app/styles/_motion.scss` :
+un `@keyframes` partagé par trois composants est le seul cas où `frontend.md`
+autorise un fichier global, parce qu'il ne peut pas être scopé. Deux copies ne
+justifient pas encore l'abstraction.
+
 ## 8. Organisation du code
 
 **Un seul système : Atomic Design.** ITCSS a été abandonné le 26/10/2026 —

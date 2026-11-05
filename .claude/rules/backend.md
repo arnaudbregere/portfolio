@@ -3,9 +3,13 @@
 Le site est prérendu par défaut. Une route serveur n'existe que si elle est
 indispensable ; aucune n'est créée « au cas où ». Pas de base de données.
 
-Au moment de la rédaction de ces règles, le formulaire de contact n'est pas
-encore tranché (fournisseur d'envoi reporté). `server/` est donc vide. Ces
-règles s'appliquent dès la première route.
+**`server/` est vide, et le reste.** Le formulaire de contact était la seule
+route prévue ; il est abandonné le 05/11/2026 (issue #5) au profit des liens
+`tel:` et `mailto:` de `/contact`. Aucun fournisseur d'envoi, aucune limitation
+de débit, aucun secret à garder.
+
+Les règles ci-dessous ne sont donc pas appliquées aujourd'hui. Elles tiennent
+pour la première route qui naîtra, si une fonctionnalité en demande une.
 
 ## Conventions
 

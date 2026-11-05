@@ -7,12 +7,12 @@ Le site doit convaincre deux lecteurs en moins de deux minutes, sur mobile.
 
 | Lecteur | Ce qu'il cherche | Ce qu'on lui donne |
 |---|---|---|
-| Recruteur / RH | profil, séniorité, disponibilité, moyen de contact | accueil synthétique, CV téléchargeable, formulaire |
+| Recruteur / RH | profil, séniorité, disponibilité, moyen de contact | accueil synthétique, CV téléchargeable, téléphone et adresse e-mail en clair |
 | Lead tech / CTO | qualité de code, méthode, réalisations | fiches projets problème → solution → résultat, code public, tests et CI visibles |
 
 ## Critères de succès
 
-- CV téléchargé ou formulaire de contact envoyé.
+- CV téléchargé, ou téléphone ou adresse e-mail activés depuis `/contact`.
 - Lighthouse ≥ 95 sur les quatre catégories, en mobile.
 - Zéro violation axe de niveau critique ou sérieux sur chaque page.
 - Première page utile en moins de 2 s sur connexion 4G.
@@ -26,7 +26,7 @@ Le site doit convaincre deux lecteurs en moins de deux minutes, sur mobile.
 | `/projets/[slug]` | fiche projet détaillée | structure imposée : contexte, problème, solution, résultat, stack, liens |
 | `/projets/calculatrice` | fiche **et** démo jouable dans la page | décision du 03/11/2026 : une démo vaut mieux qu'une capture pour un exercice de base |
 | `/a-propos` | texte de présentation, parcours, compétences | prose lisible, pas de barres de pourcentage |
-| `/contact` | formulaire | envoie un message à arnaud.bregere@gmail.com |
+| `/contact` | nom, téléphone et adresse e-mail | **aucun formulaire** : décision du 05/11/2026 (issue #5) |
 Les projets mis en avant sont **deux** et non trois : décision du 04/11/2026
 (issue #15). La Calculatrice est un exercice de base assumé — la hisser au rang
 de Japan Manga Explorer et d'Agenda affaiblirait la première vue, qui doit
@@ -92,8 +92,11 @@ Référence : **RGAA 4.1 / WCAG 2.1 niveau AA**. Critères opposables :
 
 ## Données personnelles
 
-Le formulaire de contact ne collecte que le nom, l'adresse e-mail et le message,
-avec consentement explicite. Aucun cookie de mesure d'audience, donc pas de
+**Le site ne collecte rien.** Le formulaire de contact est abandonné le
+05/11/2026 (issue #5) : il demandait une route serveur, un fournisseur d'envoi,
+une limitation de débit et un piège à robots, pour faire ce qu'un `mailto:`
+fait déjà. Sans formulaire, il n'y a aucune donnée de visiteur à recevoir, à
+stocker ni à justifier. Aucun cookie de mesure d'audience non plus, donc pas de
 bandeau.
 
 L'adresse e-mail paraît en clair sur `/`, sur `/a-propos` et dans le JSON-LD
@@ -101,5 +104,10 @@ L'adresse e-mail paraît en clair sur `/`, sur `/a-propos` et dans le JSON-LD
 interdisait toute adresse en clair dans le DOM : le site est une pièce de
 candidature, un recruteur doit pouvoir écrire en un clic sans remplir un
 formulaire, et une adresse structurée sert le référencement. Le risque de
-collecte automatisée est connu et accepté. Le formulaire de contact est une
-commodité, pas la seule voie.
+collecte automatisée est connu et accepté.
+
+Le **téléphone** paraît en clair sur `/a-propos` depuis le 03/11/2026, et sur
+`/contact` depuis le 05/11/2026. Sur mobile, `tel:` ouvre l'application
+téléphone avec le numéro prérempli : c'est le chemin le plus court entre un
+recruteur et un entretien. L'adresse postale, elle, ne paraît nulle part — une
+page publique n'a pas à porter le domicile de qui que ce soit.

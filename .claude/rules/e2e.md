@@ -11,12 +11,13 @@
   `getByLabel`), jamais par classe CSS. Un test qui ne trouve pas d'élément par
   son rôle révèle presque toujours un défaut d'accessibilité : corriger le
   composant plutôt que le sélecteur.
-- Aucun envoi réel : les routes serveur coûteuses sont interceptées via
-  `page.route()`.
-- Parcours couverts au minimum : navigation entre les cinq rubriques, menu en
-  surcouche au clavier (ouverture, `Échap`, restitution du focus), bascule de
-  thème persistée après rechargement, téléchargement du CV, formulaire de
-  contact en succès et en erreur de validation.
+- Parcours couverts au minimum : navigation entre les quatre rubriques, menu
+  en surcouche au clavier (ouverture, `Échap`, restitution du focus), bascule
+  de thème persistée après rechargement, téléchargement du CV, et les liens
+  `tel:` et `mailto:` de `/contact` présents avec le bon `href`.
+- **Aucun clic sur un lien `tel:` ni `mailto:`** : il passe la main à une
+  application du système, que Playwright ne contrôle pas. Seul l'attribut
+  `href` se vérifie.
 - Audit `@axe-core/playwright` sur chaque page, dans les deux thèmes. Aucune
   violation critique ou sérieuse tolérée.
 - Comme tout package du dépôt : `typescript` en devDependency, script
