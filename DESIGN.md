@@ -275,47 +275,46 @@ Trois contraintes tiennent cette figure :
   cette remise à zéro, la page resterait vide le temps de la cascade. Même
   parade que dans `NavOverlay`.
 
-**Une rubrique peut entrer au défilement.** Même décision, même page.
-`animation-timeline: view()` branche l'entrée sur la position de l'élément dans
-la fenêtre au lieu d'une horloge : le mouvement suit le pouce du lecteur, et
-aucune ligne de JavaScript n'écoute le défilement.
+**Une rubrique peut entrer à son arrivée dans la fenêtre.** Même décision,
+même page. Elle **joue** alors sa cascade — titre puis lignes, 90 ms d'écart,
+même courbe qu'au chargement. Le rythme appartient à la page et non à la
+vitesse de la molette, et remonter ne rejoue rien.
 
-Trois conditions, sans lesquelles la figure ne se pose pas :
+Une chronologie de défilement (`animation-timeline: view()`) a été essayée
+d'abord et écartée : elle *pilote* l'opacité image par image depuis la position
+de défilement, donc l'entrée se joue à la vitesse du pouce, s'inverse quand on
+remonte, et demande une plage réglée à la main que la longueur de la page peut
+rendre injouable. Un `IntersectionObserver` déclenche au lieu de piloter, et se
+passe de la réserve Firefox.
 
-- **Tout vit sous `@supports (animation-timeline: view())`**, et le contenu est
-  *visible par défaut*. Un navigateur qui ignore la propriété ignore la
-  déclaration entière et sert la page en clair. Chrome et Edge la servent
-  depuis la 115, Safari depuis la 26 ; Firefox ne la sert pas encore au
-  05/11/2026. Une rubrique invisible chez un lecteur sur cinq n'est pas une
-  animation, c'est une panne.
-- **`prefers-reduced-motion: no-preference` entoure la règle**, et non
-  l'inverse : la neutralisation globale de `_reset.scss` écrase des durées, or
-  une animation de défilement n'en a pas.
-- **`animation-range` se mesure en `cover`, jamais en `entry`.** La plage
-  `entry` dure la hauteur de l'élément : pour une ligne de 60 px, l'entrée se
-  jouait en moins d'un cran de molette et ne se voyait pas. `cover 0% cover
-  35%` la mesure sur la hauteur de la fenêtre, soit ~380 px de défilement.
-- **Ce qui tient dans la fenêtre au chargement n'a pas de défilement à
-  attendre.** Un élément déjà lu a une progression non nulle avant le premier
-  cran de molette : sa chronologie de défilement ne jouera rien. La frontière
-  dépend de la hauteur de la fenêtre et de la longueur de la page, jamais du
-  rang de l'élément — **elle se mesure**. `useRevealCascade` la mesure au
-  premier rendu et répartit : au-dessus de la ligne de flottaison, l'élément
-  prend son tour dans la cascade de chargement ; en dessous, il prend la
-  chronologie de défilement.
+Cinq conditions, mesurées sur `/contact` dans Chrome 157 :
+
+- **Le classement porte sur la rubrique entière, jamais sur ses lignes.** Une
+  rubrique à cheval sur la ligne de flottaison aurait ses premières lignes dans
+  la cascade et les suivantes en attente ; l'observateur libérerait ces
+  dernières aussitôt, avec leur propre compte à rebours, et elles
+  apparaîtraient **avant** celles du dessus. Mesuré : `Contrat` partait à 0 ms
+  quand `Statut`, juste au-dessus, attendait 1060 ms.
+- **Ce qui tient dans la fenêtre au chargement n'a pas d'arrivée à attendre.**
+  La frontière dépend de la hauteur de la fenêtre et de la longueur de la page,
+  jamais du rang de la rubrique — **elle se mesure**. `useRevealCascade` la
+  mesure au premier rendu et répartit.
+- **Le rang court d'une rubrique à l'autre.** La cascade du chargement est une
+  seule phrase, pas une suite de départs qui se chevauchent ; une rubrique en
+  attente n'y réserve aucun rang.
 - **Le défaut est l'entrée au chargement, et le JavaScript ne fait que
-  retirer.** Dans ce sens, rien ne clignote — un élément retiré est encore à
-  l'opacité 0 quand on le retire — et une page dont le JavaScript ne s'exécute
-  jamais garde une entrée complète.
+  retirer.** Dans ce sens, rien ne clignote — une ligne retirée est encore à
+  l'opacité 0 quand on la retire — et une page dont le JavaScript ne s'exécute
+  jamais garde une entrée complète. L'état d'attente ne porte **aucune**
+  animation : un état stable, et non une animation figée en son milieu.
 - **La mesure attend `document.fonts.ready`.** Prise plus tôt, elle lit une
-  mise en page sans sa police : mesuré sur `/contact`, une ligne à 1040 px
+  mise en page sans sa police : mesuré sur `/contact`, une ligne à 1039 px
   d'une fenêtre de 1163 px était classée hors champ parce que tout descendait
   encore. Le retard est sans danger, le premier délai de la cascade étant de
   700 ms.
-- **La plage doit se refermer avant que le défilement ne bute.** La dernière
-  ligne de la page finit son entrée à 843 px sur les 932 disponibles. Une
-  plage plus large la laisserait voilée en bas de page, ce qu'aucun visiteur
-  ne peut corriger.
+
+Sous `prefers-reduced-motion: reduce`, le composable ne fait rien : masquer en
+attendant un défilement serait un mouvement de plus, pas un de moins.
 
 Le mouvement vit dans le `<style scoped>` de la page qui l'emploie. À la
 troisième page qui le reprendra, il passera dans un `app/styles/_motion.scss` :

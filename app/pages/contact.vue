@@ -50,7 +50,7 @@ useSeoMeta(
     <!-- Les profils viennent de `content/nav.ts`, qui les sert déjà au pied de
          page : une URL ne se recopie pas. `SiteLink` les ouvre dans un nouvel
          onglet et porte la flèche. -->
-    <section class="contact__section">
+    <section class="contact__section" data-reveal-section>
       <h2 class="contact__title" data-reveal-item>Présence en ligne</h2>
 
       <dl class="contact__list">
@@ -63,7 +63,12 @@ useSeoMeta(
       </dl>
     </section>
 
-    <section v-for="group in contactSections" :key="group.title" class="contact__section">
+    <section
+      v-for="group in contactSections"
+      :key="group.title"
+      class="contact__section"
+      data-reveal-section
+    >
       <h2 class="contact__title" data-reveal-item>{{ group.title }}</h2>
 
       <dl class="contact__list">
@@ -150,10 +155,18 @@ useSeoMeta(
    un mobile lent. Aucune information ne repose sur lui — `DESIGN.md`,
    § Mouvement. */
 
+/* Propriétés longues et non le raccourci `animation` : un `var()` dans le
+   raccourci met tous ses longhands en substitution différée — ils ressortent
+   vides de `cssRules`, `animation-timeline` compris, que le raccourci remet
+   à sa valeur initiale. Les écrire séparément garde chaque propriété lisible
+   et laisse la chronologie hors du jeu. */
 .contact h1,
 .contact__name,
 .contact__list--lead .contact__entry {
-  animation: contact-entry var(--dur-slow) var(--ease-out) backwards;
+  animation-name: contact-entry;
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: backwards;
 }
 
 /* Les rubriques entrent au chargement **par défaut**, chacune à son tour.
@@ -162,7 +175,10 @@ useSeoMeta(
    plus bas. Dans ce sens, rien ne clignote, et une page dont le JavaScript ne
    s'exécute jamais garde une entrée complète. */
 .contact__section [data-reveal-item] {
-  animation: contact-entry var(--dur-slow) var(--ease-out) backwards;
+  animation-name: contact-entry;
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: backwards;
   animation-delay: var(--reveal-delay, 700ms);
 }
 
@@ -205,37 +221,19 @@ useSeoMeta(
 }
 
 /* -- Entrée au défilement ------------------------------------------------
-   Ce qui est hors de la fenêtre au premier rendu entre quand le défilement
-   l'amène : `animation-timeline: view()` branche l'animation sur la position
-   de l'élément au lieu d'une horloge.
+   Une rubrique hors de la fenêtre au premier rendu attend son arrivée.
+   `useRevealCascade` lui pose `data-reveal="pending"`, qui ne porte **aucune**
+   animation : un état stable, et non une animation figée en son milieu.
+   Quand la rubrique entre, le composable retire l'attribut et la règle
+   ci-dessus s'applique enfin — la cascade part de son début, à son rythme,
+   indépendamment de la vitesse de la molette.
 
-   Deux replis, et la page reste entière si l'un ou l'autre manque. Sans
-   `animation-timeline` — Chrome et Edge le servent depuis la 115, Safari
-   depuis la 26, Firefox pas encore —, `@supports` écarte la règle et
-   l'élément garde la cascade de chargement. Sans JavaScript, l'attribut
-   `data-reveal` n'est jamais posé et la règle ne vise rien : même résultat. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* Ce que `useRevealCascade` a trouvé sous la ligne de flottaison : la
-       chronologie de temps cède la place à celle du défilement. La frontière
-       est mesurée, jamais devinée — un rang codé en dur devient faux dès que
-       la fenêtre change de hauteur.
-
-       `cover` et non `entry` : la plage `entry` dure la hauteur de l'élément,
-       soit ~60 px pour une ligne — l'entrée se jouait en moins d'un cran de
-       molette. `cover` la mesure sur la hauteur de la fenêtre.
-
-       25 % et pas davantage : la dernière ligne de la page doit finir son
-       entrée avant que le défilement ne bute. Mesurée ici, elle l'atteint à
-       843 px sur les 932 disponibles ; une plage plus large la laisserait
-       voilée en bas de page, sans recours pour le visiteur. */
-    .contact__section [data-reveal='scroll'] {
-      animation-delay: 0ms;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: cover 0% cover 25%;
-    }
-  }
+   Aucune réserve de navigateur ici : `IntersectionObserver` est servi partout.
+   Et sans JavaScript, l'attribut n'est jamais posé : tout entre au
+   chargement, la page reste entière. */
+.contact__section [data-reveal='pending'] {
+  animation-name: none;
+  opacity: 0;
 }
 
 /* La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
