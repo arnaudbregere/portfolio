@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { cvFile, education, experiences, profile, skillGroups } from '~~/content/cv'
+import { telHref } from '~/utils/contact'
 import { pageSeoMeta } from '~/utils/page-seo'
 import { formatPeriod } from '~/utils/period'
 
@@ -12,9 +13,6 @@ useSeoMeta(
 )
 
 const [standfirst, ...rest] = profile.intro
-
-/** `06 07 98 52 85` donne `tel:+33607985285` : la forme affichée reste lisible. */
-const telHref = `tel:+33${profile.phone.replace(/\s/g, '').slice(1)}`
 </script>
 
 <template>
@@ -94,7 +92,7 @@ const telHref = `tel:+33${profile.phone.replace(/\s/g, '').slice(1)}`
 
       <ul class="about__contact">
         <li><a :href="`mailto:${profile.email}`">{{ profile.email }}</a></li>
-        <li><a :href="telHref">{{ profile.phone }}</a></li>
+        <li><a :href="telHref(profile.phone)">{{ profile.phone }}</a></li>
         <li>{{ profile.location }}</li>
       </ul>
     </section>
