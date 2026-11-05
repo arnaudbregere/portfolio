@@ -112,3 +112,19 @@ export type CvFile = {
   /** Date de la version servie, en ISO. */
   updated: string
 }
+
+/**
+ * Un fait de la page Contact : ce qu'un recruteur vérifie avant d'écrire.
+ *
+ * `values` est un tableau et non une chaîne à virgules : une énumération est
+ * une liste, et le séparateur qui l'affiche appartient au composant.
+ */
+export type ContactFact = {
+  label: string
+  values: readonly string[]
+}
+
+export type ContactSection = {
+  title: string
+  facts: readonly ContactFact[]
+}

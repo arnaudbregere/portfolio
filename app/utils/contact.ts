@@ -15,3 +15,14 @@
  */
 export const telHref = (phone: string): string =>
   `tel:+33${phone.replace(/\s/g, '').replace(/^0/, '')}`
+
+/**
+ * `https://www.linkedin.com/in/arnaudbregere/` donne
+ * `linkedin.com/in/arnaudbregere`.
+ *
+ * L'adresse reste entière dans `content/nav.ts`, seule forme qu'un navigateur
+ * sait suivre ; ce qui s'affiche perd le protocole, le `www.` et la barre
+ * finale, qui n'apprennent rien au lecteur et allongent la ligne sur mobile.
+ */
+export const shortUrl = (url: string): string =>
+  url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')

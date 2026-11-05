@@ -26,7 +26,7 @@ Le site doit convaincre deux lecteurs en moins de deux minutes, sur mobile.
 | `/projets/[slug]` | fiche projet détaillée | structure imposée : contexte, problème, solution, résultat, stack, liens |
 | `/projets/calculatrice` | fiche **et** démo jouable dans la page | décision du 03/11/2026 : une démo vaut mieux qu'une capture pour un exercice de base |
 | `/a-propos` | texte de présentation, parcours, compétences | prose lisible, pas de barres de pourcentage |
-| `/contact` | nom, téléphone et adresse e-mail | **aucun formulaire** : décision du 05/11/2026 (issue #5) |
+| `/contact` | nom, téléphone, adresse e-mail, profils publics, disponibilité et poste recherché | **aucun formulaire** : décision du 05/11/2026 (issue #5) |
 Les projets mis en avant sont **deux** et non trois : décision du 04/11/2026
 (issue #15). La Calculatrice est un exercice de base assumé — la hisser au rang
 de Japan Manga Explorer et d'Agenda affaiblirait la première vue, qui doit
@@ -105,6 +105,11 @@ interdisait toute adresse en clair dans le DOM : le site est une pièce de
 candidature, un recruteur doit pouvoir écrire en un clic sans remplir un
 formulaire, et une adresse structurée sert le référencement. Le risque de
 collecte automatisée est connu et accepté.
+
+**Aucun délai de réponse n'est annoncé.** « Réponse sous 24 h », « disponible
+9h-18h » et « entretien sous 48 h » ont été écartés le 05/11/2026 : ce sont des
+engagements vérifiables, tenus par une seule personne, sur la page même qui
+doit prouver sa rigueur. Un recruteur qui constate l'écart retient l'écart.
 
 Le **téléphone** paraît en clair sur `/a-propos` depuis le 03/11/2026, et sur
 `/contact` depuis le 05/11/2026. Sur mobile, `tel:` ouvre l'application

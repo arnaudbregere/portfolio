@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { contactSections } from '~~/content/contact'
 import { profile } from '~~/content/cv'
-import { telHref } from '~/utils/contact'
+import { profileLinks } from '~~/content/nav'
+import { shortUrl, telHref } from '~/utils/contact'
 import { pageSeoMeta } from '~/utils/page-seo'
 
 useSeoMeta(
   pageSeoMeta({
     title: 'Contact — Arnaud Brégère',
     description:
-      'Joindre Arnaud Brégère, développeur front-end senior Vue 3 et Nuxt : téléphone et adresse e-mail.',
+      'Joindre Arnaud Brégère, développeur front-end senior Vue 3 et Nuxt : téléphone, adresse e-mail, disponibilité et poste recherché.',
   }),
 )
 </script>
@@ -23,7 +25,7 @@ useSeoMeta(
          naviguent pas, donc ne passent pas par `SiteLink`, qui ouvrirait un
          onglet vide. Le trait reste posé en permanence, comme sur la liste
          « Me joindre » de `/a-propos`. -->
-    <dl class="contact__list">
+    <dl class="contact__list contact__list--lead">
       <div class="contact__entry">
         <dt class="contact__label">Téléphone</dt>
         <dd class="contact__value">
@@ -38,6 +40,35 @@ useSeoMeta(
         </dd>
       </div>
     </dl>
+
+    <!-- Les profils viennent de `content/nav.ts`, qui les sert déjà au pied de
+         page : une URL ne se recopie pas. `SiteLink` les ouvre dans un nouvel
+         onglet et porte la flèche. -->
+    <section class="contact__section">
+      <h2 class="contact__title">Présence en ligne</h2>
+
+      <dl class="contact__list">
+        <div v-for="link in profileLinks" :key="link.to" class="contact__entry">
+          <dt class="contact__label">{{ link.label }}</dt>
+          <dd class="contact__value">
+            <SiteLink :href="link.to" rel="me">{{ shortUrl(link.to) }}</SiteLink>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section v-for="group in contactSections" :key="group.title" class="contact__section">
+      <h2 class="contact__title">{{ group.title }}</h2>
+
+      <dl class="contact__list">
+        <div v-for="fact in group.facts" :key="fact.label" class="contact__entry">
+          <dt class="contact__label">{{ fact.label }}</dt>
+          <!-- Le séparateur appartient au gabarit : le contenu porte une
+               liste, pas une chaîne à virgules. -->
+          <dd class="contact__value">{{ fact.values.join(' · ') }}</dd>
+        </div>
+      </dl>
+    </section>
   </article>
 </template>
 
@@ -52,13 +83,35 @@ useSeoMeta(
 
 /* Le filet est le bord haut de la liste : il lui faut de l'air sous le nom,
    sans quoi les deux se touchent. */
-.contact__list {
+.contact__list--lead {
   position: relative;
   margin: var(--space-m) 0 0;
   padding: var(--space-l) 0 0;
 }
 
+.contact__section {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-m);
+  border-top: var(--rule);
+}
+
+.contact__title {
+  font-size: var(--step-1);
+}
+
+.contact__list {
+  margin: 0;
+}
+
+.contact__section .contact__list {
+  margin-top: var(--space-m);
+}
+
 .contact__entry + .contact__entry {
+  margin-top: var(--space-m);
+}
+
+.contact__list--lead .contact__entry + .contact__entry {
   margin-top: var(--space-l);
 }
 
@@ -72,6 +125,11 @@ useSeoMeta(
 
 .contact__value {
   margin: var(--space-3xs) 0 0;
+  max-width: var(--measure);
+  font-size: var(--step-1);
+}
+
+.contact__list--lead .contact__value {
   font-size: var(--step-2);
 }
 
@@ -85,7 +143,7 @@ useSeoMeta(
 
 .contact h1,
 .contact__name,
-.contact__entry {
+.contact__list--lead .contact__entry {
   animation: contact-entry var(--dur-slow) var(--ease-out) backwards;
 }
 
@@ -93,11 +151,11 @@ useSeoMeta(
   animation-delay: 140ms;
 }
 
-.contact__entry:nth-child(1) {
+.contact__list--lead .contact__entry:nth-child(1) {
   animation-delay: 420ms;
 }
 
-.contact__entry:nth-child(2) {
+.contact__list--lead .contact__entry:nth-child(2) {
   animation-delay: 560ms;
 }
 
@@ -110,7 +168,7 @@ useSeoMeta(
 
 /* Le filet est un pseudo-élément et non une bordure : une bordure ne se met
    pas à l'échelle. `scaleX` part de la gauche, dans le sens de lecture. */
-.contact__list::before {
+.contact__list--lead::before {
   content: '';
   position: absolute;
   inset: 0 0 auto;
@@ -127,13 +185,33 @@ useSeoMeta(
   }
 }
 
+/* -- Entrée au défilement ------------------------------------------------
+   Les rubriques suivantes entrent quand elles arrivent dans la fenêtre, sans
+   une ligne de JavaScript : `animation-timeline: view()` branche l'animation
+   sur la position de l'élément au lieu d'une horloge.
+
+   Tout est sous `@supports` et le contenu est **visible par défaut** : un
+   navigateur qui ignore `animation-timeline` ignore aussi la déclaration
+   d'animation, et la page reste lisible. C'est la condition pour que l'effet
+   soit gratuit. Chrome et Edge le servent depuis la 115, Safari depuis la 26 ;
+   Firefox ne le sert pas encore à ce jour. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .contact__section {
+      animation: contact-entry var(--dur-slow) var(--ease-out) both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 90%;
+    }
+  }
+}
+
 /* La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
    cette remise à zéro, la page resterait vide le temps de la cascade. */
 @media (prefers-reduced-motion: reduce) {
   .contact h1,
   .contact__name,
   .contact__entry,
-  .contact__list::before {
+  .contact__list--lead::before {
     animation-delay: 0ms !important;
   }
 }

@@ -275,6 +275,25 @@ Trois contraintes tiennent cette figure :
   cette remise à zéro, la page resterait vide le temps de la cascade. Même
   parade que dans `NavOverlay`.
 
+**Une rubrique peut entrer au défilement.** Même décision, même page.
+`animation-timeline: view()` branche l'entrée sur la position de l'élément dans
+la fenêtre au lieu d'une horloge : le mouvement suit le pouce du lecteur, et
+aucune ligne de JavaScript n'écoute le défilement.
+
+Trois conditions, sans lesquelles la figure ne se pose pas :
+
+- **Tout vit sous `@supports (animation-timeline: view())`**, et le contenu est
+  *visible par défaut*. Un navigateur qui ignore la propriété ignore la
+  déclaration entière et sert la page en clair. Chrome et Edge la servent
+  depuis la 115, Safari depuis la 26 ; Firefox ne la sert pas encore au
+  05/11/2026. Une rubrique invisible chez un lecteur sur cinq n'est pas une
+  animation, c'est une panne.
+- **`prefers-reduced-motion: no-preference` entoure la règle**, et non
+  l'inverse : la neutralisation globale de `_reset.scss` écrase des durées, or
+  une animation de défilement n'en a pas.
+- `animation-range: entry 10% entry 90%` — la rubrique finit son entrée avant
+  d'être lue, jamais pendant.
+
 Le mouvement vit dans le `<style scoped>` de la page qui l'emploie. À la
 troisième page qui le reprendra, il passera dans un `app/styles/_motion.scss` :
 un `@keyframes` partagé par trois composants est le seul cas où `frontend.md`
