@@ -296,11 +296,17 @@ Trois conditions, sans lesquelles la figure ne se pose pas :
   jouait en moins d'un cran de molette et ne se voyait pas. `cover 0% cover
   35%` la mesure sur la hauteur de la fenêtre, soit ~380 px de défilement.
 - **Ce qui tient dans la fenêtre au chargement n'a pas de défilement à
-  attendre.** La première rubrique prolonge donc la cascade de chargement, et
-  la chronologie de défilement ne commence qu'à la deuxième. Mesuré dans
-  Chrome 157 sur une fenêtre de 1101 px : les deux lignes de la première
-  rubrique sont à 647 px et 730 px, donc achevées avant le premier cran de
-  molette si on les lui confie.
+  attendre**, et **une page courte n'a pas de course à offrir**. Les deux
+  contraintes se mesurent avant d'écrire la règle, pas après. Sur `/contact`,
+  dans Chrome 157 sur une fenêtre de 1163 px : la page fait 2095 px, soit
+  **932 px de défilement en tout**, et les deux premières rubriques sont à
+  602 px et 911 px — déjà lues. Trois rubriques qui demandent chacune ~400 px
+  de course n'y tiennent pas. Les deux premières prolongent donc la cascade de
+  chargement ; seule la dernière garde une chronologie de défilement.
+- **La plage doit se refermer avant que le défilement ne bute.** La dernière
+  ligne de la page finit son entrée à 843 px sur les 932 disponibles. Une
+  plage plus large la laisserait voilée en bas de page, ce qu'aucun visiteur
+  ne peut corriger.
 
 Le mouvement vit dans le `<style scoped>` de la page qui l'emploie. À la
 troisième page qui le reprendra, il passera dans un `app/styles/_motion.scss` :

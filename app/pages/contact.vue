@@ -149,8 +149,8 @@ useSeoMeta(
 .contact h1,
 .contact__name,
 .contact__list--lead .contact__entry,
-.contact__section:first-of-type .contact__title,
-.contact__section:first-of-type .contact__entry {
+.contact__section:nth-of-type(-n + 2) .contact__title,
+.contact__section:nth-of-type(-n + 2) .contact__entry {
   animation: contact-entry var(--dur-slow) var(--ease-out) backwards;
 }
 
@@ -166,21 +166,46 @@ useSeoMeta(
   animation-delay: 560ms;
 }
 
-/* La première rubrique tient dans la fenêtre au chargement sur un écran de
-   bureau : mesuré à 1163 px de haut, ses deux lignes sont à 647 px et 730 px.
-   Une chronologie de défilement les donnerait donc achevées avant le premier
-   cran de molette. Elle prolonge la cascade plutôt que d'attendre un
-   défilement qui n'aura pas lieu. */
-.contact__section:first-of-type .contact__title {
+/* Les deux premières rubriques tiennent dans la fenêtre au chargement, ou
+   presque : mesuré dans Chrome 157 sur 1163 px de haut, « Présence en ligne »
+   est à 602 px et « Disponibilité » à 911 px. Une chronologie de défilement
+   les donnerait achevées avant le premier cran de molette. Elles prolongent
+   donc la cascade.
+
+   S'y ajoute une contrainte de place : la page fait 2095 px pour 1163 px de
+   fenêtre, soit 932 px de défilement en tout. Trois rubriques qui demandent
+   chacune ~400 px de course n'y tiennent pas. La dernière garde le
+   défilement, les autres entrent au chargement. */
+.contact__section:nth-of-type(1) .contact__title {
   animation-delay: 700ms;
 }
 
-.contact__section:first-of-type .contact__entry:nth-child(1) {
-  animation-delay: 840ms;
+.contact__section:nth-of-type(1) .contact__entry:nth-child(1) {
+  animation-delay: 790ms;
 }
 
-.contact__section:first-of-type .contact__entry:nth-child(2) {
-  animation-delay: 980ms;
+.contact__section:nth-of-type(1) .contact__entry:nth-child(2) {
+  animation-delay: 880ms;
+}
+
+.contact__section:nth-of-type(2) .contact__title {
+  animation-delay: 970ms;
+}
+
+.contact__section:nth-of-type(2) .contact__entry:nth-child(1) {
+  animation-delay: 1060ms;
+}
+
+.contact__section:nth-of-type(2) .contact__entry:nth-child(2) {
+  animation-delay: 1150ms;
+}
+
+.contact__section:nth-of-type(2) .contact__entry:nth-child(3) {
+  animation-delay: 1240ms;
+}
+
+.contact__section:nth-of-type(2) .contact__entry:nth-child(4) {
+  animation-delay: 1330ms;
 }
 
 @keyframes contact-entry {
@@ -226,15 +251,20 @@ useSeoMeta(
        souvent déjà dans la fenêtre au chargement, donc sa progression vaut
        100 % et rien ne bouge. Ligne à ligne, tout ce qui est sous la ligne de
        flottaison entre au défilement. */
-    .contact__section:not(:first-of-type) .contact__title,
-    .contact__section:not(:first-of-type) .contact__entry {
+    .contact__section:nth-of-type(n + 3) .contact__title,
+    .contact__section:nth-of-type(n + 3) .contact__entry {
       animation: contact-entry var(--dur-slow) var(--ease-out) both;
       animation-timeline: view();
       /* `cover` et non `entry` : la plage `entry` dure la hauteur de
          l'élément, soit ~60 px pour une ligne — l'animation se jouait en
          moins d'un cran de molette. `cover` la mesure sur la hauteur de la
-         fenêtre, et 35 % en font ~380 px de défilement. */
-      animation-range: cover 0% cover 35%;
+         fenêtre, et 25 % en font ~310 px de défilement.
+
+         25 % et pas davantage : la dernière ligne de la page doit finir son
+         entrée avant que le défilement ne bute. Mesuré ici, elle l'atteint à
+         843 px sur les 932 px disponibles. Une plage plus large la laisserait
+         voilée en bas de page. */
+      animation-range: cover 0% cover 25%;
     }
   }
 }
@@ -244,6 +274,7 @@ useSeoMeta(
 @media (prefers-reduced-motion: reduce) {
   .contact h1,
   .contact__name,
+  .contact__title,
   .contact__entry,
   .contact__list--lead::before {
     animation-delay: 0ms !important;
