@@ -249,12 +249,19 @@ classe utilitaire : un seul système d'organisation, Atomic Design.
 **Une page peut entrer en deux mouvements.** Décision du 05/11/2026, prise sur
 `/contact` (issue #5).
 
-Le premier : les textes montent d'un demi-pas en prenant leur opacité
-(`opacity` de 0 à 1, `translate: 0 0.5rem` à 0), en `--dur-base`, décalés de
-60 ms l'un sur l'autre. Le second : le filet qui divise la page se tire de
-gauche à droite (`transform: scaleX(0)` à 1, `transform-origin: left`) en
-`--dur-slow`. La page se construit depuis ses lignes, cohérente avec une
-maquette qui divise par des traits et jamais par des cartes.
+Le premier : les textes montent d'un pas en prenant leur opacité (`opacity`
+de 0 à 1, `translate: 0 var(--space-s)` à 0), en `--dur-slow`. Le second : le
+filet qui divise la page se tire de gauche à droite (`transform: scaleX(0)`
+à 1, `transform-origin: left`), en `--dur-slow` également. La page se construit
+depuis ses lignes, cohérente avec une maquette qui divise par des traits et
+jamais par des cartes.
+
+Les quatre temps s'enchaînent à **140 ms** d'écart — titre, nom, filet, puis
+chaque coordonnée : assez pour que l'œil suive le sens de lecture, trop peu
+pour faire attendre. Une première version tenait en `--dur-base` sur 0.5 rem
+avec 60 ms d'écart ; relue sur écran, elle passait inaperçue. Un mouvement qui
+ne se voit pas ne vaut pas son code : il se règle jusqu'à être lisible, ou il
+se retire.
 
 Trois contraintes tiennent cette figure :
 

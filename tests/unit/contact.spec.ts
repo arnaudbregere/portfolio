@@ -25,6 +25,29 @@ describe('page Contact', () => {
     expect(page.get('.contact__name').text()).toBe(profile.name)
   })
 
+  it('nomme chaque coordonnée par un libellé', async () => {
+    const page = await mountSuspended(ContactPage)
+    const labels = page.findAll('.contact__label').map((node) => node.text())
+
+    expect(labels).toEqual(['Téléphone', 'E-mail'])
+  })
+
+  /**
+   * Le couple libellé / valeur est porté par une liste de définitions : le
+   * lecteur d'écran annonce « Téléphone, 06 07 98 52 85 » et non deux textes
+   * sans lien entre eux.
+   */
+  it('associe chaque libellé à sa valeur dans une liste de définitions', async () => {
+    const page = await mountSuspended(ContactPage)
+    const entries = page.findAll('dl .contact__entry')
+
+    expect(entries).toHaveLength(2)
+    expect(entries[0]!.get('dt').text()).toBe('Téléphone')
+    expect(entries[0]!.get('dd a').attributes('href')).toBe(telHref(profile.phone))
+    expect(entries[1]!.get('dt').text()).toBe('E-mail')
+    expect(entries[1]!.get('dd a').attributes('href')).toBe(`mailto:${profile.email}`)
+  })
+
   it('rend le téléphone activable, dans sa forme lisible', async () => {
     const page = await mountSuspended(ContactPage)
     const link = page.get('a[href^="tel:"]')
