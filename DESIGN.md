@@ -296,13 +296,22 @@ Trois conditions, sans lesquelles la figure ne se pose pas :
   jouait en moins d'un cran de molette et ne se voyait pas. `cover 0% cover
   35%` la mesure sur la hauteur de la fenêtre, soit ~380 px de défilement.
 - **Ce qui tient dans la fenêtre au chargement n'a pas de défilement à
-  attendre**, et **une page courte n'a pas de course à offrir**. Les deux
-  contraintes se mesurent avant d'écrire la règle, pas après. Sur `/contact`,
-  dans Chrome 157 sur une fenêtre de 1163 px : la page fait 2095 px, soit
-  **932 px de défilement en tout**, et les deux premières rubriques sont à
-  602 px et 911 px — déjà lues. Trois rubriques qui demandent chacune ~400 px
-  de course n'y tiennent pas. Les deux premières prolongent donc la cascade de
-  chargement ; seule la dernière garde une chronologie de défilement.
+  attendre.** Un élément déjà lu a une progression non nulle avant le premier
+  cran de molette : sa chronologie de défilement ne jouera rien. La frontière
+  dépend de la hauteur de la fenêtre et de la longueur de la page, jamais du
+  rang de l'élément — **elle se mesure**. `useRevealCascade` la mesure au
+  premier rendu et répartit : au-dessus de la ligne de flottaison, l'élément
+  prend son tour dans la cascade de chargement ; en dessous, il prend la
+  chronologie de défilement.
+- **Le défaut est l'entrée au chargement, et le JavaScript ne fait que
+  retirer.** Dans ce sens, rien ne clignote — un élément retiré est encore à
+  l'opacité 0 quand on le retire — et une page dont le JavaScript ne s'exécute
+  jamais garde une entrée complète.
+- **La mesure attend `document.fonts.ready`.** Prise plus tôt, elle lit une
+  mise en page sans sa police : mesuré sur `/contact`, une ligne à 1040 px
+  d'une fenêtre de 1163 px était classée hors champ parce que tout descendait
+  encore. Le retard est sans danger, le premier délai de la cascade étant de
+  700 ms.
 - **La plage doit se refermer avant que le défilement ne bute.** La dernière
   ligne de la page finit son entrée à 843 px sur les 932 disponibles. Une
   plage plus large la laisserait voilée en bas de page, ce qu'aucun visiteur

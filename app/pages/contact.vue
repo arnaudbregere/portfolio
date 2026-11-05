@@ -5,6 +5,10 @@ import { profileLinks } from '~~/content/nav'
 import { shortUrl, telHref } from '~/utils/contact'
 import { pageSeoMeta } from '~/utils/page-seo'
 
+const root = ref<HTMLElement | null>(null)
+
+useRevealCascade(root)
+
 useSeoMeta(
   pageSeoMeta({
     title: 'Contact — Arnaud Brégère',
@@ -15,7 +19,7 @@ useSeoMeta(
 </script>
 
 <template>
-  <article class="contact">
+  <article ref="root" class="contact">
     <h1>Contact</h1>
 
     <p class="contact__name">{{ profile.name }}</p>
@@ -47,10 +51,10 @@ useSeoMeta(
          page : une URL ne se recopie pas. `SiteLink` les ouvre dans un nouvel
          onglet et porte la flèche. -->
     <section class="contact__section">
-      <h2 class="contact__title">Présence en ligne</h2>
+      <h2 class="contact__title" data-reveal-item>Présence en ligne</h2>
 
       <dl class="contact__list">
-        <div v-for="link in profileLinks" :key="link.to" class="contact__entry">
+        <div v-for="link in profileLinks" :key="link.to" class="contact__entry" data-reveal-item>
           <dt class="contact__label">{{ link.label }}</dt>
           <dd class="contact__value">
             <SiteLink :href="link.to" rel="me">{{ shortUrl(link.to) }}</SiteLink>
@@ -60,10 +64,10 @@ useSeoMeta(
     </section>
 
     <section v-for="group in contactSections" :key="group.title" class="contact__section">
-      <h2 class="contact__title">{{ group.title }}</h2>
+      <h2 class="contact__title" data-reveal-item>{{ group.title }}</h2>
 
       <dl class="contact__list">
-        <div v-for="fact in group.facts" :key="fact.label" class="contact__entry">
+        <div v-for="fact in group.facts" :key="fact.label" class="contact__entry" data-reveal-item>
           <dt class="contact__label">{{ fact.label }}</dt>
           <!-- Le séparateur appartient au gabarit : le contenu porte une
                liste, pas une chaîne à virgules. -->
@@ -148,10 +152,18 @@ useSeoMeta(
 
 .contact h1,
 .contact__name,
-.contact__list--lead .contact__entry,
-.contact__section:nth-of-type(-n + 2) .contact__title,
-.contact__section:nth-of-type(-n + 2) .contact__entry {
+.contact__list--lead .contact__entry {
   animation: contact-entry var(--dur-slow) var(--ease-out) backwards;
+}
+
+/* Les rubriques entrent au chargement **par défaut**, chacune à son tour.
+   `useRevealCascade` mesure au premier rendu et pose `--reveal-delay` sur
+   celles qui sont lisibles sans défiler ; il retire les autres de la cascade
+   plus bas. Dans ce sens, rien ne clignote, et une page dont le JavaScript ne
+   s'exécute jamais garde une entrée complète. */
+.contact__section [data-reveal-item] {
+  animation: contact-entry var(--dur-slow) var(--ease-out) backwards;
+  animation-delay: var(--reveal-delay, 700ms);
 }
 
 .contact__name {
@@ -164,48 +176,6 @@ useSeoMeta(
 
 .contact__list--lead .contact__entry:nth-child(2) {
   animation-delay: 560ms;
-}
-
-/* Les deux premières rubriques tiennent dans la fenêtre au chargement, ou
-   presque : mesuré dans Chrome 157 sur 1163 px de haut, « Présence en ligne »
-   est à 602 px et « Disponibilité » à 911 px. Une chronologie de défilement
-   les donnerait achevées avant le premier cran de molette. Elles prolongent
-   donc la cascade.
-
-   S'y ajoute une contrainte de place : la page fait 2095 px pour 1163 px de
-   fenêtre, soit 932 px de défilement en tout. Trois rubriques qui demandent
-   chacune ~400 px de course n'y tiennent pas. La dernière garde le
-   défilement, les autres entrent au chargement. */
-.contact__section:nth-of-type(1) .contact__title {
-  animation-delay: 700ms;
-}
-
-.contact__section:nth-of-type(1) .contact__entry:nth-child(1) {
-  animation-delay: 790ms;
-}
-
-.contact__section:nth-of-type(1) .contact__entry:nth-child(2) {
-  animation-delay: 880ms;
-}
-
-.contact__section:nth-of-type(2) .contact__title {
-  animation-delay: 970ms;
-}
-
-.contact__section:nth-of-type(2) .contact__entry:nth-child(1) {
-  animation-delay: 1060ms;
-}
-
-.contact__section:nth-of-type(2) .contact__entry:nth-child(2) {
-  animation-delay: 1150ms;
-}
-
-.contact__section:nth-of-type(2) .contact__entry:nth-child(3) {
-  animation-delay: 1240ms;
-}
-
-.contact__section:nth-of-type(2) .contact__entry:nth-child(4) {
-  animation-delay: 1330ms;
 }
 
 @keyframes contact-entry {
@@ -235,35 +205,34 @@ useSeoMeta(
 }
 
 /* -- Entrée au défilement ------------------------------------------------
-   Les rubriques suivantes entrent quand elles arrivent dans la fenêtre, sans
-   une ligne de JavaScript : `animation-timeline: view()` branche l'animation
-   sur la position de l'élément au lieu d'une horloge.
+   Ce qui est hors de la fenêtre au premier rendu entre quand le défilement
+   l'amène : `animation-timeline: view()` branche l'animation sur la position
+   de l'élément au lieu d'une horloge.
 
-   Tout est sous `@supports` et le contenu est **visible par défaut** : un
-   navigateur qui ignore `animation-timeline` ignore aussi la déclaration
-   d'animation, et la page reste lisible. C'est la condition pour que l'effet
-   soit gratuit. Chrome et Edge le servent depuis la 115, Safari depuis la 26 ;
-   Firefox ne le sert pas encore à ce jour. */
+   Deux replis, et la page reste entière si l'un ou l'autre manque. Sans
+   `animation-timeline` — Chrome et Edge le servent depuis la 115, Safari
+   depuis la 26, Firefox pas encore —, `@supports` écarte la règle et
+   l'élément garde la cascade de chargement. Sans JavaScript, l'attribut
+   `data-reveal` n'est jamais posé et la règle ne vise rien : même résultat. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    /* Le titre **et chaque ligne** portent leur propre chronologie, et non la
-       rubrique entière : sur un écran de bureau, une rubrique entière tient
-       souvent déjà dans la fenêtre au chargement, donc sa progression vaut
-       100 % et rien ne bouge. Ligne à ligne, tout ce qui est sous la ligne de
-       flottaison entre au défilement. */
-    .contact__section:nth-of-type(n + 3) .contact__title,
-    .contact__section:nth-of-type(n + 3) .contact__entry {
-      animation: contact-entry var(--dur-slow) var(--ease-out) both;
-      animation-timeline: view();
-      /* `cover` et non `entry` : la plage `entry` dure la hauteur de
-         l'élément, soit ~60 px pour une ligne — l'animation se jouait en
-         moins d'un cran de molette. `cover` la mesure sur la hauteur de la
-         fenêtre, et 25 % en font ~310 px de défilement.
+    /* Ce que `useRevealCascade` a trouvé sous la ligne de flottaison : la
+       chronologie de temps cède la place à celle du défilement. La frontière
+       est mesurée, jamais devinée — un rang codé en dur devient faux dès que
+       la fenêtre change de hauteur.
 
-         25 % et pas davantage : la dernière ligne de la page doit finir son
-         entrée avant que le défilement ne bute. Mesuré ici, elle l'atteint à
-         843 px sur les 932 px disponibles. Une plage plus large la laisserait
-         voilée en bas de page. */
+       `cover` et non `entry` : la plage `entry` dure la hauteur de l'élément,
+       soit ~60 px pour une ligne — l'entrée se jouait en moins d'un cran de
+       molette. `cover` la mesure sur la hauteur de la fenêtre.
+
+       25 % et pas davantage : la dernière ligne de la page doit finir son
+       entrée avant que le défilement ne bute. Mesurée ici, elle l'atteint à
+       843 px sur les 932 disponibles ; une plage plus large la laisserait
+       voilée en bas de page, sans recours pour le visiteur. */
+    .contact__section [data-reveal='scroll'] {
+      animation-delay: 0ms;
+      animation-fill-mode: both;
+      animation-timeline: view();
       animation-range: cover 0% cover 25%;
     }
   }
