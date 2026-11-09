@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cvFile, experiences, profile } from '~~/content/cv'
+import { cvFile, profile } from '~~/content/cv'
 import { siteNav } from '~~/content/nav'
 import { projects } from '~~/content/projects'
 import { pageSeoMeta } from '~/utils/page-seo'
@@ -20,8 +20,6 @@ useSeoMeta(
  * L'ancienneté se calcule, elle ne se recopie pas : une année écrite en dur
  * devient fausse au premier janvier suivant.
  */
-const currentRole = experiences[0]!
-
 const firstFrontEndRole = '2019-10'
 const yearsOfFrontEnd = computed(() => {
   const start = new Date(`${firstFrontEndRole}-01T00:00:00Z`)
@@ -61,10 +59,8 @@ const family = rest.join(' ')
     </h1>
     <p class="home__tagline">{{ profile.tagline }}</p>
 
-    <p class="home__pitch">
-      {{ profile.role }}. {{ yearsOfFrontEnd }} ans de Vue et de Nuxt chez
-      {{ currentRole.company }}, sur
-      {{ currentRole.summary.toLocaleLowerCase('fr-FR') }}
+    <p v-for="paragraph in profile.pitch" :key="paragraph" class="home__pitch">
+      {{ paragraph }}
     </p>
 
     <p class="home__download">
@@ -103,6 +99,13 @@ const family = rest.join(' ')
       <h2 id="reperes" data-reveal-item>Repères</h2>
 
       <dl class="home__facts">
+        <!-- Le poste visé ouvre les repères depuis le 09/11/2026 : il était
+             dans le texte de présentation, que ce texte ne porte plus. C'est
+             un fait, il est à sa place parmi des faits. -->
+        <div class="home__fact" data-reveal-item>
+          <dt>Poste recherché</dt>
+          <dd>{{ profile.role }}</dd>
+        </div>
         <div class="home__fact" data-reveal-item>
           <dt>Expérience front-end</dt>
           <dd>{{ yearsOfFrontEnd }} ans</dd>
