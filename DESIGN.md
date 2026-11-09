@@ -298,12 +298,22 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   maquette à la taille maximale du titre, 89,76 px, mais `--step-6` descend à
   44,8 px en mobile, où -32 px feraient entrer le second mot dans le premier.
 
-  **Le prénom prend `--color-ink` et non `--color-logo-ink`.** Un titre est
-  du texte : il tient 4,5:1, et 3:1 au minimum à cette taille (WCAG 1.4.3).
-  Le rose de la marque donne 2,72:1 sur le papier clair, donc il échoue aux
-  deux seuils ; l'exemption des logotypes qui vaut pour le monogramme ne vaut
-  pas ici. `--color-ink` tient 6,3:1 en clair et 6,31:1 en sombre — où sa
-  valeur est précisément celle de la marque.
+  **Le prénom prend `--color-logo-ink`, et c'est un écart assumé.** Décision
+  d'Arnaud, prise sur la mesure : le prénom porte la couleur de la marque
+  dans les deux thèmes, comme le `a` du monogramme, parce que le titre est
+  l'écho du logo et qu'une marque ne change pas de couleur avec le fond.
+
+  Le coût est connu et chiffré. Un titre est du texte, donc WCAG 1.4.3 lui
+  demande 4,5:1, ou 3:1 à partir de 24 px en gras — ce titre fait 89,76 px.
+  `#ff5c72` donne **2,72:1** sur le papier clair : le mot « arnaud » échoue
+  au seuil en thème clair. En thème sombre il tient **6,31:1**.
+
+  L'exemption des logotypes ne couvre pas ce cas : elle vaut pour une image
+  de marque, pas pour le `h1` d'une page. Le mot reste lisible — c'est un
+  rose soutenu sur papier chaud, pas un gris sur gris — mais le critère n'est
+  pas tenu, et le nom est porté une seconde fois par le `h1` lui-même, dont
+  la seconde moitié est à `--color-fg`. `--color-ink` le ramènerait à 6,3:1
+  en clair, au prix d'un prénom plus sombre que la marque.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
