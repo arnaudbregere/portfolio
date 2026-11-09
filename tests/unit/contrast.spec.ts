@@ -139,6 +139,27 @@ describe('seuils WCAG des couples de tokens', () => {
     { fg: '--color-focus', bg: '--color-bg', min: 3, role: 'indicateur de focus' },
   ] as const
 
+  /**
+   * La couleur de marque du monogramme n'a pas de seuil à tenir : WCAG
+   * exempte les logotypes, et le monogramme est `aria-hidden` — le nom du
+   * lien est du texte. Elle est donc mesurée et non comparée à un plancher,
+   * pour qu'une retouche fasse re-mesurer au lieu de passer inaperçue.
+   */
+  for (const [theme, attendu] of [
+    ['light', 2.72],
+    ['dark', 6.31],
+  ] as const) {
+    it(`thème ${theme} : la couleur de marque mesure ${attendu}:1, sans seuil à tenir`, () => {
+      const colors = themes[theme]
+      const ratio = contrastRatio(
+        parseColor(colors['--color-logo-ink']!)!,
+        parseColor(colors['--color-bg']!)!,
+      )
+
+      expect(ratio).toBeCloseTo(attendu, 2)
+    })
+  }
+
   for (const theme of ['light', 'dark'] as const) {
     for (const { fg, bg, min, role } of couples) {
       it(`thème ${theme} : ${role} tient ${min}:1`, () => {

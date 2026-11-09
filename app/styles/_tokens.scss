@@ -16,6 +16,12 @@
   --color-line-strong: #8c857a;
   --color-ink: #b3122b;
   --color-ink-fg: #ffffff;
+
+  /* Couleur de marque du monogramme : la même dans les deux thèmes. Une
+     marque ne change pas de couleur avec le fond, et WCAG exempte les
+     logotypes de son plancher de contraste — `DESIGN.md` § 5. À ne pas
+     confondre avec `--color-ink`, qui sert du texte et bascule. */
+  --color-logo-ink: #ff5c72;
   /* Le focus n'ajoute aucune couleur : il reprend le texte courant. */
   --color-focus: var(--color-fg);
 
@@ -97,4 +103,5 @@
   --color-line-strong: #7a7369;
   --color-ink: #ff5c72;
   --color-ink-fg: #121110;
+  --color-logo-ink: #ff5c72;
 }

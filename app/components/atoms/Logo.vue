@@ -9,8 +9,8 @@
  * Les tracés sont écrits ici plutôt que chargés en fichier, comme ceux
  * d'`Icon` : un export Figma coûte une requête et un fichier par thème, alors
  * que les deux versions exportées ne différaient que par la couleur du `b`.
- * Ici le `b` prend `currentColor` et le `a` l'encre d'annotation du site, donc
- * un seul tracé sert les deux thèmes.
+ * Ici le `b` prend `currentColor` et le `a` la couleur de marque, qui ne
+ * bascule pas — donc un seul tracé sert les deux thèmes.
  *
  * Le `viewBox` est resserré sur la boîte des tracés, relevée au navigateur
  * par `getBBox` : 1.5 7.75 51.05 36.85. L'export Figma rendait un `0 0 62 54`
@@ -51,8 +51,8 @@
   height: 1em;
 }
 
-/* Le `b` prend l'encre courante, le `a` l'encre d'annotation. Les deux
-   thèmes sont donc servis par un seul tracé.
+/* Le `b` prend l'encre courante, le `a` la couleur de marque, fixe dans les
+   deux thèmes. Un seul tracé les sert donc tous les deux.
 
    La couleur passe par le style et non par un attribut `fill` : un `var()`
    dans un attribut de présentation n'est pas interprété partout. */
@@ -61,6 +61,6 @@
 }
 
 .a-logo__a {
-  fill: var(--color-ink);
+  fill: var(--color-logo-ink);
 }
 </style>
