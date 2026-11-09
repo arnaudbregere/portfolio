@@ -106,7 +106,7 @@ useSeoMeta(
    est scopable, et `frontend.md` ne sort du scope que ce qui ne peut pas y
    tenir. `DESIGN.md` reste la source de la décision. */
 .projects__title::before {
-  content: counter(project);
+  content: counter(project) '.';
   margin-right: var(--space-2xs);
   color: var(--color-fg-muted);
   font-size: var(--size-label);

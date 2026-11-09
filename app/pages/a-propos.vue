@@ -194,7 +194,7 @@ useRevealCascade(root)
 }
 
 .about__section h2::before {
-  content: counter(about-section);
+  content: counter(about-section) '.';
   margin-right: var(--space-2xs);
   color: var(--color-fg-muted);
   font-size: var(--size-label);
