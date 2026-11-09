@@ -60,6 +60,13 @@
   /* Les libellés en capitales ne sont pas fluides : 13px, comme la référence */
   --size-label: 0.8125rem;
 
+  /* Contrôles — une seule taille de bouton de libellé.
+     44px de haut : cible tactile RGAA 4.1. La largeur minimale tient « Menu »
+     et « Fermer » à la même place, pour que la surcouche ne décale pas le
+     bouton qui l'a ouverte. */
+  --control-min-height: 2.75rem;
+  --control-min-width: 6rem;
+
   /* Mise en page */
   --measure: 68ch;
   --page-gutter: var(--space-s);

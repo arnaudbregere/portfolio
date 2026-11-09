@@ -14,8 +14,8 @@ un fichier y entre.
 
 | Niveau | Définition | Exemples |
 |---|---|---|
-| `atoms/` | élément indivisible, sans dépendance à un autre composant du projet | `Button`, `Link`, `Icon`, `Input`, `Heading`, `ThemeToggle` |
-| `molecules/` | assemblage d'atomes avec une intention unique | `FormField`, `ProjectCard`, `NavItem`, `StatRow` |
+| `atoms/` | élément indivisible, sans dépendance à un autre composant du projet | `Button`, `Link`, `Icon`, `Input`, `Heading` |
+| `molecules/` | assemblage d'atomes avec une intention unique | `FormField`, `ProjectCard`, `NavItem`, `StatRow`, `ThemeToggle` |
 | `organisms/` | section autonome de page, assemble molécules et atomes | `SiteHeader`, `NavOverlay`, `ProjectGrid`, `ContactForm`, `SiteFooter` |
 | `templates/` | squelette de mise en page sans contenu réel | `PageTemplate` |
 | `pages/` | route Nuxt : fournit les données aux organismes | `index.vue`, `projets/[slug].vue` |

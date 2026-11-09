@@ -175,26 +175,55 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   visuellement, parce qu'un changement de contexte sans annonce désoriente au
   lecteur d'écran et que « page précédente » ne ramène pas en arrière dans un
   onglet neuf. Un lien de même origine que le site n'en porte pas.
+- **Un seul bouton de libellé, et une seule taille.** « Menu », « Fermer » et
+  la bascule de thème partagent l'atome `Button` : même hauteur
+  (`--control-min-height`), même largeur minimale (`--control-min-width`), même
+  filet, même typographie. Décision du 09/11/2026 (issue #34), prise sur trois
+  copies du même bloc de style qui avaient déjà divergé. La largeur minimale
+  tient « Menu » et « Fermer » à la même place, pour que la surcouche ne décale
+  pas le bouton qui l'a ouverte ; `white-space: nowrap` tient la hauteur, un
+  libellé passé sur deux lignes grandissant le bouton et désalignant ses
+  voisins. Les trois n'ont pas la **même** largeur : « Thème sombre » est le
+  double de « Menu », et l'imposer à tous ferait déborder l'en-tête mobile.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
 
 ## 6. Navigation
 
-**Le menu est plein écran à toutes les largeurs.** Aucune barre de liens ne
-s'affiche dans l'en-tête au-dessus d'un point de rupture. Trois raisons :
+**Deux formes de navigation, séparées par un point de rupture.** Décision
+d'Arnaud du 09/11/2026 (issue #34), qui renverse celle de P2 — « le menu est
+plein écran à toutes les largeurs ».
 
-- C'est la forme des deux références épinglées.
-- Le rang s'encode dans la taille du texte. Une barre horizontale impose quatre
-  libellés de même taille, donc une hiérarchie plate — l'inverse de la règle de
-  forme.
-- Une seule forme existe, donc une seule à dessiner, à tester et à maintenir
-  accessible.
+Sous **768px** (`respond-up(m)`), le menu est plein écran, ouvert par un
+déclencheur « Menu ». À partir de 768px, les quatre rubriques s'affichent en
+clair dans l'en-tête et le déclencheur disparaît.
 
-**Chaque rubrique porte son rang**, de `01` à `04`, en chiffres tabulaires et au
-corps des libellés. C'est la figure numérotée du contrat de direction : la
-hausse empruntée à la planche de brevet, qui reporte sur le numéro et sur
-l'encre la charge que le monde de référence fait porter à la photographie.
+Ce que la décision de P2 défendait, et ce qui lui est préféré :
+
+- « C'est la forme des deux références épinglées. » Elle le reste en mobile. En
+  desktop, un visiteur qui doit ouvrir une surcouche pour savoir ce que le site
+  contient paie un clic pour une information que la place permet de donner. Le
+  site est une pièce de candidature, lue le plus souvent sur un écran large.
+- « Une barre horizontale impose quatre libellés de même taille, donc une
+  hiérarchie plate. » Le rang reste encodé là où il porte : les chiffres `01`
+  à `04` restent dans la surcouche mobile et **n'entrent pas dans la barre**.
+  La barre est un index, pas une affiche.
+- « Une seule forme à dessiner, à tester et à maintenir accessible. » C'est le
+  coût assumé de la décision. Il se borne par une règle : **une seule des deux
+  formes est dans l'arbre d'accessibilité à la fois**, l'autre est en
+  `display: none` — jamais masquée visuellement seulement, ce qui laisserait
+  deux chemins de navigation à un lecteur d'écran.
+
+**La surcouche se ferme au franchissement du point de rupture.** Ouverte en
+mobile puis la fenêtre élargie, elle resterait sinon ouverte sans déclencheur
+pour la refermer.
+
+**Chaque rubrique porte son rang dans la surcouche mobile**, de `01` à `04`,
+en chiffres tabulaires et au corps des libellés. C'est la figure numérotée du
+contrat de direction : la hausse empruntée à la planche de brevet, qui reporte
+sur le numéro et sur l'encre la charge que le monde de référence fait porter à
+la photographie.
 
 **Le menu est un `<dialog>` ouvert par `showModal()`.** Le piège à focus, la
 fermeture par `Échap` et la restitution du focus au déclencheur sont alors
@@ -205,20 +234,48 @@ n'ajouterait rien et introduirait l'endroit précis où ce code se casse.
 remonter chercher n'est pas un menu. L'en-tête reste donc collant, sur le fond
 de page et sous un filet.
 
-**Le pied de page porte la navigation en clair.** `PRODUCT.md` exige que le
-site reste lisible sans JavaScript, et une surcouche plein écran ne s'ouvre pas
-sans lui. Le pied de page est le chemin de repli ; il n'est pas la navigation
-principale.
+**Le pied de page porte la navigation en clair, et rien d'autre.** `PRODUCT.md`
+exige que le site reste lisible sans JavaScript, et une surcouche plein écran ne
+s'ouvre pas sans lui. Le pied de page est le chemin de repli ; il n'est pas la
+navigation principale.
 
-**La rubrique courante passe à l'encre**, dans le menu comme dans le pied de
-page. `NuxtLink` pose `aria-current="page"` : l'information ne repose jamais
-sur la seule couleur.
+GitHub et LinkedIn l'ont quitté le 09/11/2026 (issue #34), en même temps que la
+bascule. Ils ne vivent plus qu'à un endroit, `/contact`, que `PRODUCT.md` désigne
+pour les porter. Un pied de page qui reprend tout devient un second sommaire, et
+une adresse écrite à deux endroits est une adresse à tenir à jour deux fois.
 
-**La bascule de thème est un bouton unique, nommé par son action** — « Thème
-sombre » quand le thème courant est clair. Un groupe de deux boutons
-`aria-pressed` a été écarté : avant le premier clic la préférence vaut
-`system`, et un `aria-pressed="true"` affirmerait un choix que le visiteur n'a
-pas fait.
+**La rubrique courante passe à l'encre**, dans la barre, dans la surcouche
+comme dans le pied de page. `NuxtLink` pose `aria-current="page"` :
+l'information ne repose jamais sur la seule couleur.
+
+**La bascule de thème vit dans l'en-tête, à toute largeur, en une seule
+instance.** Décision d'Arnaud du 09/11/2026 (issue #34). Elle était au pied de
+page, donc hors de vue sur une page longue, alors qu'elle change la page entière
+et à tout moment.
+
+En desktop elle se place **en bout de barre**, après la dernière rubrique : elle
+agit sur la page et non sur la navigation, et la placer avant « Accueil » la
+ferait lire comme une cinquième entrée. En mobile elle se place **à gauche du
+déclencheur « Menu »**, dans le même groupe, à droite de la signature.
+
+Une première version la réservait au desktop, l'en-tête mobile paraissant trop
+étroit pour trois éléments. La mesure a tranché l'inverse : les échelles de
+texte et d'espacement étant fluides, les libellés rétrécissent avec la fenêtre.
+Relevé dans Chrome à **393px** : signature 113px, bascule 126px, déclencheur
+76px, deux écarts de 16px et 32px de gouttières, soit **379px** — aucun
+débordement.
+
+**La bascule garde la même largeur dans les deux thèmes.** « Thème clair » est
+plus court que « Thème sombre » : sans réserve, le bouton rétrécit au clic et
+toute la barre se décale. Le libellé de l'autre thème est donc rendu dans la
+même case de grille, invisible et hors de l'arbre d'accessibilité. Pas de
+largeur minimale en dur, qui deviendrait fausse au premier changement de police
+ou de libellé.
+
+**La bascule est un bouton unique, nommé par son action** — « Thème sombre »
+quand le thème courant est clair. Un groupe de deux boutons `aria-pressed` a été
+écarté : avant le premier clic la préférence vaut `system`, et un
+`aria-pressed="true"` affirmerait un choix que le visiteur n'a pas fait.
 
 ## 7. Mouvement
 
@@ -390,19 +447,25 @@ Tout le reste vit dans le `<style scoped>` du composant qui en a besoin.
 **Aucun composant spéculatif.** Un composant naît de la page qui en a besoin,
 jamais pour cocher une case. Les six atomes écrits le 26/10 ont été supprimés
 pour cette raison : `Input` et `Button` ne servaient qu'au formulaire de
-contact, dont le fournisseur n'est pas tranché (issue
+contact, abandonné depuis (issue
 [#5](https://github.com/arnaudbregere/portfolio/issues/5)).
+
+`Button` est né de nouveau le 09/11/2026, et cette fois de trois emplois réels
+— « Menu », « Fermer » et la bascule de thème — qui recopiaient le même bloc de
+style et avaient commencé à diverger. C'est la différence entre un composant
+spéculatif et un composant factorisé.
 
 Les composants nés depuis le sont chacun de la page ou du gabarit qui les
 utilise, dans le même commit :
 
 ```
 app/components/
-├── atoms/ThemeToggle.vue       bascule clair / sombre
+├── atoms/Button.vue            bouton de libellé, taille unique
+├── molecules/ThemeToggle.vue   bascule clair / sombre
 └── organisms/
-    ├── SiteHeader.vue          nom, bouton de menu, filet
+    ├── SiteHeader.vue          nom, rubriques, bascule, bouton de menu
     ├── NavOverlay.vue          menu plein écran
-    └── SiteFooter.vue          navigation en clair, profils, bascule
+    └── SiteFooter.vue          navigation en clair
 content/nav.ts                  rubriques et profils — source unique
 ```
 

@@ -35,12 +35,13 @@ watch(() => route.fullPath, () => {
     @close="open = false"
   >
     <div class="o-nav__head">
-      <button type="button" class="o-nav__close" @click="open = false">
-        Fermer
-      </button>
+      <Button @click="open = false">Fermer</Button>
     </div>
 
-    <nav class="o-nav__body" aria-label="Rubriques">
+    <!-- Pas d'`aria-label` : le `<dialog>` qui l'entoure se nomme déjà « Menu
+         principal », et la barre de l'en-tête porte le nom « Rubriques ». Deux
+         repères de navigation du même nom dans un document se confondent. -->
+    <nav class="o-nav__body">
       <ul>
         <li v-for="(item, index) in siteNav" :key="item.to">
           <NuxtLink :to="item.to">
@@ -120,20 +121,6 @@ watch(() => route.fullPath, () => {
   margin-inline: auto;
   padding: var(--space-s) var(--page-gutter);
   border-bottom: var(--rule);
-}
-
-.o-nav__close {
-  min-height: 2.75rem; // 44px : cible tactile RGAA 4.1
-  padding: var(--space-2xs) var(--space-s);
-  border: var(--rule-strong);
-  background-color: transparent;
-  color: inherit;
-  font-family: var(--font-display);
-  font-size: var(--size-label);
-  font-weight: var(--label-weight);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  cursor: pointer;
 }
 
 .o-nav__body {

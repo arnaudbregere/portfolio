@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { profileLinks, siteNav } from '~~/content/nav'
+import { siteNav } from '~~/content/nav'
 import SiteFooter from '~/components/organisms/SiteFooter.vue'
-import ThemeToggle from '~/components/atoms/ThemeToggle.vue'
+import ThemeToggle from '~/components/molecules/ThemeToggle.vue'
 
 describe('ThemeToggle', () => {
   it('se nomme par l’action, pas par l’état courant', async () => {
@@ -12,6 +12,21 @@ describe('ThemeToggle', () => {
     expect(button.attributes('type')).toBe('button')
     expect(button.attributes('aria-label')).toMatch(/^Activer le thème (clair|sombre)$/)
     expect(button.text()).toContain(button.attributes('aria-label')!.split(' ').pop())
+  })
+
+  /**
+   * « Thème clair » est plus court que « Thème sombre » : sans réserve, le
+   * bouton rétrécit au clic et toute la barre de l'en-tête se décale. Le
+   * libellé de l'autre thème occupe la même case de grille, invisible.
+   */
+  it('réserve la largeur de l’autre libellé, hors de l’arbre d’accessibilité', async () => {
+    const toggle = await mountSuspended(ThemeToggle)
+    const ghost = toggle.get('[aria-hidden="true"]')
+    const label = toggle.get('.m-theme-toggle__label')
+
+    expect(label.text()).toMatch(/^Thème (clair|sombre)$/)
+    expect(ghost.text()).toMatch(/^Thème (clair|sombre)$/)
+    expect(ghost.text()).not.toBe(label.text())
   })
 
   it('bascule la préférence au clic', async () => {
@@ -40,26 +55,16 @@ describe('SiteFooter', () => {
     )
   })
 
-  it('expose les profils publics et la bascule de thème', async () => {
+  /**
+   * Les profils publics et la bascule ont quitté le pied de page le
+   * 09/11/2026 : la bascule est dans l'en-tête, et GitHub et LinkedIn ne
+   * vivent plus qu'à un endroit, `/contact`. Le pied de page est un chemin de
+   * repli, pas un deuxième sommaire.
+   */
+  it('ne porte plus ni profils ni bascule', async () => {
     const footer = await mountSuspended(SiteFooter)
-    const links = footer.findAll('a[rel~="me"]')
 
-    expect(links.map((link) => link.attributes('href'))).toEqual(
-      profileLinks.map((link) => link.to),
-    )
-    // Le libellé est suivi de la mention masquée et de la flèche posées par
-    // `SiteLink` : on vérifie qu'il est là, pas que le texte s'y réduit.
-    for (const [index, link] of links.entries()) {
-      expect(link.text()).toContain(profileLinks[index]!.label)
-    }
-
-    // Les profils sortent du site : nouvel onglet, et `rel="me"` conservé.
-    expect(links.map((link) => link.attributes('target'))).toEqual(
-      profileLinks.map(() => '_blank'),
-    )
-    expect(links.map((link) => link.attributes('rel'))).toEqual(
-      profileLinks.map(() => 'me noopener'),
-    )
-    expect(footer.findComponent(ThemeToggle).exists()).toBe(true)
+    expect(footer.findComponent(ThemeToggle).exists()).toBe(false)
+    expect(footer.findAll('a[rel~="me"]')).toHaveLength(0)
   })
 })
