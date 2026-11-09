@@ -282,6 +282,28 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   **Son lien porte la cible tactile des contrôles**, 44 px, que la hauteur de
   son texte n'atteint pas toujours. L'ancien nom à 13 px donnait un lien de
   16 px de haut : le défaut est ancien, il se corrige ici.
+- **Le nom de l'accueil se lit en minuscules, d'un seul tenant.** Décision
+  d'Arnaud du 09/11/2026 : `arnaudbrégère`, le prénom à l'encre et le nom à
+  la couleur du texte, les deux mots soudés par un `word-spacing` négatif.
+  C'est l'écho du monogramme, à l'échelle du titre : même geste, deux lettres
+  d'un côté, deux mots de l'autre.
+
+  **La minuscule est posée par le style**, pas par le contenu :
+  `content/cv.ts` garde « Arnaud Brégère » avec ses capitales, donc le texte
+  de la page, le nom accessible et ce que lisent les moteurs ne changent pas.
+  L'espace entre les deux mots est conservée pour la même raison — c'est elle
+  que `word-spacing` resserre, et c'est elle qui fait entendre deux mots.
+
+  **Le resserrement est en `em`, pas en pixels.** Il vaut les -32 px de la
+  maquette à la taille maximale du titre, 89,76 px, mais `--step-6` descend à
+  44,8 px en mobile, où -32 px feraient entrer le second mot dans le premier.
+
+  **Le prénom prend `--color-ink` et non `--color-logo-ink`.** Un titre est
+  du texte : il tient 4,5:1, et 3:1 au minimum à cette taille (WCAG 1.4.3).
+  Le rose de la marque donne 2,72:1 sur le papier clair, donc il échoue aux
+  deux seuils ; l'exemption des logotypes qui vaut pour le monogramme ne vaut
+  pas ici. `--color-ink` tient 6,3:1 en clair et 6,31:1 en sombre — où sa
+  valeur est précisément celle de la marque.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
