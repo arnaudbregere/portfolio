@@ -13,10 +13,14 @@ useSeoMeta(
 )
 
 const [standfirst, ...rest] = profile.intro
+
+const root = ref<HTMLElement | null>(null)
+
+useRevealCascade(root)
 </script>
 
 <template>
-  <article class="about">
+  <article ref="root" class="about">
     <h1>À propos</h1>
     <p>{{ standfirst }}</p>
 
@@ -29,77 +33,137 @@ const [standfirst, ...rest] = profile.intro
     </p>
 
     <section class="about__section" aria-labelledby="parcours">
-      <h2 id="parcours">Parcours</h2>
+      <!-- Le titre est une rubrique d'une seule ligne : il se classe sur son
+           propre `top`, puisque la liste qui le suit est découpée en rubriques
+           et ne peut pas l'accueillir. -->
+      <h2 id="parcours" data-reveal-section data-reveal-item>Parcours</h2>
 
       <ol class="about__list">
-        <li v-for="job in experiences" :key="`${job.company}-${job.start}`" class="about__item">
-          <h3 class="about__role">
+        <!-- Une expérience = une rubrique. Prises ensemble elles feraient
+             2296 px de haut, et une rubrique se classe sur son `top` seul :
+             les quatre dernières joueraient leur entrée hors écran. -->
+        <li
+          v-for="job in experiences"
+          :key="`${job.company}-${job.start}`"
+          class="about__item"
+          data-reveal-section
+        >
+          <h3 class="about__role" data-reveal-item>
             {{ job.role }}<span class="about__company">, {{ job.company }}</span>
           </h3>
 
-          <p class="about__meta">
+          <p class="about__meta" data-reveal-item>
             <time :datetime="job.start">{{ formatPeriod(job.start, job.end) }}</time>
             <span class="about__place">{{ job.location }}</span>
           </p>
 
-          <p class="about__summary">{{ job.summary }}</p>
+          <p class="about__summary" data-reveal-item>{{ job.summary }}</p>
 
-          <ul class="about__missions">
+          <!-- Les missions entrent en un bloc : une ligne par mission
+               découperait une énumération qui se lit d'un seul tenant. -->
+          <ul class="about__missions" data-reveal-item>
             <li v-for="mission in job.missions" :key="mission">{{ mission }}</li>
           </ul>
 
-          <p class="about__stack">{{ job.stack.join(' · ') }}</p>
+          <p class="about__stack" data-reveal-item>{{ job.stack.join(' · ') }}</p>
         </li>
       </ol>
     </section>
 
-    <section class="about__section" aria-labelledby="competences">
-      <h2 id="competences">Compétences</h2>
+    <section class="about__section" aria-labelledby="competences" data-reveal-section>
+      <h2 id="competences" data-reveal-item>Compétences</h2>
 
       <dl class="about__skills">
-        <template v-for="group in skillGroups" :key="group.title">
+        <!-- Le `<div>` groupe le couple : un `dt` et son `dd` sont deux frères
+             dont aucun ne contient l'autre, donc aucun ne peut porter la ligne
+             à lui seul. HTML l'autorise explicitement dans un `<dl>`. -->
+        <div v-for="group in skillGroups" :key="group.title" data-reveal-item>
           <dt>{{ group.title }}</dt>
           <dd>{{ group.skills.join(' · ') }}</dd>
-        </template>
+        </div>
       </dl>
     </section>
 
     <section class="about__section" aria-labelledby="formation">
-      <h2 id="formation">Formation</h2>
+      <h2 id="formation" data-reveal-section data-reveal-item>Formation</h2>
 
       <ol class="about__list">
-        <li v-for="course in education" :key="course.title" class="about__item">
-          <h3 class="about__role">{{ course.title }}</h3>
+        <li v-for="course in education" :key="course.title" class="about__item" data-reveal-section>
+          <h3 class="about__role" data-reveal-item>{{ course.title }}</h3>
 
-          <p class="about__meta">
+          <p class="about__meta" data-reveal-item>
             <span>{{ course.school }}</span>
             <span class="about__place">{{ course.year }}</span>
           </p>
 
-          <p v-if="course.result" class="about__summary">{{ course.result }}</p>
+          <p v-if="course.result" class="about__summary" data-reveal-item>{{ course.result }}</p>
 
-          <p v-if="course.url" class="about__summary">
+          <p v-if="course.url" class="about__summary" data-reveal-item>
             <SiteLink :href="course.url">Voir l’application réalisée</SiteLink>
           </p>
         </li>
       </ol>
     </section>
 
-    <section class="about__section" aria-labelledby="contact">
-      <h2 id="contact">Me joindre</h2>
+    <section class="about__section" aria-labelledby="contact" data-reveal-section>
+      <h2 id="contact" data-reveal-item>Me joindre</h2>
 
-      <p class="about__summary">{{ profile.availability }}</p>
+      <p class="about__summary" data-reveal-item>{{ profile.availability }}</p>
 
       <ul class="about__contact">
-        <li><a :href="`mailto:${profile.email}`">{{ profile.email }}</a></li>
-        <li><a :href="telHref(profile.phone)">{{ profile.phone }}</a></li>
-        <li>{{ profile.location }}</li>
+        <li data-reveal-item><a :href="`mailto:${profile.email}`">{{ profile.email }}</a></li>
+        <li data-reveal-item><a :href="telHref(profile.phone)">{{ profile.phone }}</a></li>
+        <li data-reveal-item>{{ profile.location }}</li>
       </ul>
     </section>
   </article>
 </template>
 
 <style scoped lang="scss">
+/* Tête de page : des délais fixes, hors de la cascade mesurée. Le `@keyframes`
+   et les règles communes vivent dans `app/styles/_motion.scss`.
+
+   Quatre temps à 140 ms d'écart, comme les têtes de `/`, `/projets`, `/contact`
+   et de la fiche projet. Les deux paragraphes d'intro entrent **en un bloc** :
+   ils poursuivent la même phrase que le chapô, et `DESIGN.md` § 7 pose qu'une
+   ligne de cascade est une unité de lecture.
+
+   Propriétés longues et non le raccourci `animation` : un `var()` dans le
+   raccourci met tous ses longhands en substitution différée. */
+.about h1,
+.about h1 + p,
+.about__intro,
+.about__download {
+  animation-name: page-entry;
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: backwards;
+}
+
+.about h1 + p {
+  animation-delay: 140ms;
+}
+
+.about__intro {
+  animation-delay: 280ms;
+}
+
+.about__download {
+  animation-delay: 420ms;
+}
+
+/* La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
+   cette remise à zéro, la tête de page resterait vide le temps de la cascade.
+   Les lignes marquées `data-reveal-item` sont remises à zéro par
+   `_motion.scss`. */
+@media (prefers-reduced-motion: reduce) {
+  .about h1 + p,
+  .about__intro,
+  .about__download {
+    animation-delay: 0ms !important;
+  }
+}
+
 .about__intro,
 .about__download {
   max-width: var(--measure);

@@ -23,6 +23,14 @@ const setDelay = (line: HTMLElement, delay: number) =>
  * à 1039 px d'une fenêtre de 1163 px était classée hors champ parce que tout
  * descendait encore de quelques dizaines de pixels.
  *
+ * **Une rubrique se classe sur son `top` seul, donc elle ne doit pas dépasser
+ * la hauteur de la fenêtre.** Mesuré sur `/a-propos` : « Parcours » pris pour
+ * une seule rubrique faisait 2296 px dans une fenêtre de 1047 px, son `top`
+ * était à 632 px, et ses cinq expériences partaient donc toutes au
+ * chargement — les quatre dernières jouaient leur entrée hors écran et
+ * paraissaient statiques au défilement. Une liste se découpe en une rubrique
+ * par élément.
+ *
  * Sans JavaScript, aucun attribut n'est posé et tout entre au chargement : la
  * page reste entière. Sous `prefers-reduced-motion`, le composable ne fait
  * rien — masquer en attendant un défilement serait un mouvement de plus, pas
@@ -46,7 +54,14 @@ export const useRevealCascade = (root: Ref<HTMLElement | null>) => {
     const sections = [...host.querySelectorAll<HTMLElement>('[data-reveal-section]')].map(
       (section) => ({
         section,
-        lines: [...section.querySelectorAll<HTMLElement>('[data-reveal-item]')],
+        lines: [
+          // Une rubrique peut être sa propre ligne. Le titre d'une rubrique
+          // dont le contenu est découpé en rubriques — « Parcours » et
+          // « Formation » de `/a-propos` — n'a aucun descendant à marquer : il
+          // porte alors les deux attributs et se classe sur son propre `top`.
+          ...(section.hasAttribute('data-reveal-item') ? [section] : []),
+          ...section.querySelectorAll<HTMLElement>('[data-reveal-item]'),
+        ],
       }),
     )
 
