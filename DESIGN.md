@@ -59,7 +59,8 @@ qui est sous examen et sur l'action principale unique.
 | `--color-line-strong` | Bordure de contrôle | `#8c857a` | `#7a7369` |
 | `--color-ink` | Encre d'annotation | `#b3122b` | `#ff5c72` |
 | `--color-ink-fg` | Texte sur encre | `#ffffff` | `#121110` |
-| `--color-logo-ink` | Lettre `a` du monogramme | `#ff5c72` | `#ff5c72` |
+| `--color-logo-ink` | Marque : lettre `a`, prénom, survols | `#ff5c72` | `#ff5c72` |
+| `--color-logo-ink-fg` | Texte sur la marque | `#121110` | `#121110` |
 | `--color-focus` | Indicateur de focus | `var(--color-fg)` | `var(--color-fg)` |
 
 Le papier est chaud plutôt que blanc pur : cela désamorce le risque d'austérité
@@ -298,6 +299,14 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   maquette à la taille maximale du titre, 89,76 px, mais `--step-6` descend à
   44,8 px en mobile, où -32 px feraient entrer le second mot dans le premier.
 
+  **Il passe par une marge, et non par `word-spacing`.** Entre deux boîtes en
+  ligne — ce que les deux mots sont devenus en recevant chacun son `span` pour
+  l'entrée — l'effet négatif de `word-spacing` est **plafonné** : les mots se
+  touchent sans se recouvrir. Mesuré dans Chrome : passer de `-0.3565em` à
+  `-0.48em` ne changeait plus rien, alors qu'avec un seul `span` le titre
+  continuait de se resserrer. Une `margin-inline-start` négative sur le second
+  mot n'est pas plafonnée et rend le dessin exact.
+
   **Le prénom prend `--color-logo-ink`, et c'est un écart assumé.** Décision
   d'Arnaud, prise sur la mesure : le prénom porte la couleur de la marque
   dans les deux thèmes, comme le `a` du monogramme, parce que le titre est
@@ -314,6 +323,15 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   pas tenu, et le nom est porté une seconde fois par le `h1` lui-même, dont
   la seconde moitié est à `--color-fg`. `--color-ink` le ramènerait à 6,3:1
   en clair, au prix d'un prénom plus sombre que la marque.
+- **Le survol du lien de CV passe à la couleur de marque.** Décision d'Arnaud
+  du 09/11/2026 : le fond et le filet prennent `--color-logo-ink`, dans les
+  deux thèmes. Le lien s'inversait jusque-là en encre pleine.
+
+  Son texte prend `--color-logo-ink-fg` et non `--color-ink-fg`, qui vaut
+  blanc en thème clair : le blanc ne tient que **2,99:1** sur ce rose, quand
+  `#121110` en tient **6,31**. Ici le seuil s'applique — c'est du texte sur un
+  fond, pas un logotype — et le couple rejoint donc les couples verrouillés de
+  `tests/unit/contrast.spec.ts`.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
@@ -409,7 +427,10 @@ quand le thème courant est clair. Un groupe de deux boutons `aria-pressed` a é
 ## 7. Mouvement
 
 `--dur-fast` 120 ms, `--dur-base` 240 ms, `--dur-slow` 480 ms,
-`--ease-out: cubic-bezier(0.22, 1, 0.36, 1)`.
+`--dur-slower` 900 ms, `--ease-out: cubic-bezier(0.22, 1, 0.36, 1)`.
+
+`--dur-slower` ne sert qu'à l'entrée du nom de l'accueil : c'est la seule
+figure du site qui traverse une distance, les autres montent d'un pas.
 
 Toute transition se neutralise sous `prefers-reduced-motion: reduce`. Aucune
 animation ne porte d'information : elle accompagne un changement d'état déjà
@@ -504,10 +525,19 @@ attendant un défilement serait un mouvement de plus, pas un de moins.
 
 **Une seule exception : le nom de l'accueil.** Décision d'Arnaud du
 09/11/2026. Le prénom entre par la gauche, le nom par la droite, et le
-`word-spacing` négatif les soude à l'arrivée : le mouvement raconte ce que la
-forme fixe montre, deux mots qui n'en font qu'un. La course est de `0.4em`,
-soit 35,9 px à la taille maximale du titre, et suit donc la taille du titre au
-lieu d'être figée en pixels.
+chevauchement les soude à l'arrivée : le mouvement raconte ce que la forme
+fixe montre, deux mots qui n'en font qu'un. La course est de **`1.5em`** en
+`--dur-slower`, réglées ensemble sur retour d'Arnaud — une première version à
+`0.4em` en `--dur-slow` passait trop vite et de trop peu. La course est en
+`em`, donc elle suit la taille du titre au lieu d'être figée en pixels.
+
+Le nom sort de sa boîte pendant l'entrée. Vers la gauche, un débordement n'est
+jamais défilable ; vers la droite, il le serait, et une fenêtre à peine plus
+large que `--page-max` gagnerait une barre horizontale le temps de l'animation.
+Le titre porte donc `overflow-x: clip` avec une marge de rognage plus large que
+la course : rien de visible n'est coupé, aucun conteneur de défilement n'est
+créé, et le `position: sticky` de l'en-tête survit — ce que `overflow: hidden`
+aurait cassé.
 
 Le nom ne prend plus `page-entry` : ses deux mots portent l'entrée à sa place,
 sinon le titre monterait **et** s'écarterait. Le reste de la tête de page —
