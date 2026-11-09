@@ -214,6 +214,13 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   libellé passé sur deux lignes grandissant le bouton et désalignant ses
   voisins. Les trois n'ont pas la **même** largeur : « Thème sombre » est le
   double de « Menu », et l'imposer à tous ferait déborder l'en-tête mobile.
+- **Une coordonnée joignable porte son pictogramme.** Décision d'Arnaud du
+  09/11/2026 : le téléphone et l'e-mail en portent un sur `/contact` comme
+  dans la liste « Me joindre » de `/a-propos`, par l'atome `Icon`. Le
+  pictogramme est `aria-hidden` et ne porte jamais le sens : le libellé du
+  lien reste la seule source d'information. Une ligne qui n'est pas une
+  coordonnée joignable — la ville — n'en a pas, et son retrait l'aligne sur
+  celles qui en ont un.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
