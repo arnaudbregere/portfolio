@@ -51,7 +51,8 @@ export const profile: Profile = {
   location: 'Paris',
   email: 'arnaud.bregere@gmail.com',
   phone: '06 07 98 52 85',
-  availability: 'À l’écoute d’opportunités en CDI, à Paris ou en télétravail hybride.',
+  availability:
+    'À l’écoute d’opportunités en CDI, en Île-de-France ou en télétravail hybride.',
 }
 
 export const experiences: readonly Experience[] = [
