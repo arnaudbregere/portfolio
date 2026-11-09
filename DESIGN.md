@@ -164,17 +164,24 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   réservées à la taxonomie — tags, catégories — et à rien d'autre.
 - **Le rang s'encode dans la taille du texte**, pas dans une grille uniforme de
   cartes égales. L'ordre d'affiche est la hiérarchie.
-- **Les rubriques de `/a-propos` portent leur rang en figure numérotée.**
-  Décision d'Arnaud du 09/11/2026 (issue #32). Deux chiffres — `01` à `04` —
-  en encre atténuée, taille de libellé, chiffres tabulaires : la même figure
-  que la surcouche de navigation, et non une seconde manière de numéroter. Le
-  rang vient d'un compteur CSS en `decimal-leading-zero`, donc il n'est écrit
-  dans aucun gabarit et se renumérote seul si une rubrique bouge.
-- **Un élément de rubrique porte une puce.** Même décision. Sous un titre
+- **Un bloc de premier niveau porte son rang en figure numérotée.** Décision
+  d'Arnaud du 09/11/2026 (issue #32) : les quatre rubriques de `/a-propos`, et
+  chaque projet de `/projets`. Deux chiffres en encre atténuée, taille de
+  libellé, chiffres tabulaires : la même figure que la surcouche de
+  navigation, et non une seconde manière de numéroter. Le rang vient d'un
+  compteur CSS en `decimal-leading-zero`, donc il n'est écrit dans aucun
+  gabarit et se renumérote seul quand un bloc bouge ou qu'un projet s'ajoute.
+  L'écart entre le rang et le titre est d'un `--space-2xs` : le chiffre
+  accompagne le titre, il ne s'en détache pas.
+- **Un élément de second niveau porte une puce.** Même décision. Sous un titre
   numéroté, la puce dit qu'une expérience ou une formation est un élément de
   la rubrique, et non une rubrique de plus : le document a deux niveaux, il
   les montre. La puce est en encre atténuée. Les listes du site restent
   autrement sans marqueur, `_reset.scss` les ayant toutes remises à plat.
+- **Les deux marqueurs ne se cumulent jamais sur un même bloc.** `/projets`
+  n'a qu'un niveau — sa liste de projets — et ses projets sont donc numérotés
+  sans puce : le rang et la puce diraient deux fois la même chose, et
+  l'ordre y porte une information que la puce ne porte pas.
 - **Une surface, une passe.** La preuve reste sur la page. Rien ne se cache
   derrière un survol ou un accordéon : ni le clavier ni le tactile n'ont de
   survol.
