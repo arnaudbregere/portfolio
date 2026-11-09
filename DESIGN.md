@@ -417,12 +417,18 @@ Trois raisons :
 geste. Cela ajoute un trait que la maquette ne demande pas, sur quatre pages,
 pour justifier une animation.
 
-Reste à partager le `@keyframes`, aujourd'hui scopé dans `contact.vue`. À la
-**deuxième** page qui le reprendra, il passera dans un
-`app/styles/_motion.scss` avec les règles qui l'accompagnent : un `@keyframes`
-partagé ne peut pas être scopé, et c'est le seul cas où `frontend.md` autorise
-un fichier global. Ne pas l'extraire avant : une seule page ne dit pas encore
-ce qui, dans ces règles, appartient au site.
+**Le `@keyframes` est partagé depuis le 09/11/2026**, dans
+`app/styles/_motion.scss` (issue #29). Il y est passé à la deuxième page qui a
+repris la figure, comme cette section l'exigeait : un `@keyframes` partagé ne
+peut pas vivre dans un `<style scoped>`, qui le renommerait pour chaque
+composant, et c'est le seul fichier global de mise en forme que `frontend.md`
+autorise. Le fichier porte aussi les règles qui accompagnent le `@keyframes` —
+l'animation des lignes marquées, l'état d'attente, et la remise à zéro des
+délais.
+
+Ce qui reste scopé dans chaque page : les délais fixes de sa tête de page, qui
+dépendent de ce qu'elle y met, et le filet tiré de son bloc d'ouverture quand
+elle en a un.
 
 ## 8. Organisation du code
 
