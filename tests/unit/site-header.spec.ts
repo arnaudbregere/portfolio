@@ -14,12 +14,18 @@ const trigger = (header: VueWrapper) =>
   header.get('button[aria-controls="menu-principal"]')
 
 describe('SiteHeader', () => {
-  it('ramène à l’accueil par le nom', async () => {
+  it('ramène à l’accueil par le nom, derrière le monogramme', async () => {
     const header = await mountSuspended(SiteHeader)
     const wordmark = header.get('header a')
 
     expect(wordmark.attributes('href')).toBe('/')
-    expect(wordmark.text()).toBe('Arnaud Brégère')
+    // Le monogramme ne nomme pas le site : deux lettres ne disent rien hors
+    // de l'écran. Le nom reste donc le texte accessible du lien.
+    expect(wordmark.get('.visually-hidden').text()).toBe('Arnaud Brégère')
+
+    const monogram = wordmark.get('.o-header__monogram')
+    expect(monogram.text()).toBe('ab')
+    expect(monogram.attributes('aria-hidden')).toBe('true')
   })
 
   it('annonce le menu fermé et l’élément qu’il commande', async () => {

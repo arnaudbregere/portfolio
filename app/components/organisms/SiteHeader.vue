@@ -32,7 +32,13 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
 <template>
   <header class="o-header">
     <div class="o-header__inner">
-      <NuxtLink to="/" class="o-header__wordmark">Arnaud Brégère</NuxtLink>
+      <!-- Le monogramme est `aria-hidden` : deux lettres ne nomment pas le
+           site. Le nom le suit en texte réel, masqué visuellement, donc le
+           lien garde « Arnaud Brégère » pour nom accessible. -->
+      <NuxtLink to="/" class="o-header__wordmark">
+        <span class="o-header__monogram" aria-hidden="true">ab</span>
+        <span class="visually-hidden">Arnaud Brégère</span>
+      </NuxtLink>
 
       <!-- Les quatre rubriques en clair à partir de `m`, sans leur rang : les
            chiffres `01` à `04` restent à la surcouche mobile, où le corps du
@@ -95,15 +101,41 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
   padding: var(--space-s) var(--page-gutter);
 }
 
+/* `min-height` et le centrage : la cible tactile d'un lien de l'en-tête vaut
+   celle d'un bouton, 44 px (RGAA 4.1), même quand son texte est plus court.
+   `DESIGN.md` § 5. */
 .o-header__wordmark {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-min-height);
   margin-inline-end: auto;
-  font-family: var(--font-display);
-  font-size: var(--size-label);
-  font-weight: var(--label-weight);
-  font-stretch: var(--label-stretch);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
+  color: inherit;
   text-decoration: none;
+}
+
+/* Monogramme : deux minuscules serrées, dessinées par les axes de la police
+   plutôt que par un fichier. `DESIGN.md` § 5.
+
+   `font-weight` et `font-stretch` et non `font-variation-settings` : les
+   propriétés natives héritent et s'animent, ce que `_fonts.scss` pose comme
+   règle de la police variable. L'interlettrage est négatif pour que le `b`
+   morde sur le `a`.
+
+   `line-height: 1` et `display: block` : sans eux, l'interligne du corps de
+   texte grandirait la barre autour de deux lettres.
+
+   Le dernier caractère porte l'interlettrage négatif comme les autres, donc
+   le `b` finirait collé au bord droit : `padding-inline-end` lui rend sa
+   place. */
+.o-header__monogram {
+  display: block;
+  padding-inline-end: 0.19em;
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  font-weight: 900;
+  font-stretch: 100%;
+  letter-spacing: -0.19em;
+  line-height: 1;
 }
 
 /* `display: none` et non un masquage visuel : les deux formes de navigation ne
