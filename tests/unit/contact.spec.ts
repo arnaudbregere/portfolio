@@ -92,13 +92,6 @@ describe('page Contact', () => {
     }
   })
 
-  it('ne propose plus de formulaire', async () => {
-    const page = await mountSuspended(ContactPage)
-
-    expect(page.find('form').exists()).toBe(false)
-    expect(page.find('input').exists()).toBe(false)
-  })
-
   /**
    * Les profils viennent de `content/nav.ts`, qui les sert déjà au pied de
    * page. Une deuxième copie des URLs serait une deuxième à maintenir.

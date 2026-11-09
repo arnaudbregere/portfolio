@@ -329,6 +329,37 @@ En conséquence, l'outillage est déjà commun : `useRevealCascade` et
 rendent des délais. Une page les adopte en marquant ses rubriques
 `data-reveal-section` et ses lignes `data-reveal-item`.
 
+**Le filet tiré est le geste d'ouverture d'une page, une fois par page.**
+Décision d'Arnaud du 09/11/2026, prise avant la reprise de la figure sur les
+autres rubriques (issues #29 à #32).
+
+Les séparateurs de rubrique de `/`, `/projets`, `/a-propos` et de la fiche
+projet sont des `border-top: var(--rule-strong)`, et le restent : **statiques**.
+Une page sans bloc d'ouverture à filet — `.contact__list--lead` en est le seul
+cas — n'a donc aucun filet tiré, seulement le premier mouvement, les textes qui
+montent. La règle est structurelle et non par page : un filet tiré accompagne un
+bloc d'ouverture, quand la page en a un. Deux pages ne divergent pas, c'est leur
+structure qui diffère.
+
+Trois raisons :
+
+- **Animer un séparateur demanderait un délai à la rubrique elle-même**, concept
+  qui n'existe pas : `useRevealCascade` pose `--reveal-delay` sur les lignes
+  (`[data-reveal-item]`), jamais sur les rubriques. Il faudrait étendre
+  `revealPlan` et le composable, poser `position: relative` et un `::before` sur
+  quatre composants, et neutraliser l'animation du filet dans l'état `pending`.
+  Trois ajouts dans un outil qui ne connaît aujourd'hui aucune page, pour de la
+  décoration.
+- **Un trait déjà posé donne au texte qui monte un repère fixe contre lequel
+  arriver.** La figure garde un point d'appui, et une rubrique en attente est un
+  cadre vide qui se remplit, non une page trouée.
+- **Répété sur cinq séparateurs, le geste devient un tic.** Ce qui se remarque
+  dans une pièce de candidature doit être le travail.
+
+Écarté : ajouter un filet d'ouverture aux quatre pages pour uniformiser le
+geste. Cela ajoute un trait que la maquette ne demande pas, sur quatre pages,
+pour justifier une animation.
+
 Reste à partager le `@keyframes`, aujourd'hui scopé dans `contact.vue`. À la
 **deuxième** page qui le reprendra, il passera dans un
 `app/styles/_motion.scss` avec les règles qui l'accompagnent : un `@keyframes`
