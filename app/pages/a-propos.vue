@@ -36,9 +36,10 @@ useRevealCascade(root)
       <!-- Le titre est une rubrique d'une seule ligne : il se classe sur son
            propre `top`, puisque la liste qui le suit est découpée en rubriques
            et ne peut pas l'accueillir. -->
-      <h2 id="experiences" data-reveal-section data-reveal-item>
-        Expériences professionnelles
-      </h2>
+      <!-- Le libellé reste sur la même ligne que la balise : un retour à la
+           ligne ici se rend comme une espace entre le rang et le titre, et
+           creuse l'écart de la largeur d'un espace du titre. -->
+      <h2 id="experiences" data-reveal-section data-reveal-item>Expériences professionnelles</h2>
 
       <ol class="about__list">
         <!-- Une expérience = une rubrique. Prises ensemble elles feraient
