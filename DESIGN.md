@@ -222,12 +222,34 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   coordonnée joignable — la ville — n'en a pas, et son retrait l'aligne sur
   celles qui en ont un.
 - **La signature de l'en-tête est un monogramme `ab`.** Décision d'Arnaud du
-  09/11/2026. Le nom en toutes lettres cédait la place à deux minuscules
-  serrées : graisse haute, chasse resserrée et interlettrage **négatif**, de
-  sorte que le `b` morde sur le `a`. C'est du **texte**, pas une image — une
-  image coûterait deux fichiers, un par thème, et ne suivrait pas la bascule
-  de thème, qui pose un attribut sur `<html>` et non la préférence système.
-  En texte, `currentColor` suffit.
+  09/11/2026. Le nom en toutes lettres cède la place à deux minuscules
+  serrées, le `b` chevauchant la panse du `a`.
+
+  Une première version le composait **en texte**, par les axes d'Archivo
+  Variable et un interlettrage négatif poussé jusqu'à `-0.19em`. Arnaud a
+  ensuite dessiné le monogramme sur Figma, et c'est ce dessin qui fait foi :
+  les deux lettres s'y recouvrent d'une façon qu'aucun interlettrage ne
+  reproduit, puisque `letter-spacing` déplace des glyphes entiers et ne
+  redessine rien.
+
+  **Les tracés sont écrits dans le composant, pas chargés en fichier.** Figma
+  rendait deux fichiers qui ne différaient que par la couleur du `b` — blanc
+  dans l'un, noir dans l'autre. Inscrits dans l'atome, le `b` prend
+  `currentColor` et le `a` l'encre d'annotation : un seul tracé sert les deux
+  thèmes, sans requête, et la bascule est suivie — elle pose un attribut sur
+  `<html>`, qu'un `<picture>` sur `prefers-color-scheme` aurait ignoré.
+
+  **Le `a` prend `--color-ink`, pas la couleur du fichier.** L'export portait
+  `#ff5c72` dans les deux thèmes ; sur le fond clair du site ce rose donne
+  **2,72:1**, sous le plancher de 3:1 que WCAG 1.4.11 impose à un graphique
+  porteur de sens. Le token bascule et tient les deux : **6,3:1** en clair
+  avec `#b3122b`, **6,31:1** en sombre avec `#ff5c72`, qui est la valeur
+  qu'Arnaud avait choisie.
+
+  **Le `viewBox` est resserré sur la boîte des tracés**, relevée au navigateur
+  par `getBBox`. L'export Figma rendait des marges inégales — 1,5 à gauche
+  contre 9,45 à droite — qui auraient décalé le monogramme sans qu'aucune
+  règle ne le dise.
 
   **Le monogramme ne bouge pas au survol.** Une respiration a été essayée le
   même jour — la chasse qui s'ouvre, l'interlettrage qui se détend — et
