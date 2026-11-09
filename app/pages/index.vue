@@ -203,9 +203,25 @@ const family = rest.join(' ')
    La minuscule est posée ici et non dans le contenu : `profile.name` garde
    ses capitales pour le texte de la page et pour le nom accessible. */
 .home__name {
-  font-size: var(--step-6);
+  /* Le nom soudé mesure 7,99 fois sa taille de police — rapport mesuré dans
+     Chrome et constant, puisqu'il ne dépend que des métriques de la fonte.
+     `--step-6` l'ignore : à 416 px de large il rend 48,99 px, soit un nom de
+     391 px pour 384 px disponibles. Le nom passait alors à la ligne, et la
+     marge négative qui soude les deux mots débordait à gauche en seconde
+     ligne, où l'`overflow-x` de l'entrée la rognait.
+
+     Le second terme borne donc la taille à ce que la gouttière laisse, avec
+     8,1 pour marge. Il l'emporte sous 436 px environ, `--step-6` au-dessus.
+
+     `nowrap` est la ceinture : un nom soudé qui passe à la ligne n'a aucun
+     sens, et aucun réglage ne doit pouvoir l'y remettre. */
+  font-size: min(
+    var(--step-6),
+    calc((100vw - 2 * var(--page-gutter)) / 8.1)
+  );
   line-height: 1;
   text-transform: lowercase;
+  white-space: nowrap;
 
   /* Le nom sort de sa boîte pendant l'entrée : le prénom de 1,5em à gauche,
      le nom d'autant à droite. Vers la gauche, un débordement n'est jamais
