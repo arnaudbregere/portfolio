@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { profileLinks, siteNav } from '~~/content/nav'
+import { siteNav } from '~~/content/nav'
 
 const year = new Date().getFullYear()
 </script>
@@ -14,15 +14,6 @@ const year = new Date().getFullYear()
       </ul>
     </nav>
 
-    <div class="o-footer__aside">
-      <ul class="o-footer__external">
-        <li v-for="link in profileLinks" :key="link.to">
-          <SiteLink :href="link.to" rel="me">{{ link.label }}</SiteLink>
-        </li>
-      </ul>
-      <ThemeToggle />
-    </div>
-
     <p class="o-footer__legal">
       <small>© {{ year }} Arnaud Brégère</small>
     </p>
@@ -30,8 +21,6 @@ const year = new Date().getFullYear()
 </template>
 
 <style scoped lang="scss">
-@use '../../styles/breakpoints' as bp;
-
 .o-footer {
   display: grid;
   gap: var(--space-l);
@@ -40,11 +29,6 @@ const year = new Date().getFullYear()
   margin-inline: auto;
   padding: var(--space-l) var(--page-gutter) var(--space-xl);
   border-top: var(--rule-strong);
-
-  @include bp.respond-up(m) {
-    grid-template-columns: 1fr auto;
-    align-items: start;
-  }
 }
 
 ul {
@@ -56,8 +40,7 @@ ul {
   list-style: none;
 }
 
-.o-footer__nav a,
-.o-footer__external a {
+.o-footer__nav a {
   display: inline-block;
   padding-block: var(--space-2xs);
   font-family: var(--font-display);
@@ -72,18 +55,7 @@ ul {
   color: var(--color-ink);
 }
 
-.o-footer__aside {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-m);
-  align-items: center;
-}
-
 .o-footer__legal {
   color: var(--color-fg-muted);
-
-  @include bp.respond-up(m) {
-    grid-column: 1 / -1;
-  }
 }
 </style>

@@ -45,6 +45,13 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
         </ul>
       </nav>
 
+      <!-- Enveloppe plutôt qu'une classe posée sur le composant : la règle qui
+           le cache et celle que porte son propre style viseraient sinon le même
+           élément avec la même spécificité, et l'ordre d'injection trancherait. -->
+      <div class="o-header__toggle">
+        <ThemeToggle />
+      </div>
+
       <button
         type="button"
         class="o-header__trigger"
@@ -73,11 +80,12 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
   border-bottom: var(--rule);
 }
 
+/* La signature pousse tout le reste à droite : la barre, la bascule et le
+   déclencheur restent groupés, dans cet ordre, à toute largeur. */
 .o-header__inner {
   display: flex;
   gap: var(--space-s);
   align-items: center;
-  justify-content: space-between;
   width: 100%;
   max-width: var(--page-max);
   margin-inline: auto;
@@ -85,6 +93,7 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
 }
 
 .o-header__wordmark {
+  margin-inline-end: auto;
   font-family: var(--font-display);
   font-size: var(--size-label);
   font-weight: var(--label-weight);
@@ -102,7 +111,6 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
 
   @include bp.respond-up(m) {
     display: block;
-    margin-inline-start: auto;
   }
 
   ul {
@@ -136,6 +144,15 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
   a:hover,
   a[aria-current='page'] {
     color: var(--color-ink);
+  }
+}
+
+/* Une seule instance, à toute largeur : en bout de barre en desktop, à gauche
+   du déclencheur en mobile. `DESIGN.md` § 6. L'écart supplémentaire n'existe
+   qu'en desktop, où la place ne manque pas. */
+.o-header__toggle {
+  @include bp.respond-up(m) {
+    margin-inline-start: var(--space-m);
   }
 }
 

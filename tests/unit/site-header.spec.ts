@@ -1,7 +1,17 @@
 import { describe, expect, it, vi } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import type { VueWrapper } from '@vue/test-utils'
 import { siteNav } from '~~/content/nav'
 import SiteHeader from '~/components/organisms/SiteHeader.vue'
+import ThemeToggle from '~/components/atoms/ThemeToggle.vue'
+
+/**
+ * L'en-tête porte deux boutons depuis le 09/11/2026 : la bascule de thème et le
+ * déclencheur du menu. Ce dernier se désigne par ce qu'il commande, jamais par
+ * son rang dans le DOM.
+ */
+const trigger = (header: VueWrapper) =>
+  header.get('button[aria-controls="menu-principal"]')
 
 describe('SiteHeader', () => {
   it('ramène à l’accueil par le nom', async () => {
@@ -14,20 +24,19 @@ describe('SiteHeader', () => {
 
   it('annonce le menu fermé et l’élément qu’il commande', async () => {
     const header = await mountSuspended(SiteHeader)
-    const trigger = header.get('button')
 
-    expect(trigger.attributes('type')).toBe('button')
-    expect(trigger.attributes('aria-expanded')).toBe('false')
-    expect(trigger.attributes('aria-controls')).toBe('menu-principal')
+    expect(trigger(header).attributes('type')).toBe('button')
+    expect(trigger(header).attributes('aria-expanded')).toBe('false')
+    expect(trigger(header).attributes('aria-controls')).toBe('menu-principal')
     expect(header.get('#menu-principal').element.tagName).toBe('DIALOG')
   })
 
   it('passe aria-expanded à true à l’ouverture', async () => {
     const header = await mountSuspended(SiteHeader)
 
-    await header.get('button').trigger('click')
+    await trigger(header).trigger('click')
 
-    expect(header.get('button').attributes('aria-expanded')).toBe('true')
+    expect(trigger(header).attributes('aria-expanded')).toBe('true')
   })
 
   it('liste les rubriques dans l’ordre d’affiche, chacune numérotée', async () => {
@@ -80,14 +89,26 @@ describe('SiteHeader', () => {
 
     const header = await mountSuspended(SiteHeader)
 
-    await header.get('button').trigger('click')
-    expect(header.get('button').attributes('aria-expanded')).toBe('true')
+    await trigger(header).trigger('click')
+    expect(trigger(header).attributes('aria-expanded')).toBe('true')
 
     for (const notify of listeners) notify({ matches: true } as MediaQueryListEvent)
     await header.vm.$nextTick()
 
-    expect(header.get('button').attributes('aria-expanded')).toBe('false')
+    expect(trigger(header).attributes('aria-expanded')).toBe('false')
 
     vi.unstubAllGlobals()
+  })
+
+  /**
+   * La bascule vit dans l'en-tête à partir de 768px et au pied de page en
+   * dessous : deux instances, une seule dans l'arbre d'accessibilité à la fois.
+   * Le point de rupture est en CSS, donc hors de portée d'un test unitaire ; ce
+   * qui se vérifie ici est que l'en-tête porte bien la sienne.
+   */
+  it('porte la bascule de thème', async () => {
+    const header = await mountSuspended(SiteHeader)
+
+    expect(header.findComponent(ThemeToggle).exists()).toBe(true)
   })
 })
