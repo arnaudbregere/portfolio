@@ -185,15 +185,15 @@ useRevealCascade(root)
   counter-increment: about-section;
 }
 
-/* Figure numérotée, la même que la surcouche de navigation : deux chiffres en
-   encre atténuée. `decimal-leading-zero` produit le zéro de tête, donc le rang
-   n'est écrit nulle part et se renumérote tout seul si une rubrique bouge. */
+/* Figure numérotée, décidée dans `DESIGN.md` § 5 : un chiffre en encre
+   atténuée, sans zéro de tête. Il vient du compteur, donc aucun gabarit ne
+   l'écrit et une rubrique déplacée se renumérote toute seule. */
 .about {
   counter-reset: about-section;
 }
 
 .about__section h2::before {
-  content: counter(about-section, decimal-leading-zero);
+  content: counter(about-section);
   margin-right: var(--space-2xs);
   color: var(--color-fg-muted);
   font-size: var(--size-label);

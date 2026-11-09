@@ -98,15 +98,15 @@ useSeoMeta(
   counter-increment: project;
 }
 
-/* Figure numérotée, décidée dans `DESIGN.md` § 5 : deux chiffres en encre
-   atténuée, chiffres tabulaires. Le rang vient du compteur, donc aucun
+/* Figure numérotée, décidée dans `DESIGN.md` § 5 : un chiffre en encre
+   atténuée, sans zéro de tête. Le rang vient du compteur, donc aucun
    gabarit ne l'écrit et un projet inséré ne renumérote rien à la main.
 
    La règle est recopiée depuis `/a-propos` plutôt que mise en commun : elle
    est scopable, et `frontend.md` ne sort du scope que ce qui ne peut pas y
    tenir. `DESIGN.md` reste la source de la décision. */
 .projects__title::before {
-  content: counter(project, decimal-leading-zero);
+  content: counter(project);
   margin-right: var(--space-2xs);
   color: var(--color-fg-muted);
   font-size: var(--size-label);
