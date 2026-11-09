@@ -37,9 +37,14 @@ const details = computed(() => `${props.format}, ${props.sizeKb} Ko`)
   text-decoration: none;
 }
 
+/* Le survol passe à la couleur de marque, fixe dans les deux thèmes. Son
+   texte prend `--color-logo-ink-fg` et non `--color-ink-fg`, qui serait
+   blanc en thème clair : le blanc ne tient que 2,99:1 sur ce rose, cette
+   encre en tient 6,31. */
 .a-cv-link:hover {
-  background-color: var(--color-fg);
-  color: var(--color-bg);
+  background-color: var(--color-logo-ink);
+  border-color: var(--color-logo-ink);
+  color: var(--color-logo-ink-fg);
 }
 
 .a-cv-link__label {

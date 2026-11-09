@@ -59,6 +59,8 @@ qui est sous examen et sur l'action principale unique.
 | `--color-line-strong` | Bordure de contrôle | `#8c857a` | `#7a7369` |
 | `--color-ink` | Encre d'annotation | `#b3122b` | `#ff5c72` |
 | `--color-ink-fg` | Texte sur encre | `#ffffff` | `#121110` |
+| `--color-logo-ink` | Marque : lettre `a`, prénom, survols | `#ff5c72` | `#ff5c72` |
+| `--color-logo-ink-fg` | Texte sur la marque | `#121110` | `#121110` |
 | `--color-focus` | Indicateur de focus | `var(--color-fg)` | `var(--color-fg)` |
 
 Le papier est chaud plutôt que blanc pur : cela désamorce le risque d'austérité
@@ -222,12 +224,48 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   coordonnée joignable — la ville — n'en a pas, et son retrait l'aligne sur
   celles qui en ont un.
 - **La signature de l'en-tête est un monogramme `ab`.** Décision d'Arnaud du
-  09/11/2026. Le nom en toutes lettres cédait la place à deux minuscules
-  serrées : graisse haute, chasse resserrée et interlettrage **négatif**, de
-  sorte que le `b` morde sur le `a`. C'est du **texte**, pas une image — une
-  image coûterait deux fichiers, un par thème, et ne suivrait pas la bascule
-  de thème, qui pose un attribut sur `<html>` et non la préférence système.
-  En texte, `currentColor` suffit.
+  09/11/2026. Le nom en toutes lettres cède la place à deux minuscules
+  serrées, le `b` chevauchant la panse du `a`.
+
+  Une première version le composait **en texte**, par les axes d'Archivo
+  Variable et un interlettrage négatif poussé jusqu'à `-0.19em`. Arnaud a
+  ensuite dessiné le monogramme sur Figma, et c'est ce dessin qui fait foi :
+  les deux lettres s'y recouvrent d'une façon qu'aucun interlettrage ne
+  reproduit, puisque `letter-spacing` déplace des glyphes entiers et ne
+  redessine rien.
+
+  **Les tracés sont écrits dans le composant, pas chargés en fichier.** Figma
+  rendait deux fichiers qui ne différaient que par la couleur du `b` — blanc
+  dans l'un, noir dans l'autre. Inscrits dans l'atome, le `b` prend
+  `currentColor` et le `a` l'encre d'annotation : un seul tracé sert les deux
+  thèmes, sans requête, et la bascule est suivie — elle pose un attribut sur
+  `<html>`, qu'un `<picture>` sur `prefers-color-scheme` aurait ignoré.
+
+  **Le `a` garde `#ff5c72` dans les deux thèmes**, par son propre token
+  `--color-logo-ink`. Décision d'Arnaud : une marque a une couleur, elle n'en
+  change pas avec le fond. Seul le `b` bascule, du noir au blanc.
+
+  Ce rose donne **2,72:1** sur le papier clair et **6,31:1** sur le fond
+  sombre. Le premier chiffre est sous le plancher de 3:1 de WCAG 1.4.11, et
+  **ce plancher ne s'applique pas ici** : le critère vise les graphiques
+  nécessaires à la compréhension, et WCAG exempte nommément les logotypes. Le
+  monogramme est `aria-hidden`, le nom du lien est du texte — la marque est
+  décorative, rien ne se perd à ne pas la distinguer.
+
+  Ce token ne rejoint donc pas les couples à seuil de
+  `tests/unit/contrast.spec.ts` : un seuil y affirmerait une exigence qui
+  n'existe pas. Il y entre comme **valeur mesurée**, pour qu'une retouche de
+  la couleur fasse re-mesurer le test au lieu de passer inaperçue.
+
+  `--color-ink`, l'encre d'annotation, reste distincte : elle sert du texte,
+  bascule avec le thème et tient 6,3:1 en clair. Les deux ont la même valeur
+  en thème sombre, par coïncidence de teinte, et ne doivent pas être
+  confondues.
+
+  **Le `viewBox` est resserré sur la boîte des tracés**, relevée au navigateur
+  par `getBBox`. L'export Figma rendait des marges inégales — 1,5 à gauche
+  contre 9,45 à droite — qui auraient décalé le monogramme sans qu'aucune
+  règle ne le dise.
 
   **Le monogramme ne bouge pas au survol.** Une respiration a été essayée le
   même jour — la chasse qui s'ouvre, l'interlettrage qui se détend — et
@@ -245,6 +283,65 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   **Son lien porte la cible tactile des contrôles**, 44 px, que la hauteur de
   son texte n'atteint pas toujours. L'ancien nom à 13 px donnait un lien de
   16 px de haut : le défaut est ancien, il se corrige ici.
+- **Le nom de l'accueil se lit en minuscules, d'un seul tenant.** Décision
+  d'Arnaud du 09/11/2026 : `arnaudbrégère`, le prénom à l'encre et le nom à
+  la couleur du texte, les deux mots soudés par un `word-spacing` négatif.
+  C'est l'écho du monogramme, à l'échelle du titre : même geste, deux lettres
+  d'un côté, deux mots de l'autre.
+
+  **La minuscule est posée par le style**, pas par le contenu :
+  `content/cv.ts` garde « Arnaud Brégère » avec ses capitales, donc le texte
+  de la page, le nom accessible et ce que lisent les moteurs ne changent pas.
+  L'espace entre les deux mots est conservée pour la même raison — c'est elle
+  que `word-spacing` resserre, et c'est elle qui fait entendre deux mots.
+
+  **Le resserrement est en `em`, pas en pixels.** Il vaut les -32 px de la
+  maquette à la taille maximale du titre, 89,76 px, mais `--step-6` descend à
+  44,8 px en mobile, où -32 px feraient entrer le second mot dans le premier.
+
+  **Sa taille est bornée par la largeur disponible.** Le nom soudé mesure
+  7,99 fois sa taille de police — rapport mesuré dans Chrome et constant,
+  puisqu'il ne dépend que des métriques de la fonte. `--step-6` l'ignore : à
+  416 px de large il rend 48,99 px, soit un nom de 391 px pour 384 px
+  disponibles. Le nom passait à la ligne, et la marge négative qui soude les
+  deux mots débordait alors à gauche en seconde ligne, où l'`overflow-x` de
+  l'entrée la rognait. Un `min()` borne donc la taille à ce que la gouttière
+  laisse ; il l'emporte sous 436 px environ. Le titre porte `nowrap` : un nom
+  soudé qui passe à la ligne n'a aucun sens.
+
+  **Il passe par une marge, et non par `word-spacing`.** Entre deux boîtes en
+  ligne — ce que les deux mots sont devenus en recevant chacun son `span` pour
+  l'entrée — l'effet négatif de `word-spacing` est **plafonné** : les mots se
+  touchent sans se recouvrir. Mesuré dans Chrome : passer de `-0.3565em` à
+  `-0.48em` ne changeait plus rien, alors qu'avec un seul `span` le titre
+  continuait de se resserrer. Une `margin-inline-start` négative sur le second
+  mot n'est pas plafonnée et rend le dessin exact.
+
+  **Le prénom prend `--color-logo-ink`, et c'est un écart assumé.** Décision
+  d'Arnaud, prise sur la mesure : le prénom porte la couleur de la marque
+  dans les deux thèmes, comme le `a` du monogramme, parce que le titre est
+  l'écho du logo et qu'une marque ne change pas de couleur avec le fond.
+
+  Le coût est connu et chiffré. Un titre est du texte, donc WCAG 1.4.3 lui
+  demande 4,5:1, ou 3:1 à partir de 24 px en gras — ce titre fait 89,76 px.
+  `#ff5c72` donne **2,72:1** sur le papier clair : le mot « arnaud » échoue
+  au seuil en thème clair. En thème sombre il tient **6,31:1**.
+
+  L'exemption des logotypes ne couvre pas ce cas : elle vaut pour une image
+  de marque, pas pour le `h1` d'une page. Le mot reste lisible — c'est un
+  rose soutenu sur papier chaud, pas un gris sur gris — mais le critère n'est
+  pas tenu, et le nom est porté une seconde fois par le `h1` lui-même, dont
+  la seconde moitié est à `--color-fg`. `--color-ink` le ramènerait à 6,3:1
+  en clair, au prix d'un prénom plus sombre que la marque.
+- **Le survol du lien de CV passe à la couleur de marque.** Décision d'Arnaud
+  du 09/11/2026 : le fond et le filet prennent `--color-logo-ink`, dans les
+  deux thèmes. Le lien s'inversait jusque-là en encre pleine.
+
+  Son texte prend `--color-logo-ink-fg` et non `--color-ink-fg`, qui vaut
+  blanc en thème clair : le blanc ne tient que **2,99:1** sur ce rose, quand
+  `#121110` en tient **6,31**. Ici le seuil s'applique — c'est du texte sur un
+  fond, pas un logotype — et le couple rejoint donc les couples verrouillés de
+  `tests/unit/contrast.spec.ts`.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
@@ -340,7 +437,10 @@ quand le thème courant est clair. Un groupe de deux boutons `aria-pressed` a é
 ## 7. Mouvement
 
 `--dur-fast` 120 ms, `--dur-base` 240 ms, `--dur-slow` 480 ms,
-`--ease-out: cubic-bezier(0.22, 1, 0.36, 1)`.
+`--dur-slower` 900 ms, `--ease-out: cubic-bezier(0.22, 1, 0.36, 1)`.
+
+`--dur-slower` ne sert qu'à l'entrée du nom de l'accueil : c'est la seule
+figure du site qui traverse une distance, les autres montent d'un pas.
 
 Toute transition se neutralise sous `prefers-reduced-motion: reduce`. Aucune
 animation ne porte d'information : elle accompagne un changement d'état déjà
@@ -432,6 +532,34 @@ Cinq conditions, mesurées sur `/contact` dans Chrome 157 :
 
 Sous `prefers-reduced-motion: reduce`, le composable ne fait rien : masquer en
 attendant un défilement serait un mouvement de plus, pas un de moins.
+
+**Une seule exception : le nom de l'accueil.** Décision d'Arnaud du
+09/11/2026. Le prénom entre par la gauche, le nom par la droite, et le
+chevauchement les soude à l'arrivée : le mouvement raconte ce que la forme
+fixe montre, deux mots qui n'en font qu'un. La course est de **`1.5em`** en
+`--dur-slower`, réglées ensemble sur retour d'Arnaud — une première version à
+`0.4em` en `--dur-slow` passait trop vite et de trop peu. La course est en
+`em`, donc elle suit la taille du titre au lieu d'être figée en pixels.
+
+Le nom sort de sa boîte pendant l'entrée. Vers la gauche, un débordement n'est
+jamais défilable ; vers la droite, il le serait, et une fenêtre à peine plus
+large que `--page-max` gagnerait une barre horizontale le temps de l'animation.
+Le titre porte donc `overflow-x: clip` avec une marge de rognage plus large que
+la course : rien de visible n'est coupé, aucun conteneur de défilement n'est
+créé, et le `position: sticky` de l'en-tête survit — ce que `overflow: hidden`
+aurait cassé.
+
+Le nom ne prend plus `page-entry` : ses deux mots portent l'entrée à sa place,
+sinon le titre monterait **et** s'écarterait. Le reste de la tête de page —
+ligne de compétences, présentation, téléchargement — garde la figure commune et
+ses 140 ms d'écart.
+
+C'est le seul endroit du site où l'entrée n'est pas la figure commune, et c'est
+assumé : le nom est le premier mot de la première page, et le monogramme de
+l'en-tête fait déjà de ces deux lettres soudées la marque du site. Sous
+`prefers-reduced-motion: reduce`, les deux mots n'ont plus d'animation du tout
+— la règle globale de `_reset.scss` écrase la durée mais pas le tracé, donc
+sans cette remise à zéro ils apparaîtraient décalés.
 
 **Cette figure est celle du site, pas celle d'une page.** Décision d'Arnaud du
 05/11/2026 : `/contact` a servi de terrain d'essai, et `/`, `/projets`,

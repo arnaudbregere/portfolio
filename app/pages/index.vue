@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cvFile, experiences, profile } from '~~/content/cv'
+import { cvFile, profile } from '~~/content/cv'
 import { siteNav } from '~~/content/nav'
 import { projects } from '~~/content/projects'
 import { pageSeoMeta } from '~/utils/page-seo'
@@ -28,7 +28,6 @@ const yearsOfFrontEnd = computed(() => {
   return Math.floor(months / 12)
 })
 
-const currentRole = experiences[0]!
 const contact = siteNav.find((item) => item.to === '/contact')!
 
 /**
@@ -37,17 +36,34 @@ const contact = siteNav.find((item) => item.to === '/contact')!
  * nombre à deux depuis le 04/11/2026.
  */
 const featuredProjects = projects.filter((project) => project.featured)
+
+/**
+ * Le nom coupé à sa première espace : le prénom porte la couleur de marque,
+ * le reste suit. Couper plutôt que recopier — `content/cv.ts` reste la source
+ * unique, et un nom composé continuerait de s'afficher entier.
+ */
+const [given = profile.name, ...rest] = profile.name.split(' ')
+const family = rest.join(' ')
 </script>
 
 <template>
   <article ref="root" class="home">
-    <h1 class="home__name">{{ profile.name }}</h1>
+    <!-- Le prénom est isolé pour porter la couleur de marque. Le nom reste
+         `profile.name` : il n'est pas recopié, seulement coupé à sa première
+         espace, et l'espace entre les deux mots est conservée — c'est elle
+         que `word-spacing` resserre, et c'est elle qui fait lire deux mots à
+         un lecteur d'écran. La minuscule est posée par le style, donc le
+         texte de la page garde ses capitales. -->
+    <!-- Les deux `span` restent sur la même ligne : un retour à la ligne
+         entre eux entrerait dans le `textContent` du titre, et c'est cette
+         espace unique que `word-spacing` resserre. -->
+    <h1 class="home__name">
+      <span class="home__given">{{ given }}</span> <span class="home__family">{{ family }}</span>
+    </h1>
     <p class="home__tagline">{{ profile.tagline }}</p>
 
-    <p class="home__pitch">
-      {{ profile.role }}. {{ yearsOfFrontEnd }} ans de Vue et de Nuxt chez
-      {{ currentRole.company }}, sur
-      {{ currentRole.summary.toLocaleLowerCase('fr-FR') }}
+    <p v-for="paragraph in profile.pitch" :key="paragraph" class="home__pitch">
+      {{ paragraph }}
     </p>
 
     <p class="home__download">
@@ -86,6 +102,13 @@ const featuredProjects = projects.filter((project) => project.featured)
       <h2 id="reperes" data-reveal-item>Repères</h2>
 
       <dl class="home__facts">
+        <!-- Le poste visé ouvre les repères depuis le 09/11/2026 : il était
+             dans le texte de présentation, que ce texte ne porte plus. C'est
+             un fait, il est à sa place parmi des faits. -->
+        <div class="home__fact" data-reveal-item>
+          <dt>Poste recherché</dt>
+          <dd>{{ profile.role }}</dd>
+        </div>
         <div class="home__fact" data-reveal-item>
           <dt>Expérience front-end</dt>
           <dd>{{ yearsOfFrontEnd }} ans</dd>
@@ -126,7 +149,6 @@ const featuredProjects = projects.filter((project) => project.featured)
 
    Propriétés longues et non le raccourci `animation` : un `var()` dans le
    raccourci met tous ses longhands en substitution différée. */
-.home__name,
 .home__tagline,
 .home__pitch,
 .home__download {
@@ -160,13 +182,121 @@ const featuredProjects = projects.filter((project) => project.featured)
   .home__download {
     animation-delay: 0ms !important;
   }
+
+  /* Les deux mots du nom ne glissent plus : ils entrent sur place. La règle
+     globale de `_reset.scss` écrase la durée, pas le tracé — sans cette
+     remise à zéro, ils apparaîtraient décalés. */
+  .home__given,
+  .home__family {
+    animation-name: none;
+  }
 }
 
 /* Le nom est le seul élément à sortir de l'échelle de texte courante : il
-   ouvre la page et rien d'autre ne le concurrence. */
+   ouvre la page et rien d'autre ne le concurrence.
+
+   `word-spacing` est en `em` et non en pixels : il vaut -32 px à la taille
+   maximale du titre, 89,76 px, mais `--step-6` descend à 44,8 px en mobile,
+   où -32 px feraient entrer le second mot dans le premier. L'`em` tient le
+   même rapport à toute largeur.
+
+   La minuscule est posée ici et non dans le contenu : `profile.name` garde
+   ses capitales pour le texte de la page et pour le nom accessible. */
 .home__name {
-  font-size: var(--step-6);
+  /* Le nom soudé mesure 7,99 fois sa taille de police — rapport mesuré dans
+     Chrome et constant, puisqu'il ne dépend que des métriques de la fonte.
+     `--step-6` l'ignore : à 416 px de large il rend 48,99 px, soit un nom de
+     391 px pour 384 px disponibles. Le nom passait alors à la ligne, et la
+     marge négative qui soude les deux mots débordait à gauche en seconde
+     ligne, où l'`overflow-x` de l'entrée la rognait.
+
+     Le second terme borne donc la taille à ce que la gouttière laisse, avec
+     8,1 pour marge. Il l'emporte sous 436 px environ, `--step-6` au-dessus.
+
+     `nowrap` est la ceinture : un nom soudé qui passe à la ligne n'a aucun
+     sens, et aucun réglage ne doit pouvoir l'y remettre. */
+  font-size: min(
+    var(--step-6),
+    calc((100vw - 2 * var(--page-gutter)) / 8.1)
+  );
   line-height: 1;
+  text-transform: lowercase;
+  white-space: nowrap;
+
+  /* Le nom sort de sa boîte pendant l'entrée : le prénom de 1,5em à gauche,
+     le nom d'autant à droite. Vers la gauche, un débordement n'est jamais
+     défilable ; vers la droite, il le serait, et une fenêtre à peine plus
+     large que `--page-max` gagnerait une barre horizontale le temps de
+     l'animation.
+
+     `overflow-x: clip` l'empêche sans créer de conteneur de défilement,
+     donc sans casser le `position: sticky` de l'en-tête — ce que
+     `overflow: hidden` aurait fait. La marge de rognage laisse passer toute
+     la course, donc rien de visible n'est coupé. */
+  overflow-x: clip;
+  overflow-clip-margin: 2em;
+}
+
+/* Le chevauchement des deux mots passe par une marge et non par
+   `word-spacing`. Entre deux boîtes en ligne, l'effet négatif de
+   `word-spacing` est **plafonné** : les mots se touchent sans se recouvrir.
+   Mesuré dans Chrome — passer de `-0.3565em` à `-0.48em` ne changeait plus
+   rien dès que le second mot avait son propre `span`, que le premier
+   `span` seul resserrait encore.
+
+   La marge n'est pas plafonnée. `-0.3571em` rend le titre à la largeur
+   exacte du dessin validé. */
+.home__family {
+  margin-inline-start: -0.3571em;
+}
+
+/* Le nom entre en deux mouvements qui se rejoignent : le prénom vient de la
+   gauche, le nom de la droite, et le `word-spacing` négatif les soude à
+   l'arrivée. Décision d'Arnaud du 09/11/2026, consignée en § 7 de
+   `DESIGN.md` — c'est le seul endroit du site où l'entrée n'est pas la
+   figure commune, et le § dit pourquoi.
+
+   `translate` et `opacity` seules : les deux propriétés que le navigateur
+   compose sans recalculer la mise en page.
+
+   La course est en `em`, comme le `word-spacing` : elle suit la taille du
+   titre, qui va de 44,8 à 89,76 px. */
+@keyframes name-from-left {
+  from {
+    opacity: 0;
+    translate: -1.5em 0;
+  }
+}
+
+@keyframes name-from-right {
+  from {
+    opacity: 0;
+    translate: 1.5em 0;
+  }
+}
+
+.home__given,
+.home__family {
+  display: inline-block;
+  animation-duration: var(--dur-slower);
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: backwards;
+}
+
+.home__given {
+  animation-name: name-from-left;
+}
+
+.home__family {
+  animation-name: name-from-right;
+}
+
+/* Le prénom porte la couleur de la marque, fixe dans les deux thèmes, comme
+   le `a` du monogramme. Écart de contraste assumé et chiffré dans
+   `DESIGN.md` § 5 : 2,72:1 sur le papier clair, sous le seuil qu'un titre
+   doit tenir. */
+.home__given {
+  color: var(--color-logo-ink);
 }
 
 .home__tagline {

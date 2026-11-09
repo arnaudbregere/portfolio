@@ -20,21 +20,39 @@ import type { CvFile, Education, Experience, Profile, SkillGroup } from './types
 export const profile: Profile = {
   name: 'Arnaud Brégère',
   role: 'Développeur front-end senior',
-  /** Les quatre axes de l'en-tête du CV, dans le même ordre. */
-  tagline: 'Front-end, design system, frameworks JavaScript et outils d’IA.',
+  /**
+   * Ligne de compétences de l'accueil, réécrite par Arnaud le 09/11/2026.
+   * Ce ne sont plus les quatre axes de l'en-tête du CV : c'est la liste des
+   * domaines, séparés par des barres verticales.
+   */
+  tagline:
+    'Développeur Front-end | FullStack Agentic | Design Systems | JavaScript | Vue/Nuxt | React | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
   /**
    * Texte de présentation de `/a-propos`, réécrit par Arnaud le 09/11/2026.
    * Ce n'est plus la transcription du PDF : c'est la version du site, plus
    * courte, et elle fait foi ici.
+   *
+   * La phrase sur le parcours atypique en a été retirée le même jour : elle
+   * vit dans `pitch`, sur l'accueil, et la garder ici la faisait lire deux
+   * fois à un paragraphe d'intervalle.
    */
   intro: [
     'Initialement webdesigner, j’ai évolué vers le rôle d’intégrateur web et aujourd’hui développeur front-end.',
-    'Mon parcours atypique me permet d’allier créativité, technicité et adaptabilité.',
+  ],
+  /**
+   * Texte de présentation de l'accueil, choisi par Arnaud le 09/11/2026. Il
+   * est distinct de `intro`, qui sert `/a-propos` : l'accueil dit le
+   * parcours, la page À propos dit le point d'arrivée.
+   */
+  pitch: [
+    'Je me suis ensuite spécialisé en développement front-end, en consolidant mes compétences en JavaScript et sur les frameworks modernes.',
+    'Mon parcours atypique me permet d’allier créativité, rigueur et adaptabilité pour concevoir des expériences web performantes.',
   ],
   location: 'Paris',
   email: 'arnaud.bregere@gmail.com',
   phone: '06 07 98 52 85',
-  availability: 'À l’écoute d’opportunités en CDI, à Paris ou en télétravail hybride.',
+  availability:
+    'À l’écoute d’opportunités en CDI, en Île-de-France ou en télétravail hybride.',
 }
 
 export const experiences: readonly Experience[] = [
