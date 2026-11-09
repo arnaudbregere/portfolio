@@ -181,20 +181,39 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
 
 ## 6. Navigation
 
-**Le menu est plein écran à toutes les largeurs.** Aucune barre de liens ne
-s'affiche dans l'en-tête au-dessus d'un point de rupture. Trois raisons :
+**Deux formes de navigation, séparées par un point de rupture.** Décision
+d'Arnaud du 09/11/2026 (issue #34), qui renverse celle de P2 — « le menu est
+plein écran à toutes les largeurs ».
 
-- C'est la forme des deux références épinglées.
-- Le rang s'encode dans la taille du texte. Une barre horizontale impose quatre
-  libellés de même taille, donc une hiérarchie plate — l'inverse de la règle de
-  forme.
-- Une seule forme existe, donc une seule à dessiner, à tester et à maintenir
-  accessible.
+Sous **768px** (`respond-up(m)`), le menu est plein écran, ouvert par un
+déclencheur « Menu ». À partir de 768px, les quatre rubriques s'affichent en
+clair dans l'en-tête et le déclencheur disparaît.
 
-**Chaque rubrique porte son rang**, de `01` à `04`, en chiffres tabulaires et au
-corps des libellés. C'est la figure numérotée du contrat de direction : la
-hausse empruntée à la planche de brevet, qui reporte sur le numéro et sur
-l'encre la charge que le monde de référence fait porter à la photographie.
+Ce que la décision de P2 défendait, et ce qui lui est préféré :
+
+- « C'est la forme des deux références épinglées. » Elle le reste en mobile. En
+  desktop, un visiteur qui doit ouvrir une surcouche pour savoir ce que le site
+  contient paie un clic pour une information que la place permet de donner. Le
+  site est une pièce de candidature, lue le plus souvent sur un écran large.
+- « Une barre horizontale impose quatre libellés de même taille, donc une
+  hiérarchie plate. » Le rang reste encodé là où il porte : les chiffres `01`
+  à `04` restent dans la surcouche mobile et **n'entrent pas dans la barre**.
+  La barre est un index, pas une affiche.
+- « Une seule forme à dessiner, à tester et à maintenir accessible. » C'est le
+  coût assumé de la décision. Il se borne par une règle : **une seule des deux
+  formes est dans l'arbre d'accessibilité à la fois**, l'autre est en
+  `display: none` — jamais masquée visuellement seulement, ce qui laisserait
+  deux chemins de navigation à un lecteur d'écran.
+
+**La surcouche se ferme au franchissement du point de rupture.** Ouverte en
+mobile puis la fenêtre élargie, elle resterait sinon ouverte sans déclencheur
+pour la refermer.
+
+**Chaque rubrique porte son rang dans la surcouche mobile**, de `01` à `04`,
+en chiffres tabulaires et au corps des libellés. C'est la figure numérotée du
+contrat de direction : la hausse empruntée à la planche de brevet, qui reporte
+sur le numéro et sur l'encre la charge que le monde de référence fait porter à
+la photographie.
 
 **Le menu est un `<dialog>` ouvert par `showModal()`.** Le piège à focus, la
 fermeture par `Échap` et la restitution du focus au déclencheur sont alors
@@ -210,12 +229,18 @@ site reste lisible sans JavaScript, et une surcouche plein écran ne s'ouvre pas
 sans lui. Le pied de page est le chemin de repli ; il n'est pas la navigation
 principale.
 
-**La rubrique courante passe à l'encre**, dans le menu comme dans le pied de
-page. `NuxtLink` pose `aria-current="page"` : l'information ne repose jamais
-sur la seule couleur.
+**La rubrique courante passe à l'encre**, dans la barre, dans la surcouche
+comme dans le pied de page. `NuxtLink` pose `aria-current="page"` :
+l'information ne repose jamais sur la seule couleur.
 
-**La bascule de thème est un bouton unique, nommé par son action** — « Thème
-sombre » quand le thème courant est clair. Un groupe de deux boutons
+**La bascule de thème vit dans l'en-tête**, à toute largeur, en **une seule
+instance**. Décision du 09/11/2026 (issue #34) : elle était dans le pied de
+page, donc hors de vue sur une page longue, alors qu'elle change la page entière
+et à tout moment. Deux instances, même avec l'une cachée, seraient deux boutons
+à tenir en accessibilité et en tests pour un seul état.
+
+**La bascule est un bouton unique, nommé par son action** — « Thème sombre »
+quand le thème courant est clair. Un groupe de deux boutons
 `aria-pressed` a été écarté : avant le premier clic la préférence vaut
 `system`, et un `aria-pressed="true"` affirmerait un choix que le visiteur n'a
 pas fait.
