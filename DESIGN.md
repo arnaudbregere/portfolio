@@ -233,17 +233,35 @@ principale.
 comme dans le pied de page. `NuxtLink` pose `aria-current="page"` :
 l'information ne repose jamais sur la seule couleur.
 
-**La bascule de thème vit dans l'en-tête**, à toute largeur, en **une seule
-instance**. Décision du 09/11/2026 (issue #34) : elle était dans le pied de
-page, donc hors de vue sur une page longue, alors qu'elle change la page entière
-et à tout moment. Deux instances, même avec l'une cachée, seraient deux boutons
-à tenir en accessibilité et en tests pour un seul état.
+**La bascule de thème vit dans l'en-tête à partir de 768px, et dans le pied de
+page en dessous.** Décision d'Arnaud du 09/11/2026 (issue #34). Elle était au
+pied de page seul, donc hors de vue sur une page longue, alors qu'elle change la
+page entière et à tout moment.
+
+**En desktop, elle se place en bout de barre, après la dernière rubrique.** Elle
+agit sur la page et non sur la navigation : la placer avant « Accueil » la
+ferait lire comme une cinquième entrée.
+
+Elle n'y est pas à toute largeur parce que **l'en-tête mobile ne la porte pas**.
+Mesuré dans Chrome : signature 134px, bascule 130px, déclencheur 76px, deux
+écarts de 16px, soit **372px** pour les **288px** d'une fenêtre de 320px moins
+ses gouttières. Resserrer l'espacement et les remplissages rend environ 48px, ce
+qui ne suffit pas ; l'en-tête ne tient les trois qu'à partir de ~420px.
+
+Deux instances, donc, et la même règle que pour les deux formes de navigation :
+**une seule est dans l'arbre d'accessibilité à la fois**, l'autre est en
+`display: none`. Les écartés :
+
+- **Un signe à la place du texte en mobile** : une icône seule ne dit pas si
+  elle décrit l'état ou le propose — l'objection que porte déjà le paragraphe
+  suivant.
+- **La signature raccourcie en « AB »** : le nom est l'identité du site et la
+  première chose qu'un recruteur lit sur un téléphone.
 
 **La bascule est un bouton unique, nommé par son action** — « Thème sombre »
-quand le thème courant est clair. Un groupe de deux boutons
-`aria-pressed` a été écarté : avant le premier clic la préférence vaut
-`system`, et un `aria-pressed="true"` affirmerait un choix que le visiteur n'a
-pas fait.
+quand le thème courant est clair. Un groupe de deux boutons `aria-pressed` a été
+écarté : avant le premier clic la préférence vaut `system`, et un
+`aria-pressed="true"` affirmerait un choix que le visiteur n'a pas fait.
 
 ## 7. Mouvement
 
