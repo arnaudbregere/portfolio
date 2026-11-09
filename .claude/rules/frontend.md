@@ -33,8 +33,14 @@ app/styles/
 ├── _reset.scss        remise à zéro
 ├── _base.scss         styles d'éléments
 ├── _breakpoints.scss  mixin respond-up()
+├── _motion.scss       entrée de page partagée
 └── main.scss          point d'entrée
 ```
+
+`_motion.scss` est né le 09/11/2026 (issue #29) et reste l'unique exception à
+la règle ci-dessus : un `@keyframes` partagé par plusieurs pages ne peut pas
+vivre dans un `<style scoped>`, qui le renommerait pour chaque composant.
+`DESIGN.md` § 7 porte la figure et ses mesures.
 
 - Tout le reste vit dans le `<style scoped>` du composant qui en a besoin.
   N'ajouter un fichier global que si la règle est impossible à scoper.

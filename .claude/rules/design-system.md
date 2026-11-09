@@ -5,7 +5,11 @@ dépôt. `DESIGN.md` fait foi pour les valeurs (tokens, échelles, règles
 visuelles) ; ce fichier fixe la structure.
 
 **Aucun composant spéculatif.** Les niveaux ci-dessous décrivent où un composant
-*va*, pas ce qu'il faut écrire. Un composant naît de la page qui en a besoin,
+*va*, pas ce qu'il faut écrire. Les exemples sont les composants **réellement
+écrits** : un exemple inventé finit par être construit pour cocher une case.
+`ContactForm` y figurait jusqu'au 09/11/2026 alors que le formulaire est
+abandonné depuis l'issue #5, et `ProjectGrid` n'a jamais existé — la page
+`/projets` est une liste, pas une grille. Un composant naît de la page qui en a besoin,
 jamais pour cocher une case de phase : les six atomes écrits le 26/10/2026 ont
 été supprimés pour cette raison. Un dossier de niveau n'est créé qu'au moment où
 un fichier y entre.
@@ -14,9 +18,9 @@ un fichier y entre.
 
 | Niveau | Définition | Exemples |
 |---|---|---|
-| `atoms/` | élément indivisible, sans dépendance à un autre composant du projet | `Button`, `Link`, `Icon`, `Input`, `Heading` |
-| `molecules/` | assemblage d'atomes avec une intention unique | `FormField`, `ProjectCard`, `NavItem`, `StatRow`, `ThemeToggle` |
-| `organisms/` | section autonome de page, assemble molécules et atomes | `SiteHeader`, `NavOverlay`, `ProjectGrid`, `ContactForm`, `SiteFooter` |
+| `atoms/` | élément indivisible, sans dépendance à un autre composant du projet | `Button`, `CvLink`, `Icon` |
+| `molecules/` | assemblage d'atomes avec une intention unique | `SiteLink`, `ThemeToggle` |
+| `organisms/` | section autonome de page, assemble molécules et atomes | `SiteHeader`, `NavOverlay`, `ProjectDetail`, `SiteFooter` |
 | `templates/` | squelette de mise en page sans contenu réel | `PageTemplate` |
 | `pages/` | route Nuxt : fournit les données aux organismes | `index.vue`, `projets/[slug].vue` |
 

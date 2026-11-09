@@ -32,7 +32,7 @@ app/
 ├── composables/     logique réutilisable
 ├── layouts/         enveloppes de page
 ├── pages/           routes
-├── styles/          tokens, police, remise à zéro, styles d'éléments, points de rupture
+├── styles/          tokens, police, remise à zéro, styles d'éléments, points de rupture, entrée de page
 └── utils/           fonctions pures
 content/             contenu éditorial typé (projets, parcours)
 tests/unit/          tests Vitest
