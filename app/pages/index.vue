@@ -54,8 +54,11 @@ const family = rest.join(' ')
          que `word-spacing` resserre, et c'est elle qui fait lire deux mots à
          un lecteur d'écran. La minuscule est posée par le style, donc le
          texte de la page garde ses capitales. -->
+    <!-- Les deux `span` restent sur la même ligne : un retour à la ligne
+         entre eux entrerait dans le `textContent` du titre, et c'est cette
+         espace unique que `word-spacing` resserre. -->
     <h1 class="home__name">
-      <span class="home__given">{{ given }}</span> {{ family }}
+      <span class="home__given">{{ given }}</span> <span class="home__family">{{ family }}</span>
     </h1>
     <p class="home__tagline">{{ profile.tagline }}</p>
 
@@ -146,7 +149,6 @@ const family = rest.join(' ')
 
    Propriétés longues et non le raccourci `animation` : un `var()` dans le
    raccourci met tous ses longhands en substitution différée. */
-.home__name,
 .home__tagline,
 .home__pitch,
 .home__download {
@@ -180,6 +182,14 @@ const family = rest.join(' ')
   .home__download {
     animation-delay: 0ms !important;
   }
+
+  /* Les deux mots du nom ne glissent plus : ils entrent sur place. La règle
+     globale de `_reset.scss` écrase la durée, pas le tracé — sans cette
+     remise à zéro, ils apparaîtraient décalés. */
+  .home__given,
+  .home__family {
+    animation-name: none;
+  }
 }
 
 /* Le nom est le seul élément à sortir de l'échelle de texte courante : il
@@ -197,6 +207,47 @@ const family = rest.join(' ')
   line-height: 1;
   text-transform: lowercase;
   word-spacing: -0.3565em;
+}
+
+/* Le nom entre en deux mouvements qui se rejoignent : le prénom vient de la
+   gauche, le nom de la droite, et le `word-spacing` négatif les soude à
+   l'arrivée. Décision d'Arnaud du 09/11/2026, consignée en § 7 de
+   `DESIGN.md` — c'est le seul endroit du site où l'entrée n'est pas la
+   figure commune, et le § dit pourquoi.
+
+   `translate` et `opacity` seules : les deux propriétés que le navigateur
+   compose sans recalculer la mise en page.
+
+   La course est en `em`, comme le `word-spacing` : elle suit la taille du
+   titre, qui va de 44,8 à 89,76 px. */
+@keyframes name-from-left {
+  from {
+    opacity: 0;
+    translate: -0.4em 0;
+  }
+}
+
+@keyframes name-from-right {
+  from {
+    opacity: 0;
+    translate: 0.4em 0;
+  }
+}
+
+.home__given,
+.home__family {
+  display: inline-block;
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: backwards;
+}
+
+.home__given {
+  animation-name: name-from-left;
+}
+
+.home__family {
+  animation-name: name-from-right;
 }
 
 /* Le prénom porte la couleur de la marque, fixe dans les deux thèmes, comme
