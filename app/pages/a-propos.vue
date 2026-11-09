@@ -113,10 +113,20 @@ useRevealCascade(root)
 
       <p class="about__summary" data-reveal-item>{{ profile.availability }}</p>
 
+      <!-- Les pictogrammes sont ceux de `/contact`, et ne portent aucun sens :
+           ils sont `aria-hidden`, et le libellé du lien reste la seule source
+           d'information. La ville n'en a pas, n'étant pas une coordonnée
+           joignable. -->
       <ul class="about__contact">
-        <li data-reveal-item><a :href="`mailto:${profile.email}`">{{ profile.email }}</a></li>
-        <li data-reveal-item><a :href="telHref(profile.phone)">{{ profile.phone }}</a></li>
-        <li data-reveal-item>{{ profile.location }}</li>
+        <li data-reveal-item>
+          <Icon name="mail" />
+          <a :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+        </li>
+        <li data-reveal-item>
+          <Icon name="phone" />
+          <a :href="telHref(profile.phone)">{{ profile.phone }}</a>
+        </li>
+        <li class="about__place-line" data-reveal-item>{{ profile.location }}</li>
       </ul>
     </section>
   </article>
@@ -290,7 +300,19 @@ useRevealCascade(root)
   list-style: none;
 }
 
+.about__contact li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+}
+
 .about__contact li + li {
   margin-top: var(--space-2xs);
+}
+
+/* La ville n'a pas de pictogramme : son retrait l'aligne sur les lignes qui
+   en ont un, au lieu de la laisser seule contre la marge. */
+.about__place-line {
+  padding-left: calc(1em + var(--space-2xs));
 }
 </style>
