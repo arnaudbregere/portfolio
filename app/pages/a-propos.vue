@@ -32,11 +32,13 @@ useRevealCascade(root)
       <CvLink :href="cvFile.path" :format="cvFile.format" :size-kb="cvFile.sizeKb" />
     </p>
 
-    <section class="about__section" aria-labelledby="parcours">
+    <section class="about__section" aria-labelledby="experiences">
       <!-- Le titre est une rubrique d'une seule ligne : il se classe sur son
            propre `top`, puisque la liste qui le suit est découpée en rubriques
            et ne peut pas l'accueillir. -->
-      <h2 id="parcours" data-reveal-section data-reveal-item>Parcours</h2>
+      <h2 id="experiences" data-reveal-section data-reveal-item>
+        Expériences professionnelles
+      </h2>
 
       <ol class="about__list">
         <!-- Une expérience = une rubrique. Prises ensemble elles feraient
