@@ -430,6 +430,65 @@ Ce qui reste scopé dans chaque page : les délais fixes de sa tête de page, qu
 dépendent de ce qu'elle y met, et le filet tiré de son bloc d'ouverture quand
 elle en a un.
 
+**Une rubrique de cascade ne dépasse pas la hauteur de la fenêtre.** Décision
+du 09/11/2026, prise sur `/a-propos` (issue #32) après un retour d'Arnaud.
+
+`useRevealCascade` classe une rubrique sur son `top` seul : au-dessus de la
+ligne de flottaison elle entre au chargement, en dessous elle attend son
+arrivée. Ce classement ne vaut donc que si la rubrique tient à peu près dans la
+fenêtre. Mesuré : « Parcours » pris pour une seule rubrique faisait **2296 px**
+dans une fenêtre de 1047 px, et son `top` était à 632 px. Ses cinq expériences
+partaient donc toutes au chargement, les quatre dernières jouaient leur entrée
+**hors écran**, et au défilement elles étaient déjà entrées — immobiles, alors
+que `/contact` les aurait fait monter.
+
+Donc : **une rubrique de page dont le contenu est une liste se découpe en une
+rubrique par élément.** Sur `/a-propos`, « Parcours » (une expérience) et
+« Formation » (une formation). Aucune rubrique ne dépasse alors 695 px. La
+règle est structurelle : ce n'est pas le nombre d'éléments qui décide, c'est la
+hauteur comparée à la fenêtre.
+
+« Formation » n'avait pas été signalée, et relevait du même défaut : 1125 px
+pour une fenêtre de 1047 px. Le défaut y était seulement latent — visible sur
+une fenêtre plus courte.
+
+**Le titre d'une telle rubrique est une rubrique d'une seule ligne.** Un `h2`
+suivi d'une liste découpée en rubriques n'a aucun descendant à marquer : il
+porte alors `data-reveal-section` **et** `data-reveal-item`, et se classe sur
+son propre `top`. `useRevealCascade` compte une rubrique comme sa propre ligne
+quand elle est marquée ainsi.
+
+C'est le seul ajout que la figure ait demandé à l'outillage commun depuis
+`/contact`, et il n'était pas évitable : un titre à délai fixe rejouerait
+exactement le défaut corrigé ici, en entrant hors écran sur une fenêtre courte.
+
+**Une ligne de cascade reste une unité de lecture.** À l'intérieur d'un
+élément, c'est ce qui se lit d'un trait qui fait une ligne, et non chaque
+élément du DOM : la liste des missions d'une expérience entre **en un bloc**,
+jamais une mission à la fois, et un couple `dt` / `dd` de la liste des
+compétences fait une ligne. Une expérience compte donc cinq lignes — intitulé,
+période, résumé, missions, stack — et pas une par mission.
+
+| Rubrique de page | Découpage | Lignes par rubrique de cascade |
+|---|---|---|
+| Parcours | le titre, puis une rubrique par expérience | 1, puis 5 |
+| Compétences | une rubrique | le `h2`, puis chaque couple `dt` / `dd` |
+| Formation | le titre, puis une rubrique par formation | 1, puis 2 à 4 |
+| Me joindre | une rubrique | le `h2`, la disponibilité, puis chaque coordonnée |
+
+« Compétences » (695 px) et « Me joindre » (214 px) restent d'un seul bloc :
+elles tiennent dans la fenêtre, donc leur classement est juste.
+
+`/a-propos` et `/projets` découpent ainsi de la même façon : un élément de
+liste est une rubrique de cascade dans les deux cas.
+
+**La liste des compétences groupe ses couples dans un `<div>`.** Un `dt` et son
+`dd` sont deux éléments frères, et aucun ne contient l'autre : un couple ne peut
+porter une ligne qu'à travers un élément qui l'enveloppe. HTML autorise
+explicitement un `<div>` autour d'un groupe `dt` / `dd` dans un `<dl>`, et les
+sélecteurs de la page visent des descendants, donc la mise en forme ne bouge
+pas.
+
 ## 8. Organisation du code
 
 **Un seul système : Atomic Design.** ITCSS a été abandonné le 26/10/2026 —
