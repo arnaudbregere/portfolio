@@ -12,8 +12,10 @@ export type Profile = {
   role: string
   /** Phrase d'accroche de l'accueil, une seule. */
   tagline: string
-  /** Présentation en paragraphes. Un élément du tableau, un paragraphe. */
+  /** Présentation de `/a-propos`, en paragraphes. Un élément, un paragraphe. */
   intro: readonly string[]
+  /** Présentation de l'accueil, en paragraphes. Un élément, un paragraphe. */
+  pitch: readonly string[]
   location: string
   email: string
   /** Affiché tel quel ; `tel:` est construit par le composant. */

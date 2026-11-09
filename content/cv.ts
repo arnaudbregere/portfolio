@@ -31,6 +31,15 @@ export const profile: Profile = {
     'Initialement webdesigner, j’ai évolué vers le rôle d’intégrateur web et aujourd’hui développeur front-end.',
     'Mon parcours atypique me permet d’allier créativité, technicité et adaptabilité.',
   ],
+  /**
+   * Texte de présentation de l'accueil, choisi par Arnaud le 09/11/2026. Il
+   * est distinct de `intro`, qui sert `/a-propos` : l'accueil dit le
+   * parcours, la page À propos dit le point d'arrivée.
+   */
+  pitch: [
+    'Je me suis ensuite spécialisé en développement front-end, en consolidant mes compétences en JavaScript et sur les frameworks modernes.',
+    'Mon parcours atypique me permet d’allier créativité, rigueur et adaptabilité pour concevoir des expériences web performantes.',
+  ],
   location: 'Paris',
   email: 'arnaud.bregere@gmail.com',
   phone: '06 07 98 52 85',
