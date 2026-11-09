@@ -31,4 +31,21 @@ describe.each(pages)('page $name', ({ component, heading }) => {
 
     expect(page.find('h1 + p').text()).not.toBe('')
   })
+
+  /**
+   * Le formulaire de contact est abandonné le 05/11/2026 (issue #5) au profit
+   * des coordonnées en clair. Quatre fichiers l'affirmaient encore et ont été
+   * repris ce jour-là ; `index.vue` a été manqué, et la page d'accueil
+   * renvoyait encore vers quelque chose qui n'existe pas.
+   *
+   * Ce test porte sur le rendu et non sur la source : un commentaire qui
+   * explique la décision garde le droit de nommer le formulaire, la page non.
+   */
+  it('ne propose aucun formulaire, et n’en annonce aucun', async () => {
+    const page = await mountSuspended(component)
+
+    expect(page.find('form').exists()).toBe(false)
+    expect(page.find('input').exists()).toBe(false)
+    expect(page.text()).not.toMatch(/formulaire/i)
+  })
 })
