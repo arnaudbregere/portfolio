@@ -224,39 +224,43 @@ n'ajouterait rien et introduirait l'endroit précis où ce code se casse.
 remonter chercher n'est pas un menu. L'en-tête reste donc collant, sur le fond
 de page et sous un filet.
 
-**Le pied de page porte la navigation en clair.** `PRODUCT.md` exige que le
-site reste lisible sans JavaScript, et une surcouche plein écran ne s'ouvre pas
-sans lui. Le pied de page est le chemin de repli ; il n'est pas la navigation
-principale.
+**Le pied de page porte la navigation en clair, et rien d'autre.** `PRODUCT.md`
+exige que le site reste lisible sans JavaScript, et une surcouche plein écran ne
+s'ouvre pas sans lui. Le pied de page est le chemin de repli ; il n'est pas la
+navigation principale.
+
+GitHub et LinkedIn l'ont quitté le 09/11/2026 (issue #34), en même temps que la
+bascule. Ils ne vivent plus qu'à un endroit, `/contact`, que `PRODUCT.md` désigne
+pour les porter. Un pied de page qui reprend tout devient un second sommaire, et
+une adresse écrite à deux endroits est une adresse à tenir à jour deux fois.
 
 **La rubrique courante passe à l'encre**, dans la barre, dans la surcouche
 comme dans le pied de page. `NuxtLink` pose `aria-current="page"` :
 l'information ne repose jamais sur la seule couleur.
 
-**La bascule de thème vit dans l'en-tête à partir de 768px, et dans le pied de
-page en dessous.** Décision d'Arnaud du 09/11/2026 (issue #34). Elle était au
-pied de page seul, donc hors de vue sur une page longue, alors qu'elle change la
-page entière et à tout moment.
+**La bascule de thème vit dans l'en-tête, à toute largeur, en une seule
+instance.** Décision d'Arnaud du 09/11/2026 (issue #34). Elle était au pied de
+page, donc hors de vue sur une page longue, alors qu'elle change la page entière
+et à tout moment.
 
-**En desktop, elle se place en bout de barre, après la dernière rubrique.** Elle
-agit sur la page et non sur la navigation : la placer avant « Accueil » la
-ferait lire comme une cinquième entrée.
+En desktop elle se place **en bout de barre**, après la dernière rubrique : elle
+agit sur la page et non sur la navigation, et la placer avant « Accueil » la
+ferait lire comme une cinquième entrée. En mobile elle se place **à gauche du
+déclencheur « Menu »**, dans le même groupe, à droite de la signature.
 
-Elle n'y est pas à toute largeur parce que **l'en-tête mobile ne la porte pas**.
-Mesuré dans Chrome : signature 134px, bascule 130px, déclencheur 76px, deux
-écarts de 16px, soit **372px** pour les **288px** d'une fenêtre de 320px moins
-ses gouttières. Resserrer l'espacement et les remplissages rend environ 48px, ce
-qui ne suffit pas ; l'en-tête ne tient les trois qu'à partir de ~420px.
+Une première version la réservait au desktop, l'en-tête mobile paraissant trop
+étroit pour trois éléments. La mesure a tranché l'inverse : les échelles de
+texte et d'espacement étant fluides, les libellés rétrécissent avec la fenêtre.
+Relevé dans Chrome à **393px** : signature 113px, bascule 126px, déclencheur
+76px, deux écarts de 16px et 32px de gouttières, soit **379px** — aucun
+débordement.
 
-Deux instances, donc, et la même règle que pour les deux formes de navigation :
-**une seule est dans l'arbre d'accessibilité à la fois**, l'autre est en
-`display: none`. Les écartés :
-
-- **Un signe à la place du texte en mobile** : une icône seule ne dit pas si
-  elle décrit l'état ou le propose — l'objection que porte déjà le paragraphe
-  suivant.
-- **La signature raccourcie en « AB »** : le nom est l'identité du site et la
-  première chose qu'un recruteur lit sur un téléphone.
+**La bascule garde la même largeur dans les deux thèmes.** « Thème clair » est
+plus court que « Thème sombre » : sans réserve, le bouton rétrécit au clic et
+toute la barre se décale. Le libellé de l'autre thème est donc rendu dans la
+même case de grille, invisible et hors de l'arbre d'accessibilité. Pas de
+largeur minimale en dur, qui deviendrait fausse au premier changement de police
+ou de libellé.
 
 **La bascule est un bouton unique, nommé par son action** — « Thème sombre »
 quand le thème courant est clair. Un groupe de deux boutons `aria-pressed` a été
@@ -445,7 +449,7 @@ app/components/
 └── organisms/
     ├── SiteHeader.vue          nom, bouton de menu, filet
     ├── NavOverlay.vue          menu plein écran
-    └── SiteFooter.vue          navigation en clair, profils, bascule
+    └── SiteFooter.vue          navigation en clair
 content/nav.ts                  rubriques et profils — source unique
 ```
 
