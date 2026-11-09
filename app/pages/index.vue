@@ -99,10 +99,6 @@ const featuredProjects = projects.filter((project) => project.featured)
     <section class="home__section" aria-labelledby="joindre">
       <h2 id="joindre">{{ profile.availability }}</h2>
 
-      <p class="home__pitch">
-        Le plus simple est le formulaire ; l’e-mail direct marche aussi.
-      </p>
-
       <p class="home__actions">
         <NuxtLink class="home__action" :to="contact.to">{{ contact.label }}</NuxtLink>
         <a class="home__action" :href="`mailto:${profile.email}`">{{ profile.email }}</a>
