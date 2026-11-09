@@ -5,3 +5,6 @@
 @use 'fonts';
 @use 'reset';
 @use 'base';
+// Exception documentée dans `_motion.scss` : un `@keyframes` partagé par
+// plusieurs pages ne peut pas être scopé.
+@use 'motion';
