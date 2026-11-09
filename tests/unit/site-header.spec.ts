@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { siteNav } from '~~/content/nav'
 import SiteHeader from '~/components/organisms/SiteHeader.vue'
@@ -40,5 +40,54 @@ describe('SiteHeader', () => {
     )
     expect(links[0]!.text()).toContain('01')
     expect(links[0]!.text()).toContain(siteNav[0]!.label)
+  })
+
+  /**
+   * La barre de l'en-tête et la surcouche portent les mêmes rubriques sous deux
+   * formes. Le point de rupture est en CSS, donc hors de portée d'un test
+   * unitaire : ce qui est vérifié ici est le contenu de la barre, et que les
+   * rangs restent à la surcouche.
+   */
+  it('porte les quatre rubriques en clair, sans leur rang', async () => {
+    const header = await mountSuspended(SiteHeader)
+    const links = header.get('nav[aria-label="Rubriques"]').findAll('a')
+
+    expect(links).toHaveLength(siteNav.length)
+    expect(links.map((link) => link.attributes('href'))).toEqual(
+      siteNav.map((item) => item.to),
+    )
+    expect(links.map((link) => link.text())).toEqual(
+      siteNav.map((item) => item.label),
+    )
+  })
+
+  /**
+   * La surcouche ouverte en mobile, puis la fenêtre élargie : le déclencheur
+   * passe en `display: none` et plus rien ne referme le menu sinon `Échap`.
+   * `DESIGN.md` § 6.
+   */
+  it('ferme la surcouche quand la fenêtre franchit le point de rupture', async () => {
+    const listeners = new Set<(event: MediaQueryListEvent) => void>()
+
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      media: query,
+      matches: false,
+      addEventListener: (_: string, fn: (event: MediaQueryListEvent) => void) =>
+        listeners.add(fn),
+      removeEventListener: (_: string, fn: (event: MediaQueryListEvent) => void) =>
+        listeners.delete(fn),
+    }))
+
+    const header = await mountSuspended(SiteHeader)
+
+    await header.get('button').trigger('click')
+    expect(header.get('button').attributes('aria-expanded')).toBe('true')
+
+    for (const notify of listeners) notify({ matches: true } as MediaQueryListEvent)
+    await header.vm.$nextTick()
+
+    expect(header.get('button').attributes('aria-expanded')).toBe('false')
+
+    vi.unstubAllGlobals()
   })
 })

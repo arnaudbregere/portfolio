@@ -40,7 +40,10 @@ watch(() => route.fullPath, () => {
       </button>
     </div>
 
-    <nav class="o-nav__body" aria-label="Rubriques">
+    <!-- Pas d'`aria-label` : le `<dialog>` qui l'entoure se nomme déjà « Menu
+         principal », et la barre de l'en-tête porte le nom « Rubriques ». Deux
+         repères de navigation du même nom dans un document se confondent. -->
+    <nav class="o-nav__body">
       <ul>
         <li v-for="(item, index) in siteNav" :key="item.to">
           <NuxtLink :to="item.to">
