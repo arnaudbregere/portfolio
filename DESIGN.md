@@ -166,11 +166,17 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   cartes égales. L'ordre d'affiche est la hiérarchie.
 - **Un bloc de premier niveau porte son rang en figure numérotée.** Décision
   d'Arnaud du 09/11/2026 (issue #32) : les quatre rubriques de `/a-propos`, et
-  chaque projet de `/projets`. Deux chiffres en encre atténuée, taille de
-  libellé, chiffres tabulaires : la même figure que la surcouche de
-  navigation, et non une seconde manière de numéroter. Le rang vient d'un
-  compteur CSS en `decimal-leading-zero`, donc il n'est écrit dans aucun
-  gabarit et se renumérote seul quand un bloc bouge ou qu'un projet s'ajoute.
+  chaque projet de `/projets`. Le chiffre est en encre atténuée, à la taille
+  de libellé, en chiffres tabulaires. Il vient d'un compteur CSS, donc il
+  n'est écrit dans aucun gabarit et se renumérote seul quand un bloc bouge ou
+  qu'un projet s'ajoute.
+
+  **Sans zéro de tête**, décision du 09/11/2026 qui revient sur le premier
+  jet : `1`, `2`, `3`, et non `01`, `02`, `03`. La surcouche de navigation
+  garde ses deux chiffres — elle numérote quatre rubriques fixes comme une
+  planche, et son `01` tient une colonne de libellés alignés. Dans le corps
+  d'une page, le chiffre accompagne un titre et n'aligne rien : le zéro n'y
+  est qu'un ornement.
   L'écart entre le rang et le titre est d'un `--space-2xs` : le chiffre
   accompagne le titre, il ne s'en détache pas.
 - **Un élément de second niveau porte une puce.** Même décision. Sous un titre
