@@ -175,6 +175,16 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   visuellement, parce qu'un changement de contexte sans annonce désoriente au
   lecteur d'écran et que « page précédente » ne ramène pas en arrière dans un
   onglet neuf. Un lien de même origine que le site n'en porte pas.
+- **Un seul bouton de libellé, et une seule taille.** « Menu », « Fermer » et
+  la bascule de thème partagent l'atome `Button` : même hauteur
+  (`--control-min-height`), même largeur minimale (`--control-min-width`), même
+  filet, même typographie. Décision du 09/11/2026 (issue #34), prise sur trois
+  copies du même bloc de style qui avaient déjà divergé. La largeur minimale
+  tient « Menu » et « Fermer » à la même place, pour que la surcouche ne décale
+  pas le bouton qui l'a ouverte ; `white-space: nowrap` tient la hauteur, un
+  libellé passé sur deux lignes grandissant le bouton et désalignant ses
+  voisins. Les trois n'ont pas la **même** largeur : « Thème sombre » est le
+  double de « Menu », et l'imposer à tous ferait déborder l'en-tête mobile.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
@@ -437,17 +447,23 @@ Tout le reste vit dans le `<style scoped>` du composant qui en a besoin.
 **Aucun composant spéculatif.** Un composant naît de la page qui en a besoin,
 jamais pour cocher une case. Les six atomes écrits le 26/10 ont été supprimés
 pour cette raison : `Input` et `Button` ne servaient qu'au formulaire de
-contact, dont le fournisseur n'est pas tranché (issue
+contact, abandonné depuis (issue
 [#5](https://github.com/arnaudbregere/portfolio/issues/5)).
+
+`Button` est né de nouveau le 09/11/2026, et cette fois de trois emplois réels
+— « Menu », « Fermer » et la bascule de thème — qui recopiaient le même bloc de
+style et avaient commencé à diverger. C'est la différence entre un composant
+spéculatif et un composant factorisé.
 
 Les composants nés depuis le sont chacun de la page ou du gabarit qui les
 utilise, dans le même commit :
 
 ```
 app/components/
-├── atoms/ThemeToggle.vue       bascule clair / sombre
+├── atoms/Button.vue            bouton de libellé, taille unique
+├── molecules/ThemeToggle.vue   bascule clair / sombre
 └── organisms/
-    ├── SiteHeader.vue          nom, bouton de menu, filet
+    ├── SiteHeader.vue          nom, rubriques, bascule, bouton de menu
     ├── NavOverlay.vue          menu plein écran
     └── SiteFooter.vue          navigation en clair
 content/nav.ts                  rubriques et profils — source unique

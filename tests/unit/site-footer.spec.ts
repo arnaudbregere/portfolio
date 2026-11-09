@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { siteNav } from '~~/content/nav'
 import SiteFooter from '~/components/organisms/SiteFooter.vue'
-import ThemeToggle from '~/components/atoms/ThemeToggle.vue'
+import ThemeToggle from '~/components/molecules/ThemeToggle.vue'
 
 describe('ThemeToggle', () => {
   it('se nomme par l’action, pas par l’état courant', async () => {
@@ -22,7 +22,7 @@ describe('ThemeToggle', () => {
   it('réserve la largeur de l’autre libellé, hors de l’arbre d’accessibilité', async () => {
     const toggle = await mountSuspended(ThemeToggle)
     const ghost = toggle.get('[aria-hidden="true"]')
-    const label = toggle.get('.a-theme-toggle__label')
+    const label = toggle.get('.m-theme-toggle__label')
 
     expect(label.text()).toMatch(/^Thème (clair|sombre)$/)
     expect(ghost.text()).toMatch(/^Thème (clair|sombre)$/)

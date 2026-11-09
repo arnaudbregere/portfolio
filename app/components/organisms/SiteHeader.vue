@@ -52,15 +52,18 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
         <ThemeToggle />
       </div>
 
-      <button
-        type="button"
-        class="o-header__trigger"
-        aria-controls="menu-principal"
-        :aria-expanded="isMenuOpen"
-        @click="isMenuOpen = true"
-      >
-        Menu
-      </button>
+      <!-- Enveloppe plutôt qu'une classe posée sur le composant : la règle qui
+           le cache et celle que porte `Button` viseraient sinon le même élément
+           avec la même spécificité, et l'ordre d'injection trancherait. -->
+      <div class="o-header__trigger">
+        <Button
+          aria-controls="menu-principal"
+          :aria-expanded="isMenuOpen"
+          @click="isMenuOpen = true"
+        >
+          Menu
+        </Button>
+      </div>
     </div>
 
     <NavOverlay v-model:open="isMenuOpen" />
@@ -157,31 +160,13 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
 }
 
 .o-header__trigger {
-  min-height: 2.75rem; // 44px : cible tactile RGAA 4.1
-  padding: var(--space-2xs) var(--space-s);
-  border: var(--rule-strong);
-  background-color: transparent;
-  color: inherit;
-  font-family: var(--font-display);
-  font-size: var(--size-label);
-  font-weight: var(--label-weight);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-out);
-
-  &:hover {
-    background-color: var(--color-bg-subtle);
-  }
-
   @include bp.respond-up(m) {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .o-header__nav a,
-  .o-header__trigger {
+  .o-header__nav a {
     transition: none;
   }
 }

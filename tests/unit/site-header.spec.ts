@@ -3,7 +3,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import type { VueWrapper } from '@vue/test-utils'
 import { siteNav } from '~~/content/nav'
 import SiteHeader from '~/components/organisms/SiteHeader.vue'
-import ThemeToggle from '~/components/atoms/ThemeToggle.vue'
+import ThemeToggle from '~/components/molecules/ThemeToggle.vue'
 
 /**
  * L'en-tête porte deux boutons depuis le 09/11/2026 : la bascule de thème et le
