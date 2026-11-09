@@ -1,0 +1,55 @@
+// Entrée de page partagée. `DESIGN.md` § 7 porte la figure et ses mesures.
+//
+// Seul fichier global de mise en forme du dépôt, et la seule exception que
+// `.claude/rules/frontend.md` accorde : un `@keyframes` partagé par plusieurs
+// pages ne peut pas vivre dans un `<style scoped>`, qui le renommerait pour
+// chaque composant.
+//
+// Il naît le 09/11/2026 de la deuxième page qui reprend la figure, comme
+// `DESIGN.md` l'exigeait — pas avant : une seule page ne disait pas encore ce
+// qui, dans ces règles, appartient au site.
+//
+// Ce qui reste scopé dans chaque page : les délais fixes de sa tête de page,
+// qui dépendent de ce qu'elle y met, et le filet tiré de son bloc d'ouverture
+// quand elle en a un.
+
+// `opacity` et `translate` seulement : les deux propriétés que le navigateur
+// compose sans recalculer la mise en page. Animer une hauteur ou une marge
+// ferait saccader un mobile d'entrée de gamme.
+@keyframes page-entry {
+  from {
+    opacity: 0;
+    translate: 0 var(--space-s);
+  }
+}
+
+// Les rubriques entrent au chargement **par défaut**. `useRevealCascade` mesure
+// au premier rendu et pose `--reveal-delay` sur les lignes lisibles sans
+// défiler ; il retire les autres de la cascade. Dans ce sens, rien ne clignote,
+// et une page dont le JavaScript ne s'exécute jamais garde une entrée complète.
+//
+// Propriétés longues et non le raccourci `animation` : un `var()` dans le
+// raccourci met tous ses longhands en substitution différée.
+[data-reveal-item] {
+  animation-name: page-entry;
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: backwards;
+  animation-delay: var(--reveal-delay, 700ms);
+}
+
+// L'état d'attente ne porte **aucune** animation : un état stable, et non une
+// animation figée en son milieu. Quand la rubrique entre, le composable retire
+// l'attribut et la règle ci-dessus s'applique enfin, depuis son début.
+[data-reveal='pending'] {
+  animation-name: none;
+  opacity: 0;
+}
+
+// La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
+// cette remise à zéro, la page resterait vide le temps de la cascade.
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-item] {
+    animation-delay: 0ms !important;
+  }
+}

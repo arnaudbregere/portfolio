@@ -147,39 +147,22 @@ useSeoMeta(
   font-size: var(--step-2);
 }
 
-/* -- Entrée de la page ---------------------------------------------------
-   Deux mouvements, décalés : les textes montent d'un pas en prenant leur
-   opacité, puis le filet se tire de gauche à droite avant les coordonnées.
-   `opacity` et `transform` sont les deux seules propriétés que le navigateur
-   compose sans recalculer la mise en page : le mouvement tient le rythme sur
-   un mobile lent. Aucune information ne repose sur lui — `DESIGN.md`,
-   § Mouvement. */
+/* -- Tête de page ---------------------------------------------------------
+   La figure partagée vit dans `app/styles/_motion.scss` : le `@keyframes`
+   `page-entry` et les règles de `[data-reveal-item]`. Ne restent ici que les
+   délais fixes de cette tête de page, qui dépendent de ce qu'elle porte, et le
+   filet tiré de son bloc d'ouverture.
 
-/* Propriétés longues et non le raccourci `animation` : un `var()` dans le
+   Propriétés longues et non le raccourci `animation` : un `var()` dans le
    raccourci met tous ses longhands en substitution différée — ils ressortent
-   vides de `cssRules`, `animation-timeline` compris, que le raccourci remet
-   à sa valeur initiale. Les écrire séparément garde chaque propriété lisible
-   et laisse la chronologie hors du jeu. */
+   vides de `cssRules`, que le raccourci remet à sa valeur initiale. */
 .contact h1,
 .contact__name,
 .contact__list--lead .contact__entry {
-  animation-name: contact-entry;
+  animation-name: page-entry;
   animation-duration: var(--dur-slow);
   animation-timing-function: var(--ease-out);
   animation-fill-mode: backwards;
-}
-
-/* Les rubriques entrent au chargement **par défaut**, chacune à son tour.
-   `useRevealCascade` mesure au premier rendu et pose `--reveal-delay` sur
-   celles qui sont lisibles sans défiler ; il retire les autres de la cascade
-   plus bas. Dans ce sens, rien ne clignote, et une page dont le JavaScript ne
-   s'exécute jamais garde une entrée complète. */
-.contact__section [data-reveal-item] {
-  animation-name: contact-entry;
-  animation-duration: var(--dur-slow);
-  animation-timing-function: var(--ease-out);
-  animation-fill-mode: backwards;
-  animation-delay: var(--reveal-delay, 700ms);
 }
 
 .contact__name {
@@ -192,13 +175,6 @@ useSeoMeta(
 
 .contact__list--lead .contact__entry:nth-child(2) {
   animation-delay: 560ms;
-}
-
-@keyframes contact-entry {
-  from {
-    opacity: 0;
-    translate: 0 var(--space-s);
-  }
 }
 
 /* Le filet est un pseudo-élément et non une bordure : une bordure ne se met
@@ -220,29 +196,14 @@ useSeoMeta(
   }
 }
 
-/* -- Entrée au défilement ------------------------------------------------
-   Une rubrique hors de la fenêtre au premier rendu attend son arrivée.
-   `useRevealCascade` lui pose `data-reveal="pending"`, qui ne porte **aucune**
-   animation : un état stable, et non une animation figée en son milieu.
-   Quand la rubrique entre, le composable retire l'attribut et la règle
-   ci-dessus s'applique enfin — la cascade part de son début, à son rythme,
-   indépendamment de la vitesse de la molette.
-
-   Aucune réserve de navigateur ici : `IntersectionObserver` est servi partout.
-   Et sans JavaScript, l'attribut n'est jamais posé : tout entre au
-   chargement, la page reste entière. */
-.contact__section [data-reveal='pending'] {
-  animation-name: none;
-  opacity: 0;
-}
-
 /* La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
-   cette remise à zéro, la page resterait vide le temps de la cascade. */
+   cette remise à zéro, la tête de page resterait vide le temps de la cascade.
+   Les lignes marquées `data-reveal-item` sont remises à zéro par
+   `_motion.scss`. */
 @media (prefers-reduced-motion: reduce) {
   .contact h1,
   .contact__name,
-  .contact__title,
-  .contact__entry,
+  .contact__list--lead .contact__entry,
   .contact__list--lead::before {
     animation-delay: 0ms !important;
   }

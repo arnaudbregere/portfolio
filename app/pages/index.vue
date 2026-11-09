@@ -4,6 +4,10 @@ import { siteNav } from '~~/content/nav'
 import { projects } from '~~/content/projects'
 import { pageSeoMeta } from '~/utils/page-seo'
 
+const root = ref<HTMLElement | null>(null)
+
+useRevealCascade(root)
+
 useSeoMeta(
   pageSeoMeta({
     title: 'Arnaud Brégère — Développeur front-end senior',
@@ -36,7 +40,7 @@ const featuredProjects = projects.filter((project) => project.featured)
 </script>
 
 <template>
-  <article class="home">
+  <article ref="root" class="home">
     <h1 class="home__name">{{ profile.name }}</h1>
     <p class="home__tagline">{{ profile.tagline }}</p>
 
@@ -50,13 +54,18 @@ const featuredProjects = projects.filter((project) => project.featured)
       <CvLink :href="cvFile.path" :format="cvFile.format" :size-kb="cvFile.sizeKb" />
     </p>
 
-    <section class="home__section" aria-labelledby="projets">
-      <h2 id="projets">Projets</h2>
+    <section class="home__section" aria-labelledby="projets" data-reveal-section>
+      <h2 id="projets" data-reveal-item>Projets</h2>
 
       <!-- Une liste à filets, pas une grille de cartes égales : le rang se lit
            dans l'ordre et dans la taille du texte (`DESIGN.md`, § Formes). -->
       <ol class="home__projects">
-        <li v-for="project in featuredProjects" :key="project.slug" class="home__project">
+        <li
+          v-for="project in featuredProjects"
+          :key="project.slug"
+          class="home__project"
+          data-reveal-item
+        >
           <h3 class="home__project-title">
             <SiteLink class="home__project-link" :href="`/projets/${project.slug}`">
               {{ project.title }}
@@ -68,38 +77,38 @@ const featuredProjects = projects.filter((project) => project.featured)
         </li>
       </ol>
 
-      <p class="home__actions">
+      <p class="home__actions" data-reveal-item>
         <NuxtLink class="home__action" to="/projets">Tous les projets</NuxtLink>
       </p>
     </section>
 
-    <section class="home__section" aria-labelledby="reperes">
-      <h2 id="reperes">Repères</h2>
+    <section class="home__section" aria-labelledby="reperes" data-reveal-section>
+      <h2 id="reperes" data-reveal-item>Repères</h2>
 
       <dl class="home__facts">
-        <div class="home__fact">
+        <div class="home__fact" data-reveal-item>
           <dt>Expérience front-end</dt>
           <dd>{{ yearsOfFrontEnd }} ans</dd>
         </div>
-        <div class="home__fact">
+        <div class="home__fact" data-reveal-item>
           <dt>Dans le métier depuis</dt>
           <dd>2009</dd>
         </div>
-        <div class="home__fact">
+        <div class="home__fact" data-reveal-item>
           <dt>Terrain</dt>
           <dd>Figaro Classifieds, Groupe La Poste, BrandAlley, RueDuCommerce</dd>
         </div>
-        <div class="home__fact">
+        <div class="home__fact" data-reveal-item>
           <dt>Socle</dt>
           <dd>Vue 3, Nuxt, TypeScript, accessibilité RGAA, référencement</dd>
         </div>
       </dl>
     </section>
 
-    <section class="home__section" aria-labelledby="joindre">
-      <h2 id="joindre">{{ profile.availability }}</h2>
+    <section class="home__section" aria-labelledby="joindre" data-reveal-section>
+      <h2 id="joindre" data-reveal-item>{{ profile.availability }}</h2>
 
-      <p class="home__actions">
+      <p class="home__actions" data-reveal-item>
         <NuxtLink class="home__action" :to="contact.to">{{ contact.label }}</NuxtLink>
         <a class="home__action" :href="`mailto:${profile.email}`">{{ profile.email }}</a>
       </p>
@@ -109,6 +118,49 @@ const featuredProjects = projects.filter((project) => project.featured)
 
 <style scoped lang="scss">
 @use '../styles/breakpoints' as bp;
+
+/* -- Tête de page ---------------------------------------------------------
+   La figure partagée vit dans `app/styles/_motion.scss`. Ne restent ici que
+   les délais fixes de cette tête : elle n'est pas une rubrique, donc
+   `useRevealCascade` ne la classe pas et ne lui pose aucun délai.
+
+   Propriétés longues et non le raccourci `animation` : un `var()` dans le
+   raccourci met tous ses longhands en substitution différée. */
+.home__name,
+.home__tagline,
+.home__pitch,
+.home__download {
+  animation-name: page-entry;
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: backwards;
+}
+
+/* 140 ms d'écart, comme la tête de `/contact` : le nom, la ligne de métier,
+   le pitch, puis le CV. */
+.home__tagline {
+  animation-delay: 140ms;
+}
+
+.home__pitch {
+  animation-delay: 280ms;
+}
+
+.home__download {
+  animation-delay: 420ms;
+}
+
+/* La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
+   cette remise à zéro, la tête de page resterait vide le temps de la cascade.
+   Les lignes marquées `data-reveal-item` sont remises à zéro par
+   `_motion.scss`. */
+@media (prefers-reduced-motion: reduce) {
+  .home__tagline,
+  .home__pitch,
+  .home__download {
+    animation-delay: 0ms !important;
+  }
+}
 
 /* Le nom est le seul élément à sortir de l'échelle de texte courante : il
    ouvre la page et rien d'autre ne le concurrence. */
