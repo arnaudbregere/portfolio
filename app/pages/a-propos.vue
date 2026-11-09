@@ -182,12 +182,36 @@ useRevealCascade(root)
   margin-top: var(--space-2xl);
   padding-top: var(--space-m);
   border-top: var(--rule-strong);
+  counter-increment: about-section;
 }
 
+/* Figure numérotée, la même que la surcouche de navigation : deux chiffres en
+   encre atténuée. `decimal-leading-zero` produit le zéro de tête, donc le rang
+   n'est écrit nulle part et se renumérote tout seul si une rubrique bouge. */
+.about {
+  counter-reset: about-section;
+}
+
+.about__section h2::before {
+  content: counter(about-section, decimal-leading-zero);
+  margin-right: var(--space-s);
+  color: var(--color-fg-muted);
+  font-size: var(--size-label);
+  font-stretch: normal;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-label);
+}
+
+/* Les sous-blocs portent une puce : sous un titre numéroté, elle dit que ces
+   blocs sont les éléments de la rubrique et non des rubriques de plus. */
 .about__list {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding-left: var(--space-m);
+  list-style-type: disc;
+}
+
+.about__item::marker {
+  color: var(--color-fg-muted);
 }
 
 .about__item + .about__item {
