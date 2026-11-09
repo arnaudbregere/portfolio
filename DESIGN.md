@@ -164,6 +164,35 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   réservées à la taxonomie — tags, catégories — et à rien d'autre.
 - **Le rang s'encode dans la taille du texte**, pas dans une grille uniforme de
   cartes égales. L'ordre d'affiche est la hiérarchie.
+- **Un bloc de premier niveau porte son rang en figure numérotée.** Décision
+  d'Arnaud du 09/11/2026 (issue #32) : les quatre rubriques de `/a-propos`, et
+  chaque projet de `/projets`. Le chiffre est en encre atténuée, à la taille
+  de libellé, en chiffres tabulaires. Il vient d'un compteur CSS, donc il
+  n'est écrit dans aucun gabarit et se renumérote seul quand un bloc bouge ou
+  qu'un projet s'ajoute.
+
+  **Sans zéro de tête, et suivi d'un point**, décision du 09/11/2026 qui
+  revient sur le premier jet : `1.`, `2.`, `3.`, et non `01`, `02`, `03`. Le
+  point rattache le chiffre au titre qu'il numérote, au lieu de le laisser
+  flotter comme une étiquette posée à côté. La surcouche de navigation
+  garde ses deux chiffres — elle numérote quatre rubriques fixes comme une
+  planche, et son `01` tient une colonne de libellés alignés. Dans le corps
+  d'une page, le chiffre accompagne un titre et n'aligne rien : le zéro n'y
+  est qu'un ornement.
+  L'écart entre le rang et le titre est d'un `--space-2xs` : le chiffre
+  accompagne le titre, il ne s'en détache pas. Il vaut 21,86 px rendus, et
+  doit être le même sur toutes les pages — un libellé passé à la ligne dans
+  son `h2` ajoute une espace à la taille du titre et creuse l'écart sans
+  qu'aucune marge ne change.
+- **Un élément de second niveau porte une puce.** Même décision. Sous un titre
+  numéroté, la puce dit qu'une expérience ou une formation est un élément de
+  la rubrique, et non une rubrique de plus : le document a deux niveaux, il
+  les montre. La puce est en encre atténuée. Les listes du site restent
+  autrement sans marqueur, `_reset.scss` les ayant toutes remises à plat.
+- **Les deux marqueurs ne se cumulent jamais sur un même bloc.** `/projets`
+  n'a qu'un niveau — sa liste de projets — et ses projets sont donc numérotés
+  sans puce : le rang et la puce diraient deux fois la même chose, et
+  l'ordre y porte une information que la puce ne porte pas.
 - **Une surface, une passe.** La preuve reste sur la page. Rien ne se cache
   derrière un survol ou un accordéon : ni le clavier ni le tactile n'ont de
   survol.
@@ -185,6 +214,13 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   libellé passé sur deux lignes grandissant le bouton et désalignant ses
   voisins. Les trois n'ont pas la **même** largeur : « Thème sombre » est le
   double de « Menu », et l'imposer à tous ferait déborder l'en-tête mobile.
+- **Une coordonnée joignable porte son pictogramme.** Décision d'Arnaud du
+  09/11/2026 : le téléphone et l'e-mail en portent un sur `/contact` comme
+  dans la liste « Me joindre » de `/a-propos`, par l'atome `Icon`. Le
+  pictogramme est `aria-hidden` et ne porte jamais le sens : le libellé du
+  lien reste la seule source d'information. Une ligne qui n'est pas une
+  coordonnée joignable — la ville — n'en a pas, et son retrait l'aligne sur
+  celles qui en ont un.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
@@ -417,12 +453,77 @@ Trois raisons :
 geste. Cela ajoute un trait que la maquette ne demande pas, sur quatre pages,
 pour justifier une animation.
 
-Reste à partager le `@keyframes`, aujourd'hui scopé dans `contact.vue`. À la
-**deuxième** page qui le reprendra, il passera dans un
-`app/styles/_motion.scss` avec les règles qui l'accompagnent : un `@keyframes`
-partagé ne peut pas être scopé, et c'est le seul cas où `frontend.md` autorise
-un fichier global. Ne pas l'extraire avant : une seule page ne dit pas encore
-ce qui, dans ces règles, appartient au site.
+**Le `@keyframes` est partagé depuis le 09/11/2026**, dans
+`app/styles/_motion.scss` (issue #29). Il y est passé à la deuxième page qui a
+repris la figure, comme cette section l'exigeait : un `@keyframes` partagé ne
+peut pas vivre dans un `<style scoped>`, qui le renommerait pour chaque
+composant, et c'est le seul fichier global de mise en forme que `frontend.md`
+autorise. Le fichier porte aussi les règles qui accompagnent le `@keyframes` —
+l'animation des lignes marquées, l'état d'attente, et la remise à zéro des
+délais.
+
+Ce qui reste scopé dans chaque page : les délais fixes de sa tête de page, qui
+dépendent de ce qu'elle y met, et le filet tiré de son bloc d'ouverture quand
+elle en a un.
+
+**Une rubrique de cascade ne dépasse pas la hauteur de la fenêtre.** Décision
+du 09/11/2026, prise sur `/a-propos` (issue #32) après un retour d'Arnaud.
+
+`useRevealCascade` classe une rubrique sur son `top` seul : au-dessus de la
+ligne de flottaison elle entre au chargement, en dessous elle attend son
+arrivée. Ce classement ne vaut donc que si la rubrique tient à peu près dans la
+fenêtre. Mesuré : « Parcours » pris pour une seule rubrique faisait **2296 px**
+dans une fenêtre de 1047 px, et son `top` était à 632 px. Ses cinq expériences
+partaient donc toutes au chargement, les quatre dernières jouaient leur entrée
+**hors écran**, et au défilement elles étaient déjà entrées — immobiles, alors
+que `/contact` les aurait fait monter.
+
+Donc : **une rubrique de page dont le contenu est une liste se découpe en une
+rubrique par élément.** Sur `/a-propos`, « Parcours » (une expérience) et
+« Formation » (une formation). Aucune rubrique ne dépasse alors 695 px. La
+règle est structurelle : ce n'est pas le nombre d'éléments qui décide, c'est la
+hauteur comparée à la fenêtre.
+
+« Formation » n'avait pas été signalée, et relevait du même défaut : 1125 px
+pour une fenêtre de 1047 px. Le défaut y était seulement latent — visible sur
+une fenêtre plus courte.
+
+**Le titre d'une telle rubrique est une rubrique d'une seule ligne.** Un `h2`
+suivi d'une liste découpée en rubriques n'a aucun descendant à marquer : il
+porte alors `data-reveal-section` **et** `data-reveal-item`, et se classe sur
+son propre `top`. `useRevealCascade` compte une rubrique comme sa propre ligne
+quand elle est marquée ainsi.
+
+C'est le seul ajout que la figure ait demandé à l'outillage commun depuis
+`/contact`, et il n'était pas évitable : un titre à délai fixe rejouerait
+exactement le défaut corrigé ici, en entrant hors écran sur une fenêtre courte.
+
+**Une ligne de cascade reste une unité de lecture.** À l'intérieur d'un
+élément, c'est ce qui se lit d'un trait qui fait une ligne, et non chaque
+élément du DOM : la liste des missions d'une expérience entre **en un bloc**,
+jamais une mission à la fois, et un couple `dt` / `dd` de la liste des
+compétences fait une ligne. Une expérience compte donc cinq lignes — intitulé,
+période, résumé, missions, stack — et pas une par mission.
+
+| Rubrique de page | Découpage | Lignes par rubrique de cascade |
+|---|---|---|
+| Parcours | le titre, puis une rubrique par expérience | 1, puis 5 |
+| Compétences | une rubrique | le `h2`, puis chaque couple `dt` / `dd` |
+| Formation | le titre, puis une rubrique par formation | 1, puis 2 à 4 |
+| Me joindre | une rubrique | le `h2`, la disponibilité, puis chaque coordonnée |
+
+« Compétences » (695 px) et « Me joindre » (214 px) restent d'un seul bloc :
+elles tiennent dans la fenêtre, donc leur classement est juste.
+
+`/a-propos` et `/projets` découpent ainsi de la même façon : un élément de
+liste est une rubrique de cascade dans les deux cas.
+
+**La liste des compétences groupe ses couples dans un `<div>`.** Un `dt` et son
+`dd` sont deux éléments frères, et aucun ne contient l'autre : un couple ne peut
+porter une ligne qu'à travers un élément qui l'enveloppe. HTML autorise
+explicitement un `<div>` autour d'un groupe `dt` / `dd` dans un `<dl>`, et les
+sélecteurs de la page visent des descendants, donc la mise en forme ne bouge
+pas.
 
 ## 8. Organisation du code
 

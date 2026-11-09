@@ -3,7 +3,8 @@
  * (`arnaud-bregere_cv.pdf`, version du 03/11/2026) — source unique du site.
  *
  * Rien ici n'est déduit ni arrondi : une ligne absente du CV est une ligne
- * absente de ce fichier. Les métriques chiffrées du CV terminal précédent
+ * absente de ce fichier. Seule exception, signalée sur place : le texte de
+ * présentation de `/a-propos`, réécrit pour le site le 09/11/2026. Les métriques chiffrées du CV terminal précédent
  * (« +40 % de Core Web Vitals », « 5+ développeurs formés ») n'ont pas été
  * reprises faute de source.
  *
@@ -21,10 +22,14 @@ export const profile: Profile = {
   role: 'Développeur front-end senior',
   /** Les quatre axes de l'en-tête du CV, dans le même ordre. */
   tagline: 'Front-end, design system, frameworks JavaScript et outils d’IA.',
+  /**
+   * Texte de présentation de `/a-propos`, réécrit par Arnaud le 09/11/2026.
+   * Ce n'est plus la transcription du PDF : c'est la version du site, plus
+   * courte, et elle fait foi ici.
+   */
   intro: [
-    'Initialement webdesigner, j’ai évolué vers le rôle d’intégrateur web, où j’ai affiné ma maîtrise de l’intégration et de l’UI/UX.',
-    'Je me suis ensuite spécialisé en développement front-end, en consolidant mes compétences en JavaScript et sur les frameworks modernes.',
-    'Mon parcours atypique me permet d’allier créativité, rigueur et adaptabilité pour concevoir des expériences web performantes.',
+    'Initialement webdesigner, j’ai évolué vers le rôle d’intégrateur web et aujourd’hui développeur front-end.',
+    'Mon parcours atypique me permet d’allier créativité, technicité et adaptabilité.',
   ],
   location: 'Paris',
   email: 'arnaud.bregere@gmail.com',
