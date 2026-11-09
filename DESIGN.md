@@ -59,6 +59,7 @@ qui est sous examen et sur l'action principale unique.
 | `--color-line-strong` | Bordure de contrôle | `#8c857a` | `#7a7369` |
 | `--color-ink` | Encre d'annotation | `#b3122b` | `#ff5c72` |
 | `--color-ink-fg` | Texte sur encre | `#ffffff` | `#121110` |
+| `--color-logo-ink` | Lettre `a` du monogramme | `#ff5c72` | `#ff5c72` |
 | `--color-focus` | Indicateur de focus | `var(--color-fg)` | `var(--color-fg)` |
 
 Le papier est chaud plutôt que blanc pur : cela désamorce le risque d'austérité
@@ -239,12 +240,26 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   thèmes, sans requête, et la bascule est suivie — elle pose un attribut sur
   `<html>`, qu'un `<picture>` sur `prefers-color-scheme` aurait ignoré.
 
-  **Le `a` prend `--color-ink`, pas la couleur du fichier.** L'export portait
-  `#ff5c72` dans les deux thèmes ; sur le fond clair du site ce rose donne
-  **2,72:1**, sous le plancher de 3:1 que WCAG 1.4.11 impose à un graphique
-  porteur de sens. Le token bascule et tient les deux : **6,3:1** en clair
-  avec `#b3122b`, **6,31:1** en sombre avec `#ff5c72`, qui est la valeur
-  qu'Arnaud avait choisie.
+  **Le `a` garde `#ff5c72` dans les deux thèmes**, par son propre token
+  `--color-logo-ink`. Décision d'Arnaud : une marque a une couleur, elle n'en
+  change pas avec le fond. Seul le `b` bascule, du noir au blanc.
+
+  Ce rose donne **2,72:1** sur le papier clair et **6,31:1** sur le fond
+  sombre. Le premier chiffre est sous le plancher de 3:1 de WCAG 1.4.11, et
+  **ce plancher ne s'applique pas ici** : le critère vise les graphiques
+  nécessaires à la compréhension, et WCAG exempte nommément les logotypes. Le
+  monogramme est `aria-hidden`, le nom du lien est du texte — la marque est
+  décorative, rien ne se perd à ne pas la distinguer.
+
+  Ce token ne rejoint donc pas les couples à seuil de
+  `tests/unit/contrast.spec.ts` : un seuil y affirmerait une exigence qui
+  n'existe pas. Il y entre comme **valeur mesurée**, pour qu'une retouche de
+  la couleur fasse re-mesurer le test au lieu de passer inaperçue.
+
+  `--color-ink`, l'encre d'annotation, reste distincte : elle sert du texte,
+  bascule avec le thème et tient 6,3:1 en clair. Les deux ont la même valeur
+  en thème sombre, par coïncidence de teinte, et ne doivent pas être
+  confondues.
 
   **Le `viewBox` est resserré sur la boîte des tracés**, relevée au navigateur
   par `getBBox`. L'export Figma rendait des marges inégales — 1,5 à gauche
