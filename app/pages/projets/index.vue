@@ -86,6 +86,7 @@ useSeoMeta(
   margin: var(--space-2xl) 0 0;
   padding: 0;
   list-style: none;
+  counter-reset: project;
 }
 
 /* La grille reste une liste : le rang se lit dans l'ordre et la taille du
@@ -94,6 +95,24 @@ useSeoMeta(
   max-width: var(--measure);
   padding-top: var(--space-m);
   border-top: var(--rule-strong);
+  counter-increment: project;
+}
+
+/* Figure numérotée, décidée dans `DESIGN.md` § 5 : deux chiffres en encre
+   atténuée, chiffres tabulaires. Le rang vient du compteur, donc aucun
+   gabarit ne l'écrit et un projet inséré ne renumérote rien à la main.
+
+   La règle est recopiée depuis `/a-propos` plutôt que mise en commun : elle
+   est scopable, et `frontend.md` ne sort du scope que ce qui ne peut pas y
+   tenir. `DESIGN.md` reste la source de la décision. */
+.projects__title::before {
+  content: counter(project, decimal-leading-zero);
+  margin-right: var(--space-2xs);
+  color: var(--color-fg-muted);
+  font-size: var(--size-label);
+  font-stretch: normal;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-label);
 }
 
 .projects__item + .projects__item {
