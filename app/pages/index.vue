@@ -206,7 +206,32 @@ const family = rest.join(' ')
   font-size: var(--step-6);
   line-height: 1;
   text-transform: lowercase;
-  word-spacing: -0.3565em;
+
+  /* Le nom sort de sa boîte pendant l'entrée : le prénom de 1,5em à gauche,
+     le nom d'autant à droite. Vers la gauche, un débordement n'est jamais
+     défilable ; vers la droite, il le serait, et une fenêtre à peine plus
+     large que `--page-max` gagnerait une barre horizontale le temps de
+     l'animation.
+
+     `overflow-x: clip` l'empêche sans créer de conteneur de défilement,
+     donc sans casser le `position: sticky` de l'en-tête — ce que
+     `overflow: hidden` aurait fait. La marge de rognage laisse passer toute
+     la course, donc rien de visible n'est coupé. */
+  overflow-x: clip;
+  overflow-clip-margin: 2em;
+}
+
+/* Le chevauchement des deux mots passe par une marge et non par
+   `word-spacing`. Entre deux boîtes en ligne, l'effet négatif de
+   `word-spacing` est **plafonné** : les mots se touchent sans se recouvrir.
+   Mesuré dans Chrome — passer de `-0.3565em` à `-0.48em` ne changeait plus
+   rien dès que le second mot avait son propre `span`, que le premier
+   `span` seul resserrait encore.
+
+   La marge n'est pas plafonnée. `-0.3571em` rend le titre à la largeur
+   exacte du dessin validé. */
+.home__family {
+  margin-inline-start: -0.3571em;
 }
 
 /* Le nom entre en deux mouvements qui se rejoignent : le prénom vient de la
@@ -223,21 +248,21 @@ const family = rest.join(' ')
 @keyframes name-from-left {
   from {
     opacity: 0;
-    translate: -0.4em 0;
+    translate: -1.5em 0;
   }
 }
 
 @keyframes name-from-right {
   from {
     opacity: 0;
-    translate: 0.4em 0;
+    translate: 1.5em 0;
   }
 }
 
 .home__given,
 .home__family {
   display: inline-block;
-  animation-duration: var(--dur-slow);
+  animation-duration: var(--dur-slower);
   animation-timing-function: var(--ease-out);
   animation-fill-mode: backwards;
 }

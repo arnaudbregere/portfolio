@@ -82,6 +82,9 @@
   --dur-fast: 120ms;
   --dur-base: 240ms;
   --dur-slow: 480ms;
+  /* Entrée du nom de l'accueil, seule figure du site à courir aussi
+     longtemps : elle traverse une distance, les autres montent d'un pas. */
+  --dur-slower: 900ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Surfaces dessinées par le navigateur, à thémer depuis la palette */
