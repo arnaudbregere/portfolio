@@ -20,6 +20,8 @@ useSeoMeta(
  * L'ancienneté se calcule, elle ne se recopie pas : une année écrite en dur
  * devient fausse au premier janvier suivant.
  */
+const currentRole = experiences[0]!
+
 const firstFrontEndRole = '2019-10'
 const yearsOfFrontEnd = computed(() => {
   const start = new Date(`${firstFrontEndRole}-01T00:00:00Z`)
@@ -28,7 +30,6 @@ const yearsOfFrontEnd = computed(() => {
   return Math.floor(months / 12)
 })
 
-const currentRole = experiences[0]!
 const contact = siteNav.find((item) => item.to === '/contact')!
 
 /**
@@ -195,11 +196,12 @@ const family = rest.join(' ')
   word-spacing: -0.3565em;
 }
 
-/* Le prénom prend l'encre d'annotation, qui bascule avec le thème. C'est du
-   texte et non un logotype : il doit tenir son seuil de contraste sur les
-   deux fonds. `DESIGN.md` § 5. */
+/* Le prénom porte la couleur de la marque, fixe dans les deux thèmes, comme
+   le `a` du monogramme. Écart de contraste assumé et chiffré dans
+   `DESIGN.md` § 5 : 2,72:1 sur le papier clair, sous le seuil qu'un titre
+   doit tenir. */
 .home__given {
-  color: var(--color-ink);
+  color: var(--color-logo-ink);
 }
 
 .home__tagline {
