@@ -24,7 +24,7 @@ describe('SiteHeader', () => {
     expect(wordmark.get('.visually-hidden').text()).toBe('Arnaud Brégère')
 
     const monogram = wordmark.get('.o-header__monogram')
-    expect(monogram.text()).toBe('ab')
+    expect(monogram.element.tagName).toBe('svg')
     expect(monogram.attributes('aria-hidden')).toBe('true')
   })
 

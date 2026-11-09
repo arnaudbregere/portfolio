@@ -32,11 +32,12 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
 <template>
   <header class="o-header">
     <div class="o-header__inner">
-      <!-- Le monogramme est `aria-hidden` : deux lettres ne nomment pas le
-           site. Le nom le suit en texte réel, masqué visuellement, donc le
-           lien garde « Arnaud Brégère » pour nom accessible. -->
+      <!-- Le monogramme est `aria-hidden`, l'atome le pose : deux lettres ne
+           nomment pas le site. Le nom le suit en texte réel, masqué
+           visuellement, donc le lien garde « Arnaud Brégère » pour nom
+           accessible. -->
       <NuxtLink to="/" class="o-header__wordmark">
-        <span class="o-header__monogram" aria-hidden="true">ab</span>
+        <Logo class="o-header__monogram" />
         <span class="visually-hidden">Arnaud Brégère</span>
       </NuxtLink>
 
@@ -113,29 +114,10 @@ onBeforeUnmount(() => desktop?.removeEventListener('change', closeOnDesktop))
   text-decoration: none;
 }
 
-/* Monogramme : deux minuscules serrées, dessinées par les axes de la police
-   plutôt que par un fichier. `DESIGN.md` § 5.
-
-   `font-weight` et `font-stretch` et non `font-variation-settings` : les
-   propriétés natives héritent et s'animent, ce que `_fonts.scss` pose comme
-   règle de la police variable. L'interlettrage est négatif pour que le `b`
-   morde sur le `a`.
-
-   `line-height: 1` et `display: block` : sans eux, l'interligne du corps de
-   texte grandirait la barre autour de deux lettres.
-
-   Le dernier caractère porte l'interlettrage négatif comme les autres, donc
-   le `b` finirait collé au bord droit : `padding-inline-end` lui rend sa
-   place. */
+/* Monogramme : l'atome `Logo` se mesure en `em`, la barre pose donc sa taille
+   par `font-size`. `DESIGN.md` § 5. */
 .o-header__monogram {
-  display: block;
-  padding-inline-end: 0.19em;
-  font-family: var(--font-display);
   font-size: var(--step-4);
-  font-weight: 900;
-  font-stretch: 100%;
-  letter-spacing: -0.19em;
-  line-height: 1;
 }
 
 /* `display: none` et non un masquage visuel : les deux formes de navigation ne
