@@ -502,6 +502,25 @@ Cinq conditions, mesurées sur `/contact` dans Chrome 157 :
 Sous `prefers-reduced-motion: reduce`, le composable ne fait rien : masquer en
 attendant un défilement serait un mouvement de plus, pas un de moins.
 
+**Une seule exception : le nom de l'accueil.** Décision d'Arnaud du
+09/11/2026. Le prénom entre par la gauche, le nom par la droite, et le
+`word-spacing` négatif les soude à l'arrivée : le mouvement raconte ce que la
+forme fixe montre, deux mots qui n'en font qu'un. La course est de `0.4em`,
+soit 35,9 px à la taille maximale du titre, et suit donc la taille du titre au
+lieu d'être figée en pixels.
+
+Le nom ne prend plus `page-entry` : ses deux mots portent l'entrée à sa place,
+sinon le titre monterait **et** s'écarterait. Le reste de la tête de page —
+ligne de compétences, présentation, téléchargement — garde la figure commune et
+ses 140 ms d'écart.
+
+C'est le seul endroit du site où l'entrée n'est pas la figure commune, et c'est
+assumé : le nom est le premier mot de la première page, et le monogramme de
+l'en-tête fait déjà de ces deux lettres soudées la marque du site. Sous
+`prefers-reduced-motion: reduce`, les deux mots n'ont plus d'animation du tout
+— la règle globale de `_reset.scss` écrase la durée mais pas le tracé, donc
+sans cette remise à zéro ils apparaîtraient décalés.
+
 **Cette figure est celle du site, pas celle d'une page.** Décision d'Arnaud du
 05/11/2026 : `/contact` a servi de terrain d'essai, et `/`, `/projets`,
 `/projets/[slug]` et `/a-propos` reprendront la **même** entrée — mêmes
