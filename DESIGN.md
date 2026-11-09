@@ -299,6 +299,16 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   maquette à la taille maximale du titre, 89,76 px, mais `--step-6` descend à
   44,8 px en mobile, où -32 px feraient entrer le second mot dans le premier.
 
+  **Sa taille est bornée par la largeur disponible.** Le nom soudé mesure
+  7,99 fois sa taille de police — rapport mesuré dans Chrome et constant,
+  puisqu'il ne dépend que des métriques de la fonte. `--step-6` l'ignore : à
+  416 px de large il rend 48,99 px, soit un nom de 391 px pour 384 px
+  disponibles. Le nom passait à la ligne, et la marge négative qui soude les
+  deux mots débordait alors à gauche en seconde ligne, où l'`overflow-x` de
+  l'entrée la rognait. Un `min()` borne donc la taille à ce que la gouttière
+  laisse ; il l'emporte sous 436 px environ. Le titre porte `nowrap` : un nom
+  soudé qui passe à la ligne n'a aucun sens.
+
   **Il passe par une marge, et non par `word-spacing`.** Entre deux boîtes en
   ligne — ce que les deux mots sont devenus en recevant chacun son `span` pour
   l'entrée — l'effet négatif de `word-spacing` est **plafonné** : les mots se
