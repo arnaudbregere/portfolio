@@ -37,11 +37,27 @@ const contact = siteNav.find((item) => item.to === '/contact')!
  * nombre à deux depuis le 04/11/2026.
  */
 const featuredProjects = projects.filter((project) => project.featured)
+
+/**
+ * Le nom coupé à sa première espace : le prénom porte la couleur de marque,
+ * le reste suit. Couper plutôt que recopier — `content/cv.ts` reste la source
+ * unique, et un nom composé continuerait de s'afficher entier.
+ */
+const [given = profile.name, ...rest] = profile.name.split(' ')
+const family = rest.join(' ')
 </script>
 
 <template>
   <article ref="root" class="home">
-    <h1 class="home__name">{{ profile.name }}</h1>
+    <!-- Le prénom est isolé pour porter la couleur de marque. Le nom reste
+         `profile.name` : il n'est pas recopié, seulement coupé à sa première
+         espace, et l'espace entre les deux mots est conservée — c'est elle
+         que `word-spacing` resserre, et c'est elle qui fait lire deux mots à
+         un lecteur d'écran. La minuscule est posée par le style, donc le
+         texte de la page garde ses capitales. -->
+    <h1 class="home__name">
+      <span class="home__given">{{ given }}</span> {{ family }}
+    </h1>
     <p class="home__tagline">{{ profile.tagline }}</p>
 
     <p class="home__pitch">
@@ -163,10 +179,27 @@ const featuredProjects = projects.filter((project) => project.featured)
 }
 
 /* Le nom est le seul élément à sortir de l'échelle de texte courante : il
-   ouvre la page et rien d'autre ne le concurrence. */
+   ouvre la page et rien d'autre ne le concurrence.
+
+   `word-spacing` est en `em` et non en pixels : il vaut -32 px à la taille
+   maximale du titre, 89,76 px, mais `--step-6` descend à 44,8 px en mobile,
+   où -32 px feraient entrer le second mot dans le premier. L'`em` tient le
+   même rapport à toute largeur.
+
+   La minuscule est posée ici et non dans le contenu : `profile.name` garde
+   ses capitales pour le texte de la page et pour le nom accessible. */
 .home__name {
   font-size: var(--step-6);
   line-height: 1;
+  text-transform: lowercase;
+  word-spacing: -0.3565em;
+}
+
+/* Le prénom prend l'encre d'annotation, qui bascule avec le thème. C'est du
+   texte et non un logotype : il doit tenir son seuil de contraste sur les
+   deux fonds. `DESIGN.md` § 5. */
+.home__given {
+  color: var(--color-ink);
 }
 
 .home__tagline {
