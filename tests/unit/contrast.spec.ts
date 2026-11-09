@@ -131,6 +131,12 @@ describe('seuils WCAG des couples de tokens', () => {
     { fg: '--color-ink', bg: '--color-bg', min: 4.5, role: 'encre' },
     { fg: '--color-ink-fg', bg: '--color-ink', min: 4.5, role: 'texte sur encre' },
     {
+      fg: '--color-logo-ink-fg',
+      bg: '--color-logo-ink',
+      min: 4.5,
+      role: 'texte sur la marque',
+    },
+    {
       fg: '--color-line-strong',
       bg: '--color-bg',
       min: 3,

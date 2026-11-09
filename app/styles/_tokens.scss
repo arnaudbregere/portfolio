@@ -22,6 +22,9 @@
      logotypes de son plancher de contraste — `DESIGN.md` § 5. À ne pas
      confondre avec `--color-ink`, qui sert du texte et bascule. */
   --color-logo-ink: #ff5c72;
+  /* Texte posé sur la couleur de marque. Fixe comme elle : le blanc n'y
+     tiendrait que 2,99:1, cette encre en tient 6,31. */
+  --color-logo-ink-fg: #121110;
   /* Le focus n'ajoute aucune couleur : il reprend le texte courant. */
   --color-focus: var(--color-fg);
 
@@ -107,4 +110,5 @@
   --color-ink: #ff5c72;
   --color-ink-fg: #121110;
   --color-logo-ink: #ff5c72;
+  --color-logo-ink-fg: #121110;
 }
