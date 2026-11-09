@@ -221,6 +221,30 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   lien reste la seule source d'information. Une ligne qui n'est pas une
   coordonnée joignable — la ville — n'en a pas, et son retrait l'aligne sur
   celles qui en ont un.
+- **La signature de l'en-tête est un monogramme `ab`.** Décision d'Arnaud du
+  09/11/2026. Le nom en toutes lettres cédait la place à deux minuscules
+  serrées : graisse haute, chasse resserrée et interlettrage **négatif**, de
+  sorte que le `b` morde sur le `a`. C'est du **texte**, pas une image — une
+  image coûterait deux fichiers, un par thème, et ne suivrait pas la bascule
+  de thème, qui pose un attribut sur `<html>` et non la préférence système.
+  En texte, `currentColor` suffit.
+
+  **Le monogramme ne bouge pas au survol.** Une respiration a été essayée le
+  même jour — la chasse qui s'ouvre, l'interlettrage qui se détend — et
+  retirée par Arnaud : une signature est un repère fixe, et celle-ci est le
+  premier élément de chaque page. Il n'y a donc aucune indication de survol,
+  comme sur le nom qu'elle remplace ; le focus clavier reste couvert par le
+  `:focus-visible` global.
+
+  Le nom reste dans l'arbre d'accessibilité : le monogramme est `aria-hidden`,
+  et « Arnaud Brégère » le suit en `.visually-hidden`. Le pied de page garde
+  le nom en toutes lettres. Le relevé mobile de § 6 ne peut que s'améliorer :
+  le monogramme est plus étroit que les 113 px de la signature mesurée à
+  393 px.
+
+  **Son lien porte la cible tactile des contrôles**, 44 px, que la hauteur de
+  son texte n'atteint pas toujours. L'ancien nom à 13 px donnait un lien de
+  16 px de haut : le défaut est ancien, il se corrige ici.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
