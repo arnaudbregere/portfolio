@@ -1,0 +1,21 @@
+{
+  "name": "portfolio-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Tests de bout en bout du portfolio. Package indépendant : aucune dépendance croisée avec le package principal.",
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
+    "@playwright/test": "^1.57.1",
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3"
+  }
+}
