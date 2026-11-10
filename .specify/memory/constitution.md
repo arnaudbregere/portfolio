@@ -75,7 +75,10 @@ rejoint cette liste. Un test s'écrit avec le code qu'il couvre, pas après.
   Aucune URL absolue en dur.
 - Secrets par `runtimeConfig` et variables d'environnement, jamais dans le code,
   jamais sous un préfixe `NUXT_PUBLIC_`.
-- Déploiement cible : Render, service web unique (`.claude/skills/deploy/`).
+- Déploiement : Vercel, projet lié au dépôt, redéployé à chaque push sur `main`
+  (`.claude/skills/deploy/`). Hostinger n'est que le registrar et le DNS du
+  domaine ; il ne sert aucune page. Corrigé le 10/11/2026 : la constitution
+  désignait Render, qui n'a jamais rien servi.
 
 ## Workflow git et livraison
 

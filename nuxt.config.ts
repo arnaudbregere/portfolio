@@ -43,9 +43,34 @@ export default defineNuxtConfig({
 
   css: ['~/styles/main.scss'],
 
-  // Origine du site, seule source des URL canoniques, du plan du site et du
-  // fichier robots. Surchargeable par `NUXT_PUBLIC_SITE_URL` au déploiement.
   runtimeConfig: {
+    /**
+     * Identité du build, servie par `GET /api/health`.
+     *
+     * Les valeurs sont lues **au build**, donc figées dans la sortie : c'est
+     * voulu, puisqu'elles décrivent ce build-là. Vercel renseigne ses
+     * variables à la construction ; la CI GitHub donne `GITHUB_SHA` en
+     * secours. En local, tout vaut `inconnu` et la route répond quand même.
+     *
+     * Hors `public` : rien ici n'a besoin d'atteindre le navigateur, et ce
+     * qui n'y va pas n'alourdit pas la charge utile des pages.
+     */
+    build: {
+      commit: process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? '',
+      branch: process.env.VERCEL_GIT_COMMIT_REF ?? process.env.GITHUB_REF_NAME ?? '',
+      environment: process.env.VERCEL_ENV ?? 'developpement',
+      builtAt: new Date().toISOString(),
+    },
+
+    // Origine du site, seule source des URL canoniques, du plan du site et du
+    // fichier robots. Surchargeable par `NUXT_PUBLIC_SITE_URL` au déploiement.
+    //
+    // **L'apex fait foi, sans `www.`.** Aujourd'hui l'hébergement redirige
+    // l'inverse — l'apex vers `www` en 307 — donc les URL canoniques
+    // désignent une adresse de redirection. Le remède est un réglage chez
+    // l'hébergeur, pas une ligne de code : faire de l'apex le domaine
+    // principal. Tant qu'il n'est pas posé, `isExternalUrl` tient aussi un
+    // lien `www.` du site pour un lien sortant.
     public: {
       siteUrl: 'https://arnaud-bregere.fr',
     },

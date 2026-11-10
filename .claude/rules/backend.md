@@ -1,20 +1,33 @@
 # Règles backend (`server/`)
 
 Le site est prérendu par défaut. Une route serveur n'existe que si elle est
-indispensable ; aucune n'est créée « au cas où ». Pas de base de données.
+indispensable ; aucune n'est créée « au cas où ». Pas de base de données, pas
+de secret, aucune donnée d'utilisateur.
 
-**`server/` est vide, et le reste.** Le formulaire de contact était la seule
-route prévue ; il est abandonné le 05/11/2026 (issue #5) au profit des liens
-`tel:` et `mailto:` de `/contact`. Aucun fournisseur d'envoi, aucune limitation
-de débit, aucun secret à garder.
+**`server/` porte trois routes, et seulement trois.** La règle disait
+« `server/` est vide, et le reste » ; c'était faux depuis P3 et corrigé le
+10/11/2026.
 
-Les règles ci-dessous ne sont donc pas appliquées aujourd'hui. Elles tiennent
-pour la première route qui naîtra, si une fonctionnalité en demande une.
+| Route | Ce qu'elle sert | Pourquoi elle ne peut pas être un fichier statique |
+|---|---|---|
+| `/robots.txt` | `server/routes/robots.txt.ts` | l'origine du site vient de `runtimeConfig` |
+| `/sitemap.xml` | `server/routes/sitemap.xml.ts` | idem, et la liste dérive de `content/` |
+| `/api/health` | `server/api/health.get.ts` | l'identité du build n'est connue qu'au build |
+
+Le formulaire de contact, lui, n'existera pas : abandonné le 05/11/2026
+(issue #5) au profit des liens `tel:` et `mailto:` de `/contact`. Aucun
+fournisseur d'envoi, aucune limitation de débit.
+
+Les trois routes en place n'ont ni entrée à valider ni fournisseur externe :
+elles tiennent en une couche de transport et un utilitaire testable. Les
+couches `services/` et `schemas/` décrites plus bas naîtront avec la première
+route qui en aura besoin — pas avant.
 
 ## Conventions
 
 - Routes Nitro dans `server/api/`, nommées par méthode
-  (`contact.post.ts`).
+  (`health.get.ts`). Une route qui sert un document à une adresse fixe vit
+  dans `server/routes/` et porte son extension (`sitemap.xml.ts`).
 - **Trois couches, strictement séparées** :
   - `server/api/*` — transport : lit la requête, valide, appelle un service,
     traduit le résultat en réponse HTTP. Aucune logique métier, aucun appel à
@@ -35,7 +48,13 @@ pour la première route qui naîtra, si une fonctionnalité en demande une.
 
 ## Tests
 
-- Vitest. Toute route a au minimum : cas nominal, cas de validation en échec,
-  cas de limitation de débit.
+- Vitest sur l'utilitaire, qui porte la logique ; Playwright sur la route, qui
+  porte le contrat HTTP. `tests/unit/health.spec.ts` et
+  `e2e/tests/health.spec.ts` en donnent la forme.
+- La liste des champs d'une réponse publique est **close** : un test énumère
+  les clés rendues, pour qu'une clé ajoutée par mégarde — chemin, version,
+  variable d'environnement — échoue avant d'atteindre la production.
+- Une route qui validerait une entrée aurait en plus : cas nominal, cas de
+  validation en échec, cas de limitation de débit.
 - Les services externes sont simulés (`vi.mock`). Un test ne doit jamais
   provoquer d'envoi réel ni d'appel réseau sortant.

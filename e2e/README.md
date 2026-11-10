@@ -35,6 +35,7 @@ production, qui sont précisément ce que ces tests cherchent.
 | `cv.spec.ts` | lien du CV, poids du PDF, téléchargement réel |
 | `contact.spec.ts` | `href` des liens `tel:` et `mailto:`, **sans clic** |
 | `robots-sitemap.spec.ts` | `/robots.txt`, `/sitemap.xml`, URL canoniques |
+| `health.spec.ts` | `GET /api/health` : contrat, en-têtes, absence de fuite |
 | `accessibilite.spec.ts` | audit `@axe-core/playwright`, sept pages × deux thèmes |
 
 ## Deux pièges mesurés le 10/11/2026
