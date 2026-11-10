@@ -7,7 +7,10 @@ Objectif : décrocher un poste de lead / senior front-end. Le site est lui-même
 une pièce du dossier : son code, ses tests et son accessibilité sont jugés au
 même titre que son contenu.
 
-Déploiement cible : Render (service web unique).
+Déploiement : **Vercel**, projet lié au dépôt, redéployé à chaque push sur
+`main`. Le domaine `arnaud-bregere.fr` est enregistré chez Hostinger, qui n'en
+tient que le DNS — il ne sert aucune page. Détails et check-list :
+`.claude/skills/deploy/SKILL.md`.
 
 ## Structure
 
@@ -15,7 +18,7 @@ Déploiement cible : Render (service web unique).
 portfolio/
 ├── app/          UI Nuxt — components (Atomic Design), pages, layouts, composables, styles, utils
 ├── content/      Contenu typé en TypeScript (projets, parcours) — source unique
-├── server/       Routes Nitro et services (créé au besoin, pas avant)
+├── server/       Routes Nitro — référencement et contrôle de santé, rien d'autre
 ├── tests/unit/   Vitest
 └── e2e/          Playwright (package npm indépendant, créé en P6)
 ```
