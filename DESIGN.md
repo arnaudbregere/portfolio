@@ -333,6 +333,13 @@ plutôt que de les cacher derrière des gouttières fractionnaires.
   pas tenu, et le nom est porté une seconde fois par le `h1` lui-même, dont
   la seconde moitié est à `--color-fg`. `--color-ink` le ramènerait à 6,3:1
   en clair, au prix d'un prénom plus sombre que la marque.
+
+  Depuis le 10/11/2026, l'audit `@axe-core/playwright` de
+  `e2e/tests/accessibilite.spec.ts` relève cet écart et lui seul. La tolérance
+  y est nominative — une règle, un sélecteur, une page, un thème — et la spec
+  échoue aussi si l'écart **disparaît** : une exception qui survit à ce qu'elle
+  excusait finit par couvrir autre chose. Reprendre ce paragraphe le jour où
+  elle tombe.
 - **Le survol du lien de CV passe à la couleur de marque.** Décision d'Arnaud
   du 09/11/2026 : le fond et le filet prennent `--color-logo-ink`, dans les
   deux thèmes. Le lien s'inversait jusque-là en encre pleine.
