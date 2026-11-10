@@ -10,59 +10,62 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Un job par vérification. Elles sont indépendantes : les quatre premières
+# démarrent ensemble, et un échec de lint n'empêche plus de voir le résultat
+# des tests. Chacune réinstalle ses dépendances — le cache npm de
+# `setup-node` en fait l'affaire, et c'est moins fragile que de transporter
+# `node_modules` d'un job à l'autre.
 jobs:
-  quality:
-    name: Lint, types, tests, build
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: ./.github/actions/deps
+      - run: npm run lint
 
-      - uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: npm
+  types:
+    name: Types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/deps
+      # Vitest transforme via esbuild et ne vérifie pas les types : cette
+      # étape est la seule qui les voie.
+      - run: npm run typecheck
 
-      - run: npm ci
+  unit:
+    name: Tests unitaires
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/deps
+      - run: npm test
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Tests unitaires
-        run: npm test
-
-      - name: Build
-        run: npm run build
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/deps
+      - run: npm run build
 
   e2e:
-    name: Tests de bout en bout
+    name: Tests e2e
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v5
+      # Les deux paquets sont indépendants : chacun installe les siennes.
+      # `e2e/` ne connaît pas Nuxt, la racine ne connaît pas Playwright.
+      - uses: ./.github/actions/deps
+      - uses: ./.github/actions/deps
         with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            e2e/package-lock.json
+          working-directory: e2e
 
-      # Les deux paquets sont indépendants : chacun installe ses propres
-      # dépendances. `e2e/` ne connaît pas Nuxt, la racine ne connaît pas
-      # Playwright.
-      - name: Dépendances de l'application
-        run: npm ci
-
-      - name: Dépendances des tests
-        run: npm ci
-        working-directory: e2e
-
-      # Playwright exécute les specs via esbuild : sans cette étape, une erreur
-      # de type ne se verrait qu'à l'exécution, et seulement si la ligne est
-      # atteinte.
+      # Playwright exécute les specs via esbuild : sans cette étape, une
+      # erreur de type ne se verrait qu'à l'exécution, et seulement si la
+      # ligne est atteinte.
       - name: Typecheck des tests
         run: npm run typecheck
         working-directory: e2e

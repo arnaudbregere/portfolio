@@ -1,0 +1,24 @@
+name: Dépendances
+description: >-
+  Node depuis `.nvmrc`, cache npm, puis `npm ci` dans le paquet demandé.
+  Factorisé parce que cinq jobs répètent exactement ces deux étapes — et que
+  la version de Node ne doit être écrite qu'à un seul endroit.
+
+inputs:
+  working-directory:
+    description: Le paquet où installer. La racine par défaut.
+    required: false
+    default: .
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v5
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+        cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+    - run: npm ci
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
