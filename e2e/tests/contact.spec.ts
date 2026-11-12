@@ -85,9 +85,47 @@ test.describe('Coordonnées de l’accueil', () => {
     await expect(page.locator(`a[href="${expectedMail}"]`)).toBeVisible()
   })
 
-  test('l’accueil renvoie toujours à la page Contact', async ({ page }) => {
+  test('la section « Me joindre » renvoie à la page Contact', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByRole('link', { name: 'Contact' }).first()).toBeVisible()
+    // Scopé à la région : `getByRole('link', { name: 'Contact' })` seul
+    // tombait sur le lien de l'en-tête, présent sur toutes les pages et
+    // avant `<main>` — le test passait même sans lien dans la section.
+    const section = page.getByRole('region', { name: 'Me joindre' })
+
+    await expect(section.getByRole('link', { name: 'Contact' })).toBeVisible()
+  })
+
+  /**
+   * L'intitulé de la section, et non la phrase de disponibilité qui en tenait
+   * lieu jusqu'au 12/11/2026 : 77 signes en capitales, qui servaient de nom
+   * accessible à la région sans décrire ce qu'elle contient (WCAG 2.4.6).
+   * Axe ne voit pas ce critère.
+   */
+  test('la dernière section de l’accueil porte un intitulé, pas une phrase', async ({ page }) => {
+    await page.goto('/')
+
+    await expect(page.getByRole('heading', { name: 'Me joindre', level: 2 })).toBeVisible()
+    await expect(page.getByRole('region', { name: 'Me joindre' })).toBeVisible()
+  })
+
+  /**
+   * Les deux liens tenaient 29 px de haut à 8 px l'un de l'autre, quand
+   * `--control-min-height` pose 44 px pour toute la page — et ce sont les
+   * deux cibles que `PRODUCT.md` met sur le chemin d'un recruteur. Aucune
+   * suite ne mesurait de cible avant le 12/11/2026.
+   */
+  test('les coordonnées de l’accueil tiennent une cible de 44 px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+
+    const section = page.getByRole('region', { name: 'Me joindre' })
+
+    for (const name of [/^Téléphone/, /^Adresse e-mail/]) {
+      const box = await section.getByRole('link', { name }).boundingBox()
+
+      expect(box, String(name)).toBeTruthy()
+      expect(box!.height, String(name)).toBeGreaterThanOrEqual(44)
+    }
   })
 })

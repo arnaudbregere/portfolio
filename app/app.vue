@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { profile } from '~~/content/cv'
 import { profileLinks } from '~~/content/nav'
-import { telHref } from '~/utils/contact'
+import { phoneE164 } from '~/utils/contact'
 import { jsonLdScript } from '~/utils/json-ld'
 import { absoluteUrl } from '~/utils/page-seo'
 
@@ -26,11 +26,12 @@ const personJsonLd = computed(() =>
     name: profile.name,
     jobTitle: profile.role,
     email: `mailto:${profile.email}`,
-    // Au format international, celui qu'attend schema.org — le même que
-    // l'attribut `href` des liens `tel:`, dont il réutilise la fabrique.
-    // Posé le 12/11/2026 (issue #53) : le numéro paraît désormais sur
-    // l'accueil comme sur `/contact`, la donnée structurée doit le dire.
-    telephone: telHref(profile.phone).replace('tel:', ''),
+    // Au format international, celui qu'attend schema.org, par la fabrique
+    // sur laquelle `telHref` se construit — et non par une URI `tel:` à qui
+    // l'on retire son schéma. Posé le 12/11/2026 (issue #53) : le numéro
+    // paraît désormais sur l'accueil comme sur `/contact`, la donnée
+    // structurée doit le dire.
+    telephone: phoneE164(profile.phone),
     url: siteUrl,
     address: { '@type': 'PostalAddress', addressLocality: profile.location },
     sameAs: profileLinks.map((link) => link.to),

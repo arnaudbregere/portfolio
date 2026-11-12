@@ -4,7 +4,7 @@
  *
  *   node scripts/favicon.js
  *
- * Quatre fichiers en sortie :
+ * Cinq fichiers en sortie :
  *
  * | Fichier | Rôle |
  * |---|---|
@@ -33,8 +33,10 @@
  *   encre sombre disparaîtrait sur la barre d'onglets sombre de Chrome, et
  *   iOS ne respecte pas la transparence — il poserait un fond noir.
  * - **Le cadrage est refait.** La boîte des tracés fait 51,05 × 36,85, un
- *   rapport large ; une icône est carrée. Le `viewBox` se recentre sur un
- *   carré de 56 autour du centre des tracés.
+ *   rapport large ; une icône est carrée. Le carré se calcule à partir du
+ *   `viewBox` de l'atome, qui est cette boîte : ni la boîte ni la marge ne
+ *   sont recopiées ici, sans quoi un redessin sortirait le monogramme
+ *   décentré sans la moindre erreur.
  */
 
 import { execFileSync } from 'node:child_process'
@@ -50,29 +52,55 @@ const INK_LIGHT = '#14120f' // --color-fg, thème clair
 const INK_DARK = '#f2efe9' // --color-fg, thème sombre
 const PAPER = '#f7f4ef' // --color-bg, thème clair
 
-/**
- * Le carré du `viewBox`, centré sur la boîte des tracés relevée au navigateur
- * par `getBBox` : x 1,5 à 52,55, y 7,75 à 44,6, donc un centre à
- * (27,025 ; 26,175). Un côté de 56 laisse ~2,5 de marge latérale.
- */
-const VIEW_BOX = '-0.975 -1.825 56 56'
+/** La marge latérale du carré, en unités du `viewBox` de l'atome. */
+const MARGIN = 2.5
+
+const atom = readFileSync('app/components/atoms/Logo.vue', 'utf8')
+
+const fail = (message) => {
+  console.error(`Logo.vue : ${message} Les icônes ne sont pas régénérées.`)
+  process.exit(1)
+}
 
 /** Les deux tracés de l'atome, dans son ordre : le `b`, puis le `a` dessus. */
 const paths = () => {
-  const source = readFileSync('app/components/atoms/Logo.vue', 'utf8')
-  const found = [...source.matchAll(/class="a-logo__([ab])"\s+d="([^"]+)"/g)]
+  const found = [...atom.matchAll(/class="a-logo__([ab])"\s+d="([^"]+)"/g)]
 
   if (found.length !== 2) {
-    console.error(
-      `Logo.vue : ${found.length} tracé(s) trouvé(s) au lieu de 2. Le gabarit a changé — relire la regex avant de régénérer les icônes.`,
-    )
-    process.exit(1)
+    fail(`${found.length} tracé(s) trouvé(s) au lieu de 2, le gabarit a changé.`)
   }
 
   return Object.fromEntries(found.map(([, name, d]) => [name, d]))
 }
 
+/**
+ * Le carré du `viewBox`, calculé depuis celui de l'atome — qui est la boîte
+ * des tracés, relevée au navigateur par `getBBox`. Le côté suit la plus
+ * grande dimension plus deux marges, et le carré se centre sur la boîte : un
+ * monogramme redessiné reste cadré sans qu'aucun nombre soit à reprendre ici.
+ */
+const squareViewBox = () => {
+  const found = atom.match(/viewBox="([-\d. ]+)"/)
+
+  if (!found) fail('aucun `viewBox` trouvé.')
+
+  const [x, y, width, height] = found[1].trim().split(/\s+/).map(Number)
+
+  if ([x, y, width, height].some(Number.isNaN)) fail(`\`viewBox\` illisible : ${found[1]}.`)
+
+  const side = Math.max(width, height) + MARGIN * 2
+  const round = (value) => Number(value.toFixed(3))
+
+  return [
+    round(x + width / 2 - side / 2),
+    round(y + height / 2 - side / 2),
+    round(side),
+    round(side),
+  ].join(' ')
+}
+
 const { a, b } = paths()
+const VIEW_BOX = squareViewBox()
 
 /** L'icône vectorielle : un seul fichier pour les deux thèmes. */
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${VIEW_BOX}">
@@ -110,16 +138,25 @@ const raster = (file, size, scale) => {
   const page = join(mkdtempSync(join(tmpdir(), 'favicon-')), 'icon.html')
   writeFileSync(page, html)
 
-  execFileSync(CHROME, [
-    '--headless=new',
-    '--no-sandbox',
-    '--disable-gpu',
-    '--hide-scrollbars',
-    '--force-device-scale-factor=1',
-    `--window-size=${size},${size}`,
-    `--screenshot=public/${file}`,
-    `file://${page}`,
-  ], { stdio: 'inherit' })
+  try {
+    execFileSync(CHROME, [
+      '--headless=new',
+      '--no-sandbox',
+      '--disable-gpu',
+      '--hide-scrollbars',
+      '--force-device-scale-factor=1',
+      `--window-size=${size},${size}`,
+      `--screenshot=public/${file}`,
+      `file://${page}`,
+    ], { stdio: 'inherit' })
+  } catch (error) {
+    // `public/favicon.svg` est déjà réécrit à ce stade : le dire, pour que
+    // l'échec ne laisse pas croire que `public/` est intact.
+    console.error(
+      `Chrome n'a pas rendu ${file} (${CHROME}). Installer Chrome ou poser CHROME_BIN. public/favicon.svg est déjà régénéré, les rasters non.`,
+    )
+    throw error
+  }
 
   console.log(`public/${file} écrite`)
 }
@@ -139,7 +176,6 @@ raster('apple-touch-icon.png', 180, 0.72)
 const png = readFileSync('public/favicon-32.png')
 const header = Buffer.alloc(22)
 
-header.writeUInt16LE(0, 0) // réservé
 header.writeUInt16LE(1, 2) // type : 1 = icône
 header.writeUInt16LE(1, 4) // une seule image
 header.writeUInt8(32, 6) // largeur
@@ -147,7 +183,10 @@ header.writeUInt8(32, 7) // hauteur
 header.writeUInt8(0, 8) // palette : aucune
 header.writeUInt8(0, 9) // réservé
 header.writeUInt16LE(1, 10) // plans
-header.writeUInt16LE(32, 12) // bits par pixel
+// 0 = « lire la profondeur dans la charge ». La charge est un PNG opaque,
+// donc 24 bits ; déclarer 32 serait faux, et Windows ignore le champ pour
+// une entrée PNG.
+header.writeUInt16LE(0, 12)
 header.writeUInt32LE(png.length, 14) // taille de la charge
 header.writeUInt32LE(22, 18) // décalage de la charge
 

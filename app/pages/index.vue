@@ -13,7 +13,7 @@ useSeoMeta(
   pageSeoMeta({
     title: 'Arnaud Brégère — Développeur front-end senior',
     description:
-      'Développeur front-end senior : Vue 3, Nuxt, TypeScript. Dix ans d’expérience, dont sept chez Figaro Classifieds. Projets, CV, téléphone et adresse e-mail.',
+      'Développeur front-end senior : Vue 3, Nuxt, TypeScript. Dix ans d’expérience, dont les sept dernières chez Figaro Classifieds. Projets, CV et coordonnées.',
   }),
 )
 
@@ -26,17 +26,23 @@ useSeoMeta(
  * disait alors qu'une année écrite en dur devient fausse au premier janvier
  * suivant, et c'est toujours vrai : cette valeur ne se met plus à jour seule.
  *
- * Aucune date de `content/cv.ts` ne donne 10 : l'intégration web commence en
- * février 2015, soit 11 ans révolus, et le premier poste de développeur
- * front-end en octobre 2019, soit 7. Le chiffre est donc une affirmation
- * d'Arnaud sur son parcours, pas une dérivation du CV — d'où sa place ici, en
- * clair, et non dans `content/cv.ts`, qui ne porte que le transcrit du PDF.
+ * Aucune date de `content/cv.ts` ne donne 10, et ce commentaire s'est trompé
+ * trois fois avant de le dire juste (relecture du 12/11/2026). Les dates du
+ * fichier, dans l'ordre : RueDuCommerce en mai 2009 pour l'entrée dans le
+ * métier, BrandAlley en décembre 2010 pour « Webdesigner et intégrateur
+ * web », Groupe La Poste en septembre 2018 pour le premier poste intitulé
+ * « Développeur front-end senior », Figaro Classifieds en octobre 2019 pour
+ * le poste en cours — après un premier passage de février 2015 à septembre
+ * 2018 comme intégrateur. Soit, au 12/11/2026 : 17, 16, 8 et 7.
  *
- * **À revoir au 1er janvier**, puisque rien ne le fera plus seul. Le
- * commentaire disait jusqu'au 12/11/2026 qu'il « devra lire 11 » : c'était
- * faux, aucune date de départ ne donne 10 cette année et 11 l'an prochain —
- * février 2015 en donne déjà 11, octobre 2019 en donne 7. La valeur à écrire
- * alors se tranche, elle ne se déduit pas.
+ * Le chiffre est donc une affirmation d'Arnaud sur son parcours, pas une
+ * dérivation du CV. Il vit ici plutôt que dans `content/cv.ts`, qui transcrit
+ * le PDF et ne s'en écarte que là où il le signale.
+ *
+ * **À revoir au 1er janvier** : rien ne le fera plus seul, et la valeur à
+ * écrire alors se tranche, elle ne se déduit pas. L'échéance est portée par
+ * l'issue #55, non par une assertion de test — une suite qui rougit au
+ * changement d'année bloquerait le déploiement d'un correctif sans rapport.
  *
  * La page porte par ailleurs « Dans le métier depuis : 2009 » et `/a-propos`
  * détaille le parcours : un lecteur peut rapprocher les trois. C'est assumé.
@@ -440,8 +446,12 @@ const family = rest.join(' ')
 
 /* Le socle est une énumération longue, séparée par des barres verticales :
    un cran de texte en dessous des autres repères, pour qu'il tienne sans
-   couper un terme en deux sur un téléphone. */
-.home__fact-stack {
+   couper un terme en deux sur un téléphone.
+
+   Le `dd` est dans le sélecteur : sans lui, `.home__fact dd` l'emporte —
+   (0,2,1) contre (0,2,0) une fois l'attribut de scopage posé — et la règle
+   ne faisait rien. Relevé à la relecture du 12/11/2026. */
+.home__fact dd.home__fact-stack {
   font-size: var(--step-0);
 }
 
@@ -498,7 +508,7 @@ const family = rest.join(' ')
 .home__action {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: var(--control-min-height);
   padding: var(--space-2xs) var(--space-s);
   border: var(--rule-strong);
   color: var(--color-fg);

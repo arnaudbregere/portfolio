@@ -91,22 +91,27 @@ test.describe('Référencement', () => {
     /**
      * Deux plafonds, et le second n'est pas une complaisance.
      *
-     * Les pages du site portent une description **écrite pour elle** : elle
-     * tient donc dans les ~160 signes qu'un résultat de recherche affiche sur
-     * mobile. Une fiche de projet, elle, rend le `problem` de
-     * `content/projects.ts` — un texte de page, pas une accroche — et la
-     * calculatrice en fait 214. Lui imposer 160 reviendrait à écrire un
-     * deuxième texte, ou à couper celui-ci au milieu d'une phrase.
+     * Toutes les pages tiennent 160 signes — ce qu'un résultat de recherche
+     * affiche sur mobile — **sauf une, nommée**. `/projets/calculatrice` rend
+     * le `problem` de `content/projects.ts`, un texte de page et non une
+     * accroche, qui en fait 214 ; lui imposer 160 demanderait d'écrire un
+     * second texte, ou de couper celui-ci au milieu d'une phrase. Les deux
+     * autres fiches passent 160 sans rien changer.
      *
-     * La première version de ce test, le 12/11/2026, annonçait 160 dans son
-     * message et laissait passer 230 — le plafond avait été choisi pour que
-     * la description de l'accueil entre. `.claude/rules/backend.md` nomme ce
-     * défaut : une règle qui promet plus que son test ne tient est pire que
-     * pas de règle. Les deux plafonds sont donc écrits, et dits.
+     * La liste est **close** : une fiche de plus qui dépasserait devrait
+     * entrer ici, donc se décider. La première version de ce test, le
+     * 12/11/2026, annonçait 160 dans son message et laissait passer 230 pour
+     * toutes les pages — le plafond avait été choisi pour que la description
+     * de l'accueil entre. `.claude/rules/backend.md` nomme ce défaut : une
+     * règle qui promet plus que son test ne tient est pire que pas de règle.
      */
+    const longer = new Map([
+      ['/projets/calculatrice', 220],
+    ])
+
     const limit = (path: string) =>
-      path.startsWith('/projets/')
-        ? { max: 230, why: 'fiche de projet : la description est le `problem` du contenu' }
+      longer.has(path)
+        ? { max: longer.get(path)!, why: 'la description est le `problem` du contenu, nommément toléré' }
         : { max: 160, why: 'au-delà de ~160 signes, le résultat de recherche tronque' }
 
     for (const { path, name } of sitePages) {

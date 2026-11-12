@@ -65,10 +65,16 @@ qui est sous examen et sur l'action principale unique.
 
 ### L'icône du site
 
-Les icônes de `public/` — `favicon.svg`, `favicon-32.png`, `favicon.ico` et
-`apple-touch-icon.png` — reprennent le monogramme « ab », composées par
-`scripts/favicon.js` depuis les tracés de `app/components/atoms/Logo.vue`. Le
-dessin n'est pas recopié : il est lu dans l'atome.
+Les **cinq** icônes de `public/` — `favicon.svg`, `favicon-32.png`,
+`favicon-192.png`, `favicon.ico` et `apple-touch-icon.png` — reprennent le
+monogramme « ab », composées par `scripts/favicon.js` depuis les tracés de
+`app/components/atoms/Logo.vue`. Le dessin n'est pas recopié : il est lu dans
+l'atome, son cadrage s'en déduit, et `tests/unit/favicon.spec.ts` vérifie que
+les fichiers livrés portent bien les tracés d'aujourd'hui.
+
+Le 192 est la taille que Google lit pour poser une icône à côté d'un résultat
+de recherche sur mobile : un carré d'un multiple de 48 px. Il redimensionne
+mal le 32, et le 180 d'iOS n'est pas un multiple.
 
 Trois écarts à l'atome, assumés le 12/11/2026 (issue #53), parce qu'une icône
 est un fichier et non un composant :
@@ -83,10 +89,12 @@ est un fichier et non un composant :
   transparence : le `b` en encre sombre disparaîtrait sur la barre d'onglets
   sombre de Chrome, et iOS remplace la transparence par du noir.
 - **Le cadrage est refait.** La boîte des tracés fait 51,05 × 36,85 ; une
-  icône est carrée. Le `viewBox` se recentre sur un carré de 56 autour du
-  centre des tracés, soit `-0.975 -1.825 56 56`.
+  icône est carrée. Le script lit le `viewBox` de l'atome — qui est cette
+  boîte — et en calcule un carré centré, côté = plus grande dimension plus
+  deux marges de 2,5. Aucun nombre n'est recopié : un monogramme redessiné
+  reste cadré.
 
-Le `a` garde `--color-logo-ink` en dur dans les quatre fichiers : la marque ne
+Le `a` garde `--color-logo-ink` en dur dans les cinq fichiers : la marque ne
 change pas de couleur avec le fond, ici comme ailleurs.
 
 Le papier est chaud plutôt que blanc pur : cela désamorce le risque d'austérité
@@ -182,6 +190,12 @@ téléphone entre deux titres — plus d'un tiers de la hauteur utile pour un
 intervalle. Tranché le 12/11/2026 (issue #53). La variante vit dans
 `_tokens.scss`, avec la valeur : la chercher ailleurs coûterait plus que la
 media query qu'elle y introduit.
+
+Conséquence assumée : **sous 48 em, `--space-xl` et `--space-2xl` valent tous
+deux 4 rem.** L'échelle a donc un doublon en mobile, et le séparateur de
+rubrique n'y est plus distinct du cran du dessous. C'est le prix du resserrage
+— un `--space-2xl` mobile à 3 rem passerait sous `--space-xl`, ce qui
+retournerait l'échelle. Les rubriques restent séparées par leur filet.
 
 - `--measure: 68ch` — longueur de ligne maximale du texte courant.
 - `--page-max: 90rem`, `--page-gutter: var(--space-s)`.

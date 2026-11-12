@@ -99,8 +99,8 @@ fait déjà. Sans formulaire, il n'y a aucune donnée de visiteur à recevoir, �
 stocker ni à justifier. Aucun cookie de mesure d'audience non plus, donc pas de
 bandeau.
 
-L'adresse e-mail paraît en clair sur `/`, sur `/a-propos` et dans le JSON-LD
-`Person`. Cette règle renverse le 04/11/2026 (issue #17) celle d'origine, qui
+L'adresse e-mail paraît en clair sur `/`, sur `/a-propos`, sur `/contact` et
+dans le JSON-LD `Person`. Cette règle renverse le 04/11/2026 (issue #17) celle d'origine, qui
 interdisait toute adresse en clair dans le DOM : le site est une pièce de
 candidature, un recruteur doit pouvoir écrire en un clic sans remplir un
 formulaire, et une adresse structurée sert le référencement. Le risque de
@@ -111,8 +111,9 @@ collecte automatisée est connu et accepté.
 engagements vérifiables, tenus par une seule personne, sur la page même qui
 doit prouver sa rigueur. Un recruteur qui constate l'écart retient l'écart.
 
-Le **téléphone** paraît en clair sur `/a-propos` depuis le 03/11/2026, et sur
-`/contact` depuis le 05/11/2026. Sur mobile, `tel:` ouvre l'application
+Le **téléphone** paraît en clair sur `/a-propos` depuis le 03/11/2026, sur
+`/contact` depuis le 05/11/2026, et sur `/` ainsi que dans le JSON-LD `Person`
+depuis le 12/11/2026 (issue #53). Sur mobile, `tel:` ouvre l'application
 téléphone avec le numéro prérempli : c'est le chemin le plus court entre un
 recruteur et un entretien. L'adresse postale, elle, ne paraît nulle part — une
 page publique n'a pas à porter le domicile de qui que ce soit.
