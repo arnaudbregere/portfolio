@@ -43,6 +43,24 @@ export default defineNuxtConfig({
     storageKey: 'portfolio-theme',
   },
 
+  /**
+   * `nuxt dev` refuse de démarrer sans cette ligne depuis Nuxt 4.6.4 :
+   *
+   *     ERROR  options.hostname.toLowerCase is not a function
+   *       at #syncAllowedHosts (node_modules/@nuxt/cli/dist/dev/index.mjs)
+   *
+   * 4.6.x a ajouté le contrôle de l'en-tête `Host` en développement
+   * (`devServer.allowedHosts`), et l'hôte résolu par défaut arrive sous forme
+   * d'objet au lieu d'une chaîne. Vérifié le 12/11/2026 : 4.6.2 démarre,
+   * 4.6.4 échoue, et `HOST=localhost npm run dev` suffit à contourner.
+   * Poser la valeur ici évite d'avoir à la passer à chaque lancement.
+   *
+   * La CI ne lance jamais `nuxt dev` : rien ne l'avait vu avant la relecture
+   * de la PR #49. `npm run dev` est à ajouter aux vérifications d'une montée
+   * de version de Nuxt.
+   */
+  devServer: { host: 'localhost' },
+
   css: ['~/styles/main.scss'],
 
   runtimeConfig: {

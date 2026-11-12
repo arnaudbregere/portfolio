@@ -1,4 +1,5 @@
 import type { Project } from '~~/content/types'
+import { jsonLdScript } from '~/utils/json-ld'
 
 /**
  * JSON-LD `CreativeWork` d'une fiche projet : dit à un moteur de recherche que
@@ -11,7 +12,7 @@ export const useProjectJsonLd = (project: Project, siteUrl: string) => {
     script: [
       {
         type: 'application/ld+json',
-        innerHTML: JSON.stringify({
+        innerHTML: jsonLdScript({
           '@context': 'https://schema.org',
           '@type': 'CreativeWork',
           name: project.title,
