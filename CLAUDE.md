@@ -59,6 +59,7 @@ ailleurs, pointer vers eux.
 | Toute modif UI (`app/**/*.vue`, `*.scss`) | `DESIGN.md`, `.claude/rules/design-system.md` | `/impeccable detect` sur les fichiers touchés ; `/impeccable critique` si la composition ou la hiérarchie change |
 | Relecture de PR | `.claude/rules/*.md` du domaine touché | agent `reviewer` |
 | Accessibilité / SEO avant merge | `PRODUCT.md` section « Accessibilité et inclusion » | agent `a11y-seo-auditor` |
+| Contenu ou texte de page modifié | `.claude/rules/content.md` § « Le contenu change, le référencement change avec lui » | relire `description`, `title`, Open Graph et JSON-LD **dans le même commit** |
 | Nouvelle feature | `.specify/memory/constitution.md`, `PRODUCT.md` | spec-kit : `/speckit-specify` → `/speckit-clarify` → `/speckit-plan` → `/speckit-tasks` → `/speckit-implement` |
 | Nouvelle feature avec UI | `PRODUCT.md`, `DESIGN.md` | `/impeccable shape` d'abord (composition, hiérarchie), spec-kit ensuite |
 | Ajouter un projet au portfolio | `.claude/skills/new-project/SKILL.md` | suivre la procédure du skill |

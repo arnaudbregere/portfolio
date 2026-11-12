@@ -63,6 +63,40 @@ qui est sous examen et sur l'action principale unique.
 | `--color-logo-ink-fg` | Texte sur la marque | `#121110` | `#121110` |
 | `--color-focus` | Indicateur de focus | `var(--color-fg)` | `var(--color-fg)` |
 
+### L'icône du site
+
+Les **cinq** icônes de `public/` — `favicon.svg`, `favicon-32.png`,
+`favicon-192.png`, `favicon.ico` et `apple-touch-icon.png` — reprennent le
+monogramme « ab », composées par `scripts/favicon.js` depuis les tracés de
+`app/components/atoms/Logo.vue`. Le dessin n'est pas recopié : il est lu dans
+l'atome, son cadrage s'en déduit, et `tests/unit/favicon.spec.ts` vérifie que
+les fichiers livrés portent bien les tracés d'aujourd'hui.
+
+Le 192 est la taille que Google lit pour poser une icône à côté d'un résultat
+de recherche sur mobile : un carré d'un multiple de 48 px. Il redimensionne
+mal le 32, et le 180 d'iOS n'est pas un multiple.
+
+Trois écarts à l'atome, assumés le 12/11/2026 (issue #53), parce qu'une icône
+est un fichier et non un composant :
+
+- **Le `b` ne suit plus le thème du site.** Il prend `currentColor` dans
+  l'atome ; un fichier n'a pas de couleur courante. Le SVG porte donc un
+  `prefers-color-scheme` — `#14120f` en clair, `#f2efe9` en sombre — qui suit
+  le réglage du **système d'exploitation**, pas la bascule de la page. Un
+  visiteur qui force le thème clair sur un système sombre verra l'icône
+  sombre. L'onglet appartient au navigateur ; la page n'y a pas de prise.
+- **Les rasters sont posés sur une tuile papier** `#f7f4ef`, et non en
+  transparence : le `b` en encre sombre disparaîtrait sur la barre d'onglets
+  sombre de Chrome, et iOS remplace la transparence par du noir.
+- **Le cadrage est refait.** La boîte des tracés fait 51,05 × 36,85 ; une
+  icône est carrée. Le script lit le `viewBox` de l'atome — qui est cette
+  boîte — et en calcule un carré centré, côté = plus grande dimension plus
+  deux marges de 2,5. Aucun nombre n'est recopié : un monogramme redessiné
+  reste cadré.
+
+Le `a` garde `--color-logo-ink` en dur dans les cinq fichiers : la marque ne
+change pas de couleur avec le fond, ici comme ailleurs.
+
 Le papier est chaud plutôt que blanc pur : cela désamorce le risque d'austérité
 d'un monde privé de photographie. L'encre garde la même teinte d'un thème à
 l'autre (350° contre 353°), seulement éclaircie pour tenir son seuil sur fond
@@ -148,6 +182,20 @@ Licence **OFL-1.1**. Le texte accompagne le fichier servi, dans
 Échelle de 4 px, `--space-3xs` (0,25 rem) à `--space-3xl` (9 rem). La mise en
 page se cale sur des unités entières de cette échelle et assume ses coutures,
 plutôt que de les cacher derrière des gouttières fractionnaires.
+
+**Un seul token de l'échelle varie avec la fenêtre : `--space-2xl`**, qui ouvre
+le séparateur de rubrique de toutes les pages. Il vaut **4 rem en mobile et
+6 rem à partir de `m`** (48 em / 768 px). Six rem partout vidaient l'écran d'un
+téléphone entre deux titres — plus d'un tiers de la hauteur utile pour un
+intervalle. Tranché le 12/11/2026 (issue #53). La variante vit dans
+`_tokens.scss`, avec la valeur : la chercher ailleurs coûterait plus que la
+media query qu'elle y introduit.
+
+Conséquence assumée : **sous 48 em, `--space-xl` et `--space-2xl` valent tous
+deux 4 rem.** L'échelle a donc un doublon en mobile, et le séparateur de
+rubrique n'y est plus distinct du cran du dessous. C'est le prix du resserrage
+— un `--space-2xl` mobile à 3 rem passerait sous `--space-xl`, ce qui
+retournerait l'échelle. Les rubriques restent séparées par leur filet.
 
 - `--measure: 68ch` — longueur de ligne maximale du texte courant.
 - `--page-max: 90rem`, `--page-gutter: var(--space-s)`.

@@ -12,6 +12,15 @@ export type Profile = {
   role: string
   /** Phrase d'accroche de l'accueil, une seule. */
   tagline: string
+  /**
+   * Le socle technique, tel que le repère « Socle » de l'accueil l'énumère.
+   *
+   * Voisin de `tagline` sans lui être identique : l'accroche ouvre sur
+   * « Développeur Front-end », le repère entre déjà dans une liste de faits
+   * et s'en passe. Deux champs plutôt qu'un, pour que l'un puisse bouger sans
+   * l'autre.
+   */
+  coreStack: string
   /** Présentation de `/a-propos`, en paragraphes. Un élément, un paragraphe. */
   intro: readonly string[]
   /** Présentation de l'accueil, en paragraphes. Un élément, un paragraphe. */

@@ -7,14 +7,23 @@
  */
 
 /**
+ * `06 07 98 52 85` donne `+33607985285`.
+ *
+ * La forme affichée garde ses espaces, lisibles à l'œil ; la forme
+ * internationale sans séparateur est la seule reconnue hors de France, et la
+ * seule que schema.org attend. Le `0` de tête tombe : il est le préfixe
+ * national que `+33` remplace.
+ */
+export const phoneE164 = (phone: string): string =>
+  `+33${phone.replace(/\s/g, '').replace(/^0/, '')}`
+
+/**
  * `06 07 98 52 85` donne `tel:+33607985285`.
  *
- * La forme affichée garde ses espaces, lisibles à l'œil ; `tel:` veut une
- * forme internationale sans séparateur, seule reconnue hors de France. Le `0`
- * de tête tombe : il est le préfixe national que `+33` remplace.
+ * Le schéma, et rien de plus : le JSON-LD `Person` veut la même valeur sans
+ * lui, et la retirait d'une URI fabriquée pour l'occasion.
  */
-export const telHref = (phone: string): string =>
-  `tel:+33${phone.replace(/\s/g, '').replace(/^0/, '')}`
+export const telHref = (phone: string): string => `tel:${phoneE164(phone)}`
 
 /**
  * `https://www.linkedin.com/in/arnaudbregere/` donne

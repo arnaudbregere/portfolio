@@ -2,6 +2,7 @@
 import { cvFile, profile } from '~~/content/cv'
 import { siteNav } from '~~/content/nav'
 import { projects } from '~~/content/projects'
+import { telHref } from '~/utils/contact'
 import { pageSeoMeta } from '~/utils/page-seo'
 
 const root = ref<HTMLElement | null>(null)
@@ -12,21 +13,41 @@ useSeoMeta(
   pageSeoMeta({
     title: 'Arnaud Brégère — Développeur front-end senior',
     description:
-      'Développeur front-end senior, Vue 3 et Nuxt, six ans chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV et contact.',
+      'Développeur front-end senior : Vue 3, Nuxt, TypeScript. Dix ans d’expérience, dont les sept dernières chez Figaro Classifieds. Projets, CV et coordonnées.',
   }),
 )
 
 /**
- * L'ancienneté se calcule, elle ne se recopie pas : une année écrite en dur
- * devient fausse au premier janvier suivant.
+ * Les années d'expérience front-end : **une valeur déclarée**, posée par
+ * Arnaud le 12/11/2026 (issue #53).
+ *
+ * Elle était calculée depuis `'2019-10'`, l'entrée chez Figaro Classifieds
+ * comme développeur front-end JavaScript — ce qui rendait 7. Le commentaire
+ * disait alors qu'une année écrite en dur devient fausse au premier janvier
+ * suivant, et c'est toujours vrai : cette valeur ne se met plus à jour seule.
+ *
+ * Aucune date de `content/cv.ts` ne donne 10, et ce commentaire s'est trompé
+ * trois fois avant de le dire juste (relecture du 12/11/2026). Les dates du
+ * fichier, dans l'ordre : RueDuCommerce en mai 2009 pour l'entrée dans le
+ * métier, BrandAlley en décembre 2010 pour « Webdesigner et intégrateur
+ * web », Groupe La Poste en septembre 2018 pour le premier poste intitulé
+ * « Développeur front-end senior », Figaro Classifieds en octobre 2019 pour
+ * le poste en cours — après un premier passage de février 2015 à septembre
+ * 2018 comme intégrateur. Soit, au 12/11/2026 : 17, 16, 8 et 7.
+ *
+ * Le chiffre est donc une affirmation d'Arnaud sur son parcours, pas une
+ * dérivation du CV. Il vit ici plutôt que dans `content/cv.ts`, qui transcrit
+ * le PDF et ne s'en écarte que là où il le signale.
+ *
+ * **À revoir au 1er janvier** : rien ne le fera plus seul, et la valeur à
+ * écrire alors se tranche, elle ne se déduit pas. L'échéance est portée par
+ * l'issue #55, non par une assertion de test — une suite qui rougit au
+ * changement d'année bloquerait le déploiement d'un correctif sans rapport.
+ *
+ * La page porte par ailleurs « Dans le métier depuis : 2009 » et `/a-propos`
+ * détaille le parcours : un lecteur peut rapprocher les trois. C'est assumé.
  */
-const firstFrontEndRole = '2019-10'
-const yearsOfFrontEnd = computed(() => {
-  const start = new Date(`${firstFrontEndRole}-01T00:00:00Z`)
-  const months =
-    (Date.now() - start.getTime()) / (1000 * 60 * 60 * 24 * 365.25 / 12)
-  return Math.floor(months / 12)
-})
+const yearsOfFrontEnd = 10
 
 const contact = siteNav.find((item) => item.to === '/contact')!
 
@@ -123,17 +144,59 @@ const family = rest.join(' ')
         </div>
         <div class="home__fact" data-reveal-item>
           <dt>Socle</dt>
-          <dd>Vue 3, Nuxt, TypeScript, accessibilité RGAA, référencement</dd>
+          <!-- `coreStack` de `content/cv.ts`, et non une liste réécrite ici :
+               le contenu est la source unique. Voisine de `tagline`, qui
+               ouvre la page, sans lui être identique — le repère n'a pas à
+               redire le métier, que « Poste recherché » annonce déjà. -->
+          <dd class="home__fact-stack">{{ profile.coreStack }}</dd>
         </div>
       </dl>
     </section>
 
     <section class="home__section" aria-labelledby="joindre" data-reveal-section>
-      <h2 id="joindre" data-reveal-item>{{ profile.availability }}</h2>
+      <!-- Un intitulé, pas une phrase. La disponibilité tenait lieu de titre
+           jusqu'au 12/11/2026 : 77 signes en capitales, qui servaient aussi
+           de nom accessible à la région par `aria-labelledby`, et qui ne
+           décrivaient pas une section portant des coordonnées — WCAG 2.4.6.
+           `/a-propos` avait déjà tranché cette forme pour le même contenu. -->
+      <h2 id="joindre" data-reveal-item>Me joindre</h2>
+
+      <p class="home__availability" data-reveal-item>{{ profile.availability }}</p>
+
+      <!-- Les coordonnées en clair dès l'accueil (issue #53) : `PRODUCT.md`
+           les inscrit comme attente du public « Recruteur / RH », et le
+           détour par `/contact` leur coûtait un clic.
+
+           L'icône ne porte jamais le sens : elle est `aria-hidden`, et le
+           libellé masqué visuellement la remplace **dans** le lien. Sans lui,
+           les deux liens se nommaient « 06 07 98 52 85 » et
+           « arnaud.bregere@gmail.com », et seul le pictogramme disait lequel
+           appelait — donné à l'œil, retiré au lecteur d'écran (relecture du
+           12/11/2026).
+
+           Le libellé est dans le lien plutôt qu'en `aria-label` : un
+           `aria-label` remplacerait le nom accessible, et la commande vocale
+           ne retrouverait plus le numéro affiché.
+
+           `mailto:` et `tel:` ne naviguent pas, donc ne passent pas par
+           `SiteLink`, qui ouvrirait un onglet vide. -->
+      <ul class="home__contact">
+        <li data-reveal-item>
+          <Icon name="phone" />
+          <a :href="telHref(profile.phone)">
+            <span class="visually-hidden">Téléphone : </span>{{ profile.phone }}
+          </a>
+        </li>
+        <li data-reveal-item>
+          <Icon name="mail" />
+          <a :href="`mailto:${profile.email}`">
+            <span class="visually-hidden">Adresse e-mail : </span>{{ profile.email }}
+          </a>
+        </li>
+      </ul>
 
       <p class="home__actions" data-reveal-item>
         <NuxtLink class="home__action" :to="contact.to">{{ contact.label }}</NuxtLink>
-        <a class="home__action" :href="`mailto:${profile.email}`">{{ profile.email }}</a>
       </p>
     </section>
   </article>
@@ -381,12 +444,58 @@ const family = rest.join(' ')
   font-size: var(--step-1);
 }
 
+/* Le socle est une énumération longue, séparée par des barres verticales :
+   un cran de texte en dessous des autres repères, pour qu'il tienne sans
+   couper un terme en deux sur un téléphone.
+
+   Le `dd` est dans le sélecteur : sans lui, `.home__fact dd` l'emporte —
+   (0,2,1) contre (0,2,0) une fois l'attribut de scopage posé — et la règle
+   ne faisait rien. Relevé à la relecture du 12/11/2026. */
+.home__fact dd.home__fact-stack {
+  font-size: var(--step-0);
+}
+
 .home__fact {
   @include bp.respond-up(m) {
     grid-template-columns: 16rem 1fr;
     gap: var(--space-m);
     align-items: baseline;
   }
+}
+
+.home__availability {
+  margin-top: var(--space-m);
+  max-width: var(--measure);
+  font-size: var(--step-1);
+}
+
+/* Les coordonnées : la forme des listes « Me joindre » de `/a-propos`, à un
+   cran de texte au-dessus — c'est l'appel de fin de page. */
+.home__contact {
+  margin: var(--space-m) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--step-1);
+}
+
+.home__contact li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+/* 44 px de haut, comme toute cible de la page (`--control-min-height`,
+   RGAA 4.1) : les deux liens tenaient 29 px à 8 px l'un de l'autre, et ce
+   sont les deux cibles que `PRODUCT.md` met sur le chemin d'un recruteur.
+   Relevé à la relecture du 12/11/2026. */
+.home__contact a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-min-height);
+}
+
+.home__contact li + li {
+  margin-top: var(--space-xs);
 }
 
 .home__actions {
@@ -399,7 +508,7 @@ const family = rest.join(' ')
 .home__action {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: var(--control-min-height);
   padding: var(--space-2xs) var(--space-s);
   border: var(--rule-strong);
   color: var(--color-fg);

@@ -16,6 +16,9 @@
   éviter tout décalage de mise en page.
 - Métadonnées par page via `useSeoMeta`, jamais via un `useHead` global
   dupliqué.
+- **Un texte modifié dans une page entraîne la relecture de ce qui la décrit**
+  — `description`, `title`, Open Graph, JSON-LD — dans le même commit. Le
+  tableau de ce qu'il faut relire est dans `.claude/rules/content.md`.
 
 ## CSS — styles globaux plats et styles scopés, sans framework
 

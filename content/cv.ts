@@ -24,9 +24,26 @@ export const profile: Profile = {
    * Ligne de compétences de l'accueil, réécrite par Arnaud le 09/11/2026.
    * Ce ne sont plus les quatre axes de l'en-tête du CV : c'est la liste des
    * domaines, séparés par des barres verticales.
+   *
+   * TypeScript s'y est ajouté le 12/11/2026, après JavaScript. La ligne sert
+   * désormais aussi le repère « Socle » de l'accueil (issue #53) : la
+   * modifier change la page à deux endroits.
    */
   tagline:
-    'Développeur Front-end | FullStack Agentic | Design Systems | JavaScript | Vue/Nuxt | React | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
+    'Développeur Front-end | FullStack Agentic | Design Systems | JavaScript | TypeScript | Vue/Nuxt | React | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
+  /**
+   * Le socle du repère de l'accueil, posé par Arnaud le 12/11/2026
+   * (issue #53). Il reprend l'accroche en trois écarts voulus : « Front-end »
+   * sans le métier, qui est déjà le premier repère de la liste ;
+   * « Design System » au singulier ; « React/Next » là où l'accroche n'écrit
+   * que React.
+   *
+   * Le repère rendait `tagline` entre le 12/11/2026 et ce commit — même
+   * chaîne à deux endroits de la page. Les deux lignes se ressemblent
+   * toujours : une modification de l'une se regarde depuis l'autre.
+   */
+  coreStack:
+    'Front-end | FullStack Agentic | Design System | JavaScript | TypeScript | Vue/Nuxt | React/Next | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
   /**
    * Texte de présentation de `/a-propos`, réécrit par Arnaud le 09/11/2026.
    * Ce n'est plus la transcription du PDF : c'est la version du site, plus
@@ -51,8 +68,17 @@ export const profile: Profile = {
   location: 'Paris',
   email: 'arnaud.bregere@gmail.com',
   phone: '06 07 98 52 85',
+  /**
+   * Écart assumé au PDF, demandé par Arnaud le 12/11/2026 (issue #53) : le CV
+   * écrit « en Île-de-France **ou** en télétravail hybride », cette ligne dit
+   * « **et** ». Le « ou » laissait lire une alternative — l'un ou l'autre —
+   * là où les deux sont acceptés ensemble.
+   *
+   * C'est le deuxième écart de ce fichier au PDF, et il est signalé sur place
+   * comme le premier. Il se referme à la prochaine version du PDF.
+   */
   availability:
-    'À l’écoute d’opportunités en CDI, en Île-de-France ou en télétravail hybride.',
+    'À l’écoute d’opportunités en CDI, en Île-de-France et en télétravail hybride.',
 }
 
 export const experiences: readonly Experience[] = [

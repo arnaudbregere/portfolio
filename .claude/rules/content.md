@@ -31,3 +31,39 @@ Le contenu éditorial du site vit dans `content/`, en **TypeScript typé**.
   champ est facultatif : sans lui, la fiche retombe sur l'image du site.
 - Les fichiers de `content/` ne contiennent aucune logique : uniquement des
   constantes typées exportées.
+
+## Le contenu change, le référencement change avec lui
+
+**Un contenu modifié n'est pas livré tant que ce qui le décrit n'a pas été
+relu, dans le même commit.** Une page corrige un chiffre et sa `description`
+garde l'ancien : la page est juste, le résultat de recherche est faux, et
+personne ne le voit — ni en relisant la page, ni dans un test.
+
+C'est arrivé le 12/11/2026 (issue #53). L'accueil est passé à « 10 ans
+d'expérience front-end » pendant que sa méta annonçait « six ans chez Figaro
+Classifieds ». Le numéro de téléphone est paru sur l'accueil sans que le
+JSON-LD `Person` le porte, ni `PRODUCT.md` § « Données personnelles », qui est
+pourtant le seul endroit du dépôt disant **où** chaque coordonnée paraît.
+
+La correction de la méta s'est trompée deux fois avant de tomber juste, et
+c'est l'enseignement principal : « six ans » est devenu « sept chez Figaro
+Classifieds », aussi faux — `content/cv.ts` porte **deux** passages chez
+Figaro, février 2015 à septembre 2018 puis octobre 2019 à aujourd'hui. Une
+durée ne se corrige pas de mémoire : elle se relit dans `content/cv.ts`,
+ligne par ligne.
+
+À relire à chaque modification de `content/` ou du texte d'une page :
+
+| Ce qui change | Ce qui doit être relu |
+|---|---|
+| un chiffre, une durée, un intitulé | `description` et `title` des pages qui le reprennent — et la durée se relit dans `content/cv.ts`, jamais de mémoire |
+| une coordonnée (téléphone, e-mail, profil) | le JSON-LD `Person` d'`app/app.vue`, **et** `PRODUCT.md` § « Données personnelles », qui dit où chaque coordonnée paraît |
+| un projet ajouté, retiré ou renommé | `/sitemap.xml`, l'`ogImage` de la fiche, les liens de l'accueil |
+| un titre de page | la `description`, qui ne doit pas le répéter mot pour mot |
+| une image de partage | `ogImageAlt`, et les 1200 × 630 de `scripts/og-card.js` |
+
+Deux garde-fous tiennent ce qui peut l'être, et ils ne remplacent pas la
+relecture : `e2e/tests/robots-sitemap.spec.ts` vérifie que chaque page porte
+une `description` non vide, unique et de longueur tenable, et que le JSON-LD
+`Person` annonce les mêmes coordonnées que la page. Aucun test ne peut dire
+qu'une phrase est devenue fausse.
