@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { appliedTheme, themeStorageKey } from './support/site'
+import { appliedTheme, hydrated, themeStorageKey } from './support/site'
 
 /**
  * Bascule de thème, et sa persistance après rechargement.
@@ -21,6 +21,7 @@ test.use({ colorScheme: 'light' })
 test.describe('Bascule de thème', () => {
   test('bascule du clair au sombre, et persiste après rechargement', async ({ page }) => {
     await page.goto('/')
+    await hydrated(page)
 
     await expect(page.locator('html')).toHaveClass(/light/)
 
@@ -45,6 +46,7 @@ test.describe('Bascule de thème', () => {
 
   test('le thème sombre survit à un changement de page', async ({ page }) => {
     await page.goto('/')
+    await hydrated(page)
     await page.getByRole('button', { name: 'Activer le thème sombre' }).click()
 
     await expect(page.locator('html')).toHaveClass(/dark/)
@@ -60,15 +62,19 @@ test.describe('Bascule de thème', () => {
 
   test('revenir au clair est retenu aussi', async ({ page }) => {
     await page.goto('/')
+    await hydrated(page)
 
     await page.getByRole('button', { name: 'Activer le thème sombre' }).click()
     await expect(page.locator('html')).toHaveClass(/dark/)
 
     await page.reload()
+    await hydrated(page)
 
-    // Le nom du bouton suit le thème restauré : en sombre, il propose le clair.
-    // Il l'annonçait à l'envers jusqu'au 10/11/2026 — Vue ne corrige pas un
-    // attribut divergent à l'hydratation. Voir `ThemeToggle.vue`.
+    // Le nom du bouton suit le thème restauré : en sombre, il propose le
+    // clair. Il l'annonçait à l'envers jusqu'au 10/11/2026 — Vue ne corrige
+    // pas un attribut divergent à l'hydratation —, et il vient du HTML du
+    // serveur depuis l'issue #56 : le CSS révèle celui des deux libellés qui
+    // convient, d'après la classe de `<html>`.
     await page.getByRole('button', { name: 'Activer le thème clair' }).click()
     await expect(page.locator('html')).toHaveClass(/light/)
 
