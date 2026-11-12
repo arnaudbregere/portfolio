@@ -20,6 +20,43 @@
   — `description`, `title`, Open Graph, JSON-LD — dans le même commit. Le
   tableau de ce qu'il faut relire est dans `.claude/rules/content.md`.
 
+## Rendu serveur — rien ne dérive de ce que le serveur ignore
+
+**Aucun texte ni attribut rendu au serveur ne dérive d'un état que le serveur
+n'a pas** : thème, `localStorage`, `window`, `navigator`, `Date.now()`. Le
+serveur applique le repli, le navigateur a déjà la vraie valeur, et les deux
+divergent à l'hydratation.
+
+Ce que Vue en fait est asymétrique, et c'est le piège : **il corrige le texte
+en prévenant, il ne corrige pas l'attribut du tout.** Les deux cas se sont
+produits sur `ThemeToggle` :
+
+- 10/11/2026, issue #6 — un `aria-label` rendu au serveur restait figé sur
+  « Activer le thème sombre » alors que le bouton activait déjà le thème
+  clair. Le nom accessible annonçait l'inverse de l'action, sur les sept pages
+  en thème sombre.
+- 12/11/2026, issue #56 — les libellés visibles divergeaient à chaque
+  chargement en thème sombre : deux `Hydration text content mismatch` par
+  page.
+
+**Le remède est le CSS**, sur la classe que `@nuxtjs/color-mode` pose sur
+`<html>` avant le premier affichage : rendre les deux états et révéler celui
+qui convient. Le HTML cesse alors de dépendre du thème, donc il n'y a plus
+rien à réconcilier. Un `ref` posé au montage ne traite que le symptôme, et
+laisse le texte diverger.
+
+Attention à la forme du sélecteur : dans un `<style scoped>`,
+`:global(html.dark) { … }` en bloc compile en `html.dark` **fusionné à la
+règle voisine** — mesuré le 12/11/2026, cela posait `visibility: hidden` sur
+tout le document. Écrire le descendant en clair, `html.dark .m-x`, suffit : le
+`scoped` n'ajoute son attribut qu'au dernier élément du sélecteur.
+
+**Ce qui se teste, c'est l'invariant** : un composant dont le rendu pourrait
+dépendre du thème porte un test qui bascule la préférence et exige **le même
+balisage**. `tests/unit/site-footer.spec.ts` le fait pour `ThemeToggle`. La
+divergence d'hydratation elle-même n'est tenue par aucune suite — voir
+`.claude/rules/e2e.md`.
+
 ## CSS — styles globaux plats et styles scopés, sans framework
 
 **Un seul système d'organisation : Atomic Design.** ITCSS a été abandonné le
