@@ -148,7 +148,14 @@ const family = rest.join(' ')
     </section>
 
     <section class="home__section" aria-labelledby="joindre" data-reveal-section>
-      <h2 id="joindre" data-reveal-item>{{ profile.availability }}</h2>
+      <!-- Un intitulé, pas une phrase. La disponibilité tenait lieu de titre
+           jusqu'au 12/11/2026 : 77 signes en capitales, qui servaient aussi
+           de nom accessible à la région par `aria-labelledby`, et qui ne
+           décrivaient pas une section portant des coordonnées — WCAG 2.4.6.
+           `/a-propos` avait déjà tranché cette forme pour le même contenu. -->
+      <h2 id="joindre" data-reveal-item>Me joindre</h2>
+
+      <p class="home__availability" data-reveal-item>{{ profile.availability }}</p>
 
       <!-- Les coordonnées en clair dès l'accueil (issue #53) : `PRODUCT.md`
            les inscrit comme attente du public « Recruteur / RH », et le
@@ -444,6 +451,12 @@ const family = rest.join(' ')
     gap: var(--space-m);
     align-items: baseline;
   }
+}
+
+.home__availability {
+  margin-top: var(--space-m);
+  max-width: var(--measure);
+  font-size: var(--step-1);
 }
 
 /* Les coordonnées : la forme des listes « Me joindre » de `/a-propos`, à un
