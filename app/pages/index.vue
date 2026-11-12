@@ -2,6 +2,7 @@
 import { cvFile, profile } from '~~/content/cv'
 import { siteNav } from '~~/content/nav'
 import { projects } from '~~/content/projects'
+import { telHref } from '~/utils/contact'
 import { pageSeoMeta } from '~/utils/page-seo'
 
 const root = ref<HTMLElement | null>(null)
@@ -17,16 +18,23 @@ useSeoMeta(
 )
 
 /**
- * L'ancienneté se calcule, elle ne se recopie pas : une année écrite en dur
- * devient fausse au premier janvier suivant.
+ * Les années d'expérience front-end : **une valeur déclarée**, posée par
+ * Arnaud le 12/11/2026 (issue #53).
+ *
+ * Elle était calculée depuis `'2019-10'`, l'entrée chez Figaro Classifieds
+ * comme développeur front-end JavaScript — ce qui rendait 7. Le commentaire
+ * disait alors qu'une année écrite en dur devient fausse au premier janvier
+ * suivant, et c'est toujours vrai : cette valeur ne se met plus à jour seule.
+ *
+ * Aucune date de `content/cv.ts` ne donne 10 : l'intégration web commence en
+ * février 2015, soit 11 ans révolus, et le premier poste de développeur
+ * front-end en octobre 2019, soit 7. Le chiffre est donc une affirmation
+ * d'Arnaud sur son parcours, pas une dérivation du CV — d'où sa place ici, en
+ * clair, et non dans `content/cv.ts`, qui ne porte que le transcrit du PDF.
+ *
+ * **À revoir au 1er janvier.** Ancré sur le même départ, il devra lire 11.
  */
-const firstFrontEndRole = '2019-10'
-const yearsOfFrontEnd = computed(() => {
-  const start = new Date(`${firstFrontEndRole}-01T00:00:00Z`)
-  const months =
-    (Date.now() - start.getTime()) / (1000 * 60 * 60 * 24 * 365.25 / 12)
-  return Math.floor(months / 12)
-})
+const yearsOfFrontEnd = 10
 
 const contact = siteNav.find((item) => item.to === '/contact')!
 
@@ -131,9 +139,28 @@ const family = rest.join(' ')
     <section class="home__section" aria-labelledby="joindre" data-reveal-section>
       <h2 id="joindre" data-reveal-item>{{ profile.availability }}</h2>
 
+      <!-- Les coordonnées en clair dès l'accueil (issue #53) : `PRODUCT.md`
+           les inscrit comme attente du public « Recruteur / RH », et le
+           détour par `/contact` leur coûtait un clic.
+
+           La forme est celle de `/a-propos` et de `/contact` : un
+           pictogramme, puis le libellé. L'icône ne porte jamais le sens —
+           elle est `aria-hidden`, et le texte du lien reste la seule source
+           d'information. `mailto:` et `tel:` ne naviguent pas, donc ne
+           passent pas par `SiteLink`, qui ouvrirait un onglet vide. -->
+      <ul class="home__contact">
+        <li data-reveal-item>
+          <Icon name="phone" />
+          <a :href="telHref(profile.phone)">{{ profile.phone }}</a>
+        </li>
+        <li data-reveal-item>
+          <Icon name="mail" />
+          <a :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+        </li>
+      </ul>
+
       <p class="home__actions" data-reveal-item>
         <NuxtLink class="home__action" :to="contact.to">{{ contact.label }}</NuxtLink>
-        <a class="home__action" :href="`mailto:${profile.email}`">{{ profile.email }}</a>
       </p>
     </section>
   </article>
@@ -387,6 +414,25 @@ const family = rest.join(' ')
     gap: var(--space-m);
     align-items: baseline;
   }
+}
+
+/* Les coordonnées : la forme des listes « Me joindre » de `/a-propos`, à un
+   cran de texte au-dessus — c'est l'appel de fin de page. */
+.home__contact {
+  margin: var(--space-m) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--step-1);
+}
+
+.home__contact li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+}
+
+.home__contact li + li {
+  margin-top: var(--space-2xs);
 }
 
 .home__actions {

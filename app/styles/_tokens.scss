@@ -6,6 +6,8 @@
  * WCAG 2.1. DESIGN.md les consignera et la planche `/_ds` les vérifiera à
  * l'exécution ; ni l'un ni l'autre n'existe encore à ce commit.
  */
+@use 'breakpoints' as bp;
+
 :root {
   /* Couleurs — thème clair, « papier » */
   --color-bg: #f7f4ef;
@@ -36,7 +38,9 @@
   --space-m: 1.5rem;
   --space-l: 2.5rem;
   --space-xl: 4rem;
-  --space-2xl: 6rem;
+  /* Seul token de l'échelle à varier avec la fenêtre : relevé à 6rem à partir
+     de `m`, plus bas dans ce fichier. */
+  --space-2xl: 4rem;
   --space-3xl: 9rem;
 
   /* Typographie — une famille, deux registres */
@@ -111,4 +115,29 @@
   --color-ink-fg: #121110;
   --color-logo-ink: #ff5c72;
   --color-logo-ink-fg: #121110;
+}
+
+/**
+ * L'écart entre deux rubriques — le seul token de l'échelle à varier avec la
+ * fenêtre.
+ *
+ * Six rem séparent les rubriques depuis l'origine, à toutes les tailles. Sur
+ * un téléphone, l'écran se vide entre deux titres : l'écart vaut plus d'un
+ * tiers de la hauteur utile. Il tombe donc à 4rem en mobile et retrouve 6rem
+ * à partir de `m` (48em / 768px), où la page est assez haute pour le porter.
+ * Arnaud l'a tranché le 12/11/2026 (issue #53).
+ *
+ * Le changement porte sur le **token**, non sur la page d'accueil qui l'a
+ * motivé : `--space-2xl` ouvre le séparateur de rubrique de `/`, `/a-propos`,
+ * `/contact`, `/projets` et de la fiche projet. Un rythme vertical qui
+ * différerait d'une rubrique à l'autre se verrait.
+ *
+ * C'est la seule media query de ce fichier, et le seul `@use` qu'il porte.
+ * L'alternative — redéfinir la valeur dans `_base.scss` — sépare un token de
+ * sa variante, et laisse chercher où la valeur change.
+ */
+@include bp.respond-up(m) {
+  :root {
+    --space-2xl: 6rem;
+  }
 }

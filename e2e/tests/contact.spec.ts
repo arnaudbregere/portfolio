@@ -64,3 +64,30 @@ test.describe('Liens de contact', () => {
     await expect(github).toHaveAttribute('href', /^https:\/\/github\.com\//)
   })
 })
+
+/**
+ * Les mêmes coordonnées sur l'accueil, depuis l'issue #53. Elles y sont en
+ * clair pour un recruteur, et elles sortent du même contenu que `/contact` :
+ * si un numéro diverge entre les deux pages, c'est qu'il a été recopié dans
+ * un gabarit.
+ */
+test.describe('Coordonnées de l’accueil', () => {
+  test('le téléphone et l’adresse e-mail y portent les mêmes href que /contact', async ({ page }) => {
+    await page.goto('/contact')
+
+    const expectedPhone = await page.locator('a[href^="tel:"]').first().getAttribute('href')
+    const expectedMail = await page.locator('a[href^="mailto:"]').first().getAttribute('href')
+
+    await page.goto('/')
+
+    // Aucun clic : ces liens passent la main à une application du système.
+    await expect(page.locator(`a[href="${expectedPhone}"]`)).toBeVisible()
+    await expect(page.locator(`a[href="${expectedMail}"]`)).toBeVisible()
+  })
+
+  test('l’accueil renvoie toujours à la page Contact', async ({ page }) => {
+    await page.goto('/')
+
+    await expect(page.getByRole('link', { name: 'Contact' }).first()).toBeVisible()
+  })
+})

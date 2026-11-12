@@ -31,6 +31,19 @@ export default defineNuxtConfig({
           href: '/fonts/archivo-variable-latin.woff2',
           crossorigin: '',
         },
+
+        // Les icônes du monogramme « ab », composées par `scripts/favicon.js`
+        // depuis les tracés de `app/components/atoms/Logo.vue`. Sans elles,
+        // Nitro répond au chemin `/favicon.ico` par un GIF transparent de
+        // 1 × 1 et l'onglet reste muet.
+        //
+        // Le SVG d'abord : il porte les deux thèmes dans un fichier, par un
+        // `prefers-color-scheme`. Le PNG sert les navigateurs qui l'ignorent,
+        // et `favicon.ico` le client qui demande ce chemin sans lire le
+        // document.
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
       ],
     },
   },

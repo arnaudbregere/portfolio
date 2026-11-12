@@ -51,8 +51,17 @@ export const profile: Profile = {
   location: 'Paris',
   email: 'arnaud.bregere@gmail.com',
   phone: '06 07 98 52 85',
+  /**
+   * Écart assumé au PDF, demandé par Arnaud le 12/11/2026 (issue #53) : le CV
+   * écrit « en Île-de-France **ou** en télétravail hybride », cette ligne dit
+   * « **et** ». Le « ou » laissait lire une alternative — l'un ou l'autre —
+   * là où les deux sont acceptés ensemble.
+   *
+   * C'est le deuxième écart de ce fichier au PDF, et il est signalé sur place
+   * comme le premier. Il se referme à la prochaine version du PDF.
+   */
   availability:
-    'À l’écoute d’opportunités en CDI, en Île-de-France ou en télétravail hybride.',
+    'À l’écoute d’opportunités en CDI, en Île-de-France et en télétravail hybride.',
 }
 
 export const experiences: readonly Experience[] = [
