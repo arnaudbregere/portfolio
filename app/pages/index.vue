@@ -131,11 +131,11 @@ const family = rest.join(' ')
         </div>
         <div class="home__fact" data-reveal-item>
           <dt>Socle</dt>
-          <!-- La ligne de compétences de `content/cv.ts`, et non une liste
-               réécrite ici : deux énumérations des mêmes savoir-faire
-               divergeraient à la première mise à jour. Elle paraît aussi en
-               tête de page, sous le nom. -->
-          <dd class="home__fact-stack">{{ profile.tagline }}</dd>
+          <!-- `coreStack` de `content/cv.ts`, et non une liste réécrite ici :
+               le contenu est la source unique. Voisine de `tagline`, qui
+               ouvre la page, sans lui être identique — le repère n'a pas à
+               redire le métier, que « Poste recherché » annonce déjà. -->
+          <dd class="home__fact-stack">{{ profile.coreStack }}</dd>
         </div>
       </dl>
     </section>

@@ -32,6 +32,19 @@ export const profile: Profile = {
   tagline:
     'Développeur Front-end | FullStack Agentic | Design Systems | JavaScript | TypeScript | Vue/Nuxt | React | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
   /**
+   * Le socle du repère de l'accueil, posé par Arnaud le 12/11/2026
+   * (issue #53). Il reprend l'accroche en trois écarts voulus : « Front-end »
+   * sans le métier, qui est déjà le premier repère de la liste ;
+   * « Design System » au singulier ; « React/Next » là où l'accroche n'écrit
+   * que React.
+   *
+   * Le repère rendait `tagline` entre le 12/11/2026 et ce commit — même
+   * chaîne à deux endroits de la page. Les deux lignes se ressemblent
+   * toujours : une modification de l'une se regarde depuis l'autre.
+   */
+  coreStack:
+    'Front-end | FullStack Agentic | Design System | JavaScript | TypeScript | Vue/Nuxt | React/Next | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
+  /**
    * Texte de présentation de `/a-propos`, réécrit par Arnaud le 09/11/2026.
    * Ce n'est plus la transcription du PDF : c'est la version du site, plus
    * courte, et elle fait foi ici.
