@@ -83,12 +83,28 @@ describe('page Accueil', () => {
 
     const phone = page.get(`a[href="${telHref(profile.phone)}"]`)
 
-    expect(phone.text()).toBe(profile.phone)
+    expect(phone.text()).toContain(profile.phone)
     expect(phone.attributes('href')).toMatch(/^tel:\+33\d{9}$/)
 
     const mail = page.get(`a[href="mailto:${profile.email}"]`)
 
-    expect(mail.text()).toBe(profile.email)
+    expect(mail.text()).toContain(profile.email)
+  })
+
+  /**
+   * Le nom accessible dit lequel des deux liens appelle. Sans ce libellé, les
+   * deux se nommaient « 06 07 98 52 85 » et « arnaud.bregere@gmail.com », et
+   * seul le pictogramme — `aria-hidden` — faisait la différence : donné à
+   * l'œil, retiré au lecteur d'écran. Relevé le 12/11/2026.
+   */
+  it('nomme chaque coordonnée par un libellé masqué visuellement', async () => {
+    const page = await mountSuspended(IndexPage)
+
+    const labels = page
+      .findAll('.home__contact a .visually-hidden')
+      .map((node) => node.text())
+
+    expect(labels).toEqual(['Téléphone :', 'Adresse e-mail :'])
   })
 
   /**

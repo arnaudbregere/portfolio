@@ -13,7 +13,7 @@ useSeoMeta(
   pageSeoMeta({
     title: 'Arnaud Brégère — Développeur front-end senior',
     description:
-      'Développeur front-end senior, Vue 3, Nuxt et TypeScript, dix ans d’expérience front-end dont sept chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV, téléphone et adresse e-mail.',
+      'Développeur front-end senior : Vue 3, Nuxt, TypeScript. Dix ans d’expérience, dont sept chez Figaro Classifieds. Projets, CV, téléphone et adresse e-mail.',
   }),
 )
 
@@ -32,7 +32,14 @@ useSeoMeta(
  * d'Arnaud sur son parcours, pas une dérivation du CV — d'où sa place ici, en
  * clair, et non dans `content/cv.ts`, qui ne porte que le transcrit du PDF.
  *
- * **À revoir au 1er janvier.** Ancré sur le même départ, il devra lire 11.
+ * **À revoir au 1er janvier**, puisque rien ne le fera plus seul. Le
+ * commentaire disait jusqu'au 12/11/2026 qu'il « devra lire 11 » : c'était
+ * faux, aucune date de départ ne donne 10 cette année et 11 l'an prochain —
+ * février 2015 en donne déjà 11, octobre 2019 en donne 7. La valeur à écrire
+ * alors se tranche, elle ne se déduit pas.
+ *
+ * La page porte par ailleurs « Dans le métier depuis : 2009 » et `/a-propos`
+ * détaille le parcours : un lecteur peut rapprocher les trois. C'est assumé.
  */
 const yearsOfFrontEnd = 10
 
@@ -147,19 +154,31 @@ const family = rest.join(' ')
            les inscrit comme attente du public « Recruteur / RH », et le
            détour par `/contact` leur coûtait un clic.
 
-           La forme est celle de `/a-propos` et de `/contact` : un
-           pictogramme, puis le libellé. L'icône ne porte jamais le sens —
-           elle est `aria-hidden`, et le texte du lien reste la seule source
-           d'information. `mailto:` et `tel:` ne naviguent pas, donc ne
-           passent pas par `SiteLink`, qui ouvrirait un onglet vide. -->
+           L'icône ne porte jamais le sens : elle est `aria-hidden`, et le
+           libellé masqué visuellement la remplace **dans** le lien. Sans lui,
+           les deux liens se nommaient « 06 07 98 52 85 » et
+           « arnaud.bregere@gmail.com », et seul le pictogramme disait lequel
+           appelait — donné à l'œil, retiré au lecteur d'écran (relecture du
+           12/11/2026).
+
+           Le libellé est dans le lien plutôt qu'en `aria-label` : un
+           `aria-label` remplacerait le nom accessible, et la commande vocale
+           ne retrouverait plus le numéro affiché.
+
+           `mailto:` et `tel:` ne naviguent pas, donc ne passent pas par
+           `SiteLink`, qui ouvrirait un onglet vide. -->
       <ul class="home__contact">
         <li data-reveal-item>
           <Icon name="phone" />
-          <a :href="telHref(profile.phone)">{{ profile.phone }}</a>
+          <a :href="telHref(profile.phone)">
+            <span class="visually-hidden">Téléphone : </span>{{ profile.phone }}
+          </a>
         </li>
         <li data-reveal-item>
           <Icon name="mail" />
-          <a :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+          <a :href="`mailto:${profile.email}`">
+            <span class="visually-hidden">Adresse e-mail : </span>{{ profile.email }}
+          </a>
         </li>
       </ul>
 
@@ -438,12 +457,22 @@ const family = rest.join(' ')
 
 .home__contact li {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-2xs);
 }
 
+/* 44 px de haut, comme toute cible de la page (`--control-min-height`,
+   RGAA 4.1) : les deux liens tenaient 29 px à 8 px l'un de l'autre, et ce
+   sont les deux cibles que `PRODUCT.md` met sur le chemin d'un recruteur.
+   Relevé à la relecture du 12/11/2026. */
+.home__contact a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-min-height);
+}
+
 .home__contact li + li {
-  margin-top: var(--space-2xs);
+  margin-top: var(--space-xs);
 }
 
 .home__actions {

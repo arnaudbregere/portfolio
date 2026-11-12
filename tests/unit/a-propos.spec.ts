@@ -39,11 +39,24 @@ describe('page À propos', () => {
     expect(link.attributes('href')).toBe('/pdf/arnaud-bregere_cv.pdf')
   })
 
-  it('donne l’e-mail et le téléphone en liens activables', async () => {
+  /**
+   * Le nom accessible porte le libellé **et** la valeur depuis le
+   * 12/11/2026 : seul le pictogramme disait lequel des deux liens appelait,
+   * et il est `aria-hidden`. Le libellé est dans le lien, non en
+   * `aria-label`, pour que la commande vocale retrouve le texte affiché.
+   */
+  it('donne l’e-mail et le téléphone en liens activables et nommés', async () => {
     const page = await mountSuspended(AProposPage)
 
-    expect(page.get(`a[href="mailto:${profile.email}"]`).text()).toBe(profile.email)
-    expect(page.get('a[href^="tel:"]').attributes('href')).toBe('tel:+33607985285')
+    const mail = page.get(`a[href="mailto:${profile.email}"]`)
+
+    expect(mail.text()).toContain(profile.email)
+    expect(mail.text()).toContain('Adresse e-mail')
+
+    const phone = page.get('a[href^="tel:"]')
+
+    expect(phone.attributes('href')).toBe('tel:+33607985285')
+    expect(phone.text()).toContain('Téléphone')
   })
 
   it('n’expose aucune adresse postale', async () => {

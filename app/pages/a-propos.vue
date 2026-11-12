@@ -8,7 +8,7 @@ useSeoMeta(
   pageSeoMeta({
     title: 'À propos — Arnaud Brégère',
     description:
-      'Parcours d’Arnaud Brégère, développeur front-end senior : sept ans de Vue et Nuxt chez Figaro Classifieds, une formation en arts graphiques, et le CV en téléchargement.',
+      'Parcours d’Arnaud Brégère, développeur front-end senior : sept ans de Vue et Nuxt chez Figaro Classifieds, et une formation en arts graphiques.',
   }),
 )
 
@@ -120,11 +120,15 @@ useRevealCascade(root)
       <ul class="about__contact">
         <li data-reveal-item>
           <Icon name="mail" />
-          <a :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+          <a :href="`mailto:${profile.email}`">
+            <span class="visually-hidden">Adresse e-mail : </span>{{ profile.email }}
+          </a>
         </li>
         <li data-reveal-item>
           <Icon name="phone" />
-          <a :href="telHref(profile.phone)">{{ profile.phone }}</a>
+          <a :href="telHref(profile.phone)">
+            <span class="visually-hidden">Téléphone : </span>{{ profile.phone }}
+          </a>
         </li>
         <li class="about__place-line" data-reveal-item>{{ profile.location }}</li>
       </ul>

@@ -88,6 +88,27 @@ test.describe('Référencement', () => {
   test('chaque page porte une description non vide et unique', async ({ page }) => {
     const seen = new Map<string, string>()
 
+    /**
+     * Deux plafonds, et le second n'est pas une complaisance.
+     *
+     * Les pages du site portent une description **écrite pour elle** : elle
+     * tient donc dans les ~160 signes qu'un résultat de recherche affiche sur
+     * mobile. Une fiche de projet, elle, rend le `problem` de
+     * `content/projects.ts` — un texte de page, pas une accroche — et la
+     * calculatrice en fait 214. Lui imposer 160 reviendrait à écrire un
+     * deuxième texte, ou à couper celui-ci au milieu d'une phrase.
+     *
+     * La première version de ce test, le 12/11/2026, annonçait 160 dans son
+     * message et laissait passer 230 — le plafond avait été choisi pour que
+     * la description de l'accueil entre. `.claude/rules/backend.md` nomme ce
+     * défaut : une règle qui promet plus que son test ne tient est pire que
+     * pas de règle. Les deux plafonds sont donc écrits, et dits.
+     */
+    const limit = (path: string) =>
+      path.startsWith('/projets/')
+        ? { max: 230, why: 'fiche de projet : la description est le `problem` du contenu' }
+        : { max: 160, why: 'au-delà de ~160 signes, le résultat de recherche tronque' }
+
     for (const { path, name } of sitePages) {
       await page.goto(path)
 
@@ -95,10 +116,11 @@ test.describe('Référencement', () => {
         .locator('meta[name="description"]')
         .getAttribute('content')
 
+      const { max, why } = limit(path)
+
       expect(description, name).toBeTruthy()
       expect(description!.length, name).toBeGreaterThan(50)
-      expect(description!.length, `${name} : au-delà de ~160 signes, le résultat de recherche tronque`)
-        .toBeLessThanOrEqual(230)
+      expect(description!.length, `${name} — ${why}`).toBeLessThanOrEqual(max)
       expect(seen.has(description!), `${name} partage sa description avec ${seen.get(description!)}`)
         .toBe(false)
 
