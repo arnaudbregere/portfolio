@@ -111,10 +111,11 @@ export const experiences: readonly Experience[] = [
       'React',
       'JavaScript',
       'TypeScript',
+      'CSS3',
       'SCSS',
       'API REST',
       'GraphQL',
-      'ElasticSearch',
+      'Elasticsearch',
       'Vitest',
       'Cypress',
       'Golang',
@@ -194,6 +195,8 @@ export const experiences: readonly Experience[] = [
       'Création et intégration des opérations commerciales : Noël, soldes, rentrée et collections saisonnières.',
     ],
     stack: ['HTML', 'CSS3', 'jQuery'],
+    // `Git` est un outil ici et une techno sur les trois fiches récentes :
+    // c'est le classement du CV, poste par poste, et il est gardé tel quel.
     tools: ['DreamWeaver', 'Suite Adobe', 'TortoiseSVN', 'Git'],
   },
   {
@@ -204,16 +207,21 @@ export const experiences: readonly Experience[] = [
     location: 'Paris',
     product: 'rueducommerce.com',
     sector: 'E-commerce',
-    summary:
-      'Régie publicitaire du site : opérations marketing et animations commerciales.',
+    summary: 'Animations commerciales au sein de la régie publicitaire du site.',
     missions: [
       'Kits commerciaux : bannières animées en GIF et en Flash, orientées marque.',
       'Intégration des newsletters quotidiennes.',
       'Pages d’atterrissage et mini-sites : Halo 3, domotique.',
       'Campagnes : Noël, printemps, promotions, ventes flash et soldes.',
     ],
-    stack: ['HTML', 'CSS', 'ActionScript'],
-    tools: ['Photoshop', 'Illustrator', 'Flash', 'DreamWeaver'],
+    // Le CV écrit « Notions ActionScript » : la réserve fait partie de la
+    // compétence déclarée, et la retirer monterait le niveau annoncé.
+    stack: ['HTML', 'CSS', 'Notions ActionScript'],
+    // L'ombrelle du CV est gardée, comme sur les trois autres fiches —
+    // « Adobe (PhotoShop, Illustrator, Flash) » y était aplati en quatre
+    // entrées, ce qui donnait deux granularités pour le même éditeur à deux
+    // fiches d'intervalle.
+    tools: ['Suite Adobe (Photoshop, Illustrator, Flash)', 'DreamWeaver'],
   },
 ]
 

@@ -21,16 +21,44 @@ describe('page À propos', () => {
    */
   it('rend le produit, le secteur, les outils et la méthode de chaque poste', async () => {
     const page = await mountSuspended(AProposPage)
-    const text = page.text()
 
-    for (const job of experiences) {
+    /**
+     * **Chaque fiche est interrogée pour elle-même.** Comparé au texte de la
+     * page entière, ce test restait vert en retirant la ligne des outils du
+     * gabarit : ceux de La Poste et de Cadremploi paraissent aussi dans la
+     * rubrique « Compétences », plus bas. Relevé à la relecture du
+     * 12/11/2026.
+     */
+    // Scopé à la rubrique : « Formation » rend elle aussi des
+    // `.about__item`.
+    const items = page.findAll('[aria-labelledby="experiences"] .about__item')
+
+    expect(items).toHaveLength(experiences.length)
+
+    items.forEach((item, index) => {
+      const job = experiences[index]!
+      const text = item.text()
+
       expect(text, job.company).toContain(job.product)
       expect(text, job.company).toContain(job.sector)
-
-      for (const tool of job.tools) expect(text, `${job.company} — ${tool}`).toContain(tool)
+      expect(text, job.company).toContain(job.stack.join(' · '))
+      expect(text, job.company).toContain(job.tools.join(' · '))
 
       if (job.method) expect(text, job.company).toContain(job.method)
-    }
+    })
+  })
+
+  /**
+   * La liste des libellés du pied de fiche est **close** : un champ ajouté à
+   * `Experience` et oublié dans le gabarit ne tomberait pas tout seul, mais
+   * un libellé ajouté sans contenu, ou retiré, fait rougir la suite.
+   */
+  it('n’énonce que les trois libellés attendus en pied de fiche', async () => {
+    const page = await mountSuspended(AProposPage)
+    const first = page.findAll('[aria-labelledby="experiences"] .about__item')[0]!
+
+    expect(first.findAll('.about__pile dt').map((node) => node.text()))
+      .toEqual(['Technos', 'Outils', 'Méthode'])
   })
 
   /**
@@ -41,10 +69,13 @@ describe('page À propos', () => {
   it('n’affiche pas de ligne de méthode là où le CV n’en donne pas', async () => {
     const page = await mountSuspended(AProposPage)
 
+    // Seule la page est observée : `expect(declared).toBeLessThan(…)` a été
+    // retiré le 12/11/2026, c'était une assertion de contenu dans un test de
+    // rendu — une version du CV donnant une méthode aux cinq postes l'aurait
+    // fait rougir sans qu'aucun gabarit ait bougé.
     const declared = experiences.filter((job) => job.method).length
 
     expect(page.findAll('.about__method')).toHaveLength(declared)
-    expect(declared).toBeLessThan(experiences.length)
   })
 
   it('rend chaque mission et chaque formation', async () => {
@@ -61,7 +92,11 @@ describe('page À propos', () => {
 
   it('nomme chaque groupe de compétences', async () => {
     const page = await mountSuspended(AProposPage)
-    const titles = page.findAll('dt').map((node) => node.text())
+
+    // Scopé à la rubrique : le pied de chaque fiche d'expérience est lui
+    // aussi une liste de définitions depuis le 12/11/2026 — « Technos »,
+    // « Outils », « Méthode ».
+    const titles = page.findAll('.about__skills dt').map((node) => node.text())
 
     expect(titles).toEqual(skillGroups.map((group) => group.title))
   })

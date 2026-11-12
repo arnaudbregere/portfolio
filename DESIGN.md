@@ -686,10 +686,23 @@ partaient donc toutes au chargement, les quatre dernières jouaient leur entrée
 que `/contact` les aurait fait monter.
 
 Donc : **une rubrique de page dont le contenu est une liste se découpe en une
-rubrique par élément.** Sur `/a-propos`, « Parcours » (une expérience) et
-« Formation » (une formation). Aucune rubrique ne dépasse alors 695 px. La
-règle est structurelle : ce n'est pas le nombre d'éléments qui décide, c'est la
-hauteur comparée à la fenêtre.
+rubrique par élément — **et un élément plus haut que la fenêtre se découpe
+encore.** Sur `/a-propos`, « Parcours » se découpe en une rubrique par
+expérience, puis chaque expérience en trois : sa tête, ses missions, son pied.
+« Formation » se découpe en une rubrique par formation.
+
+La règle est structurelle : ce n'est pas le nombre d'éléments qui décide,
+c'est la hauteur comparée à la fenêtre. Mesure du 12/11/2026, sur le build de
+production : la plus haute rubrique de la page fait **783 px** à 390 × 844 et
+720 px à 1440 × 1047.
+
+Le second découpage est né le 12/11/2026 (issue #58) : la fiche d'expérience a
+reçu le produit servi, les outils et la méthode, et elle est passée de 806 à
+**1113 px** à 390 px de large, pour une fenêtre de 844. Elle restait classée
+sur son seul `top`, donc ses dernières missions et tout son pied jouaient leur
+entrée sous la ligne de flottaison, puis paraissaient immobiles au
+défilement — le défaut même que l'issue #32 avait corrigé, réintroduit à
+l'intérieur d'un élément.
 
 « Formation » n'avait pas été signalée, et relevait du même défaut : 1125 px
 pour une fenêtre de 1047 px. Le défaut y était seulement latent — visible sur
@@ -709,12 +722,14 @@ exactement le défaut corrigé ici, en entrant hors écran sur une fenêtre cour
 élément, c'est ce qui se lit d'un trait qui fait une ligne, et non chaque
 élément du DOM : la liste des missions d'une expérience entre **en un bloc**,
 jamais une mission à la fois, et un couple `dt` / `dd` de la liste des
-compétences fait une ligne. Une expérience compte donc cinq lignes — intitulé,
-période, résumé, missions, stack — et pas une par mission.
+compétences fait une ligne. Une expérience compte donc six lignes réparties
+sur ses trois rubriques — intitulé, période, produit et résumé pour la tête,
+les missions **en un bloc** pour la deuxième, le pied en un bloc pour la
+troisième — et pas une par mission ni une par ligne du pied.
 
 | Rubrique de page | Découpage | Lignes par rubrique de cascade |
 |---|---|---|
-| Parcours | le titre, puis une rubrique par expérience | 1, puis 5 |
+| Parcours | le titre, puis **trois** rubriques par expérience | 1, puis 4 (tête), 1 (missions), 1 (pied) |
 | Compétences | une rubrique | le `h2`, puis chaque couple `dt` / `dd` |
 | Formation | le titre, puis une rubrique par formation | 1, puis 2 à 4 |
 | Me joindre | une rubrique | le `h2`, la disponibilité, puis chaque coordonnée |
@@ -747,16 +762,27 @@ du PDF du CV :
    plus dilueraient ceux qui comptent ;
 4. **le résumé**, en corps de texte plein ;
 5. **les missions**, en liste ;
-6. **les technos, les outils et la méthode** — trois lignes d'un même
-   registre, en pied de fiche, séparées du reste par un seul écart puis
-   serrées entre elles. Trois écarts pleins les feraient lire comme trois
-   rubriques, alors qu'elles répondent à la même question. La méthode est une
-   phrase et non une énumération : l'italique la distingue des deux listes
-   qu'elle suit, sans ajouter de couleur ni de graisse.
+6. **les technos, les outils et la méthode** — une liste de définitions en
+   pied de fiche, dans la forme de la rubrique « Compétences » de la même
+   page : un libellé, une valeur. Elles ont d'abord été trois paragraphes nus
+   de même encre, même corps et même séparateur, à 4 px l'un de l'autre : dès
+   qu'une liste passait sur deux lignes, le pied se lisait comme un seul bloc
+   de noms, et rien ne disait où finissaient les technos. Un lecteur d'écran
+   n'avait pas davantage de prise. Relevé et corrigé le 12/11/2026.
+   Le libellé passe en colonne à partir de `m`. La méthode est une phrase et
+   non une énumération : l'italique la distingue des deux listes qu'elle suit,
+   sans ajouter de couleur ni de graisse.
 
 **Le CV sépare les technos des outils, et la page garde cette séparation** :
 un recruteur technique cherche la techno, un recruteur RH reconnaît l'outil.
-Les mélanger — « Suite Adobe » à côté de « Vue 3 » — annulait la distinction.
+Une seule liste les mélangeait — `Suite Adobe`, `DreamWeaver` et `TortoiseSVN`
+y voisinaient avec `HTML` et `jQuery` sur les fiches anciennes, `Docker` et
+`Git` avec `Vue 3` sur la fiche en cours.
+
+Un relevé du 12/11/2026 a corrigé ici un exemple **inventé** — « Suite Adobe à
+côté de Vue 3 », deux valeurs qui n'ont jamais cohabité dans aucune fiche.
+`.claude/rules/design-system.md` le dit déjà des composants : un exemple
+inventé finit par être construit.
 
 La méthode manque aux deux fiches les plus anciennes, qui n'en déclarent
 aucune au CV. Rien ne s'invente pour remplir un champ ; la ligne disparaît.

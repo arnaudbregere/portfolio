@@ -42,48 +42,62 @@ useRevealCascade(root)
       <h2 id="experiences" data-reveal-section data-reveal-item>Expériences professionnelles</h2>
 
       <ol class="about__list">
-        <!-- Une expérience = une rubrique. Prises ensemble elles feraient
-             2296 px de haut, et une rubrique se classe sur son `top` seul :
-             les quatre dernières joueraient leur entrée hors écran. -->
-        <li
-          v-for="job in experiences"
-          :key="`${job.company}-${job.start}`"
-          class="about__item"
-          data-reveal-section
-        >
-          <h3 class="about__role" data-reveal-item>
-            {{ job.role }}<span class="about__company">, {{ job.company }}</span>
-          </h3>
+        <!-- Trois rubriques de cascade par expérience, et non une : une
+             rubrique se classe sur son `top` seul, donc elle ne doit pas
+             dépasser la hauteur de la fenêtre. Depuis que la fiche porte le
+             produit, les outils et la méthode, elle mesure 1113 px à 390 px
+             de large pour une fenêtre de 844 — ses dernières lignes
+             joueraient leur entrée hors écran, puis paraîtraient immobiles
+             au défilement. Mesuré le 12/11/2026, `DESIGN.md` § 7. -->
+        <li v-for="job in experiences" :key="`${job.company}-${job.start}`" class="about__item">
+          <div class="about__head" data-reveal-section>
+            <h3 class="about__role" data-reveal-item>
+              {{ job.role }}<span class="about__company">, {{ job.company }}</span>
+            </h3>
 
-          <p class="about__meta" data-reveal-item>
-            <time :datetime="job.start">{{ formatPeriod(job.start, job.end) }}</time>
-            <span class="about__place">{{ job.location }}</span>
-          </p>
+            <p class="about__meta" data-reveal-item>
+              <time :datetime="job.start">{{ formatPeriod(job.start, job.end) }}</time>
+              <span class="about__place">{{ job.location }}</span>
+            </p>
 
-          <!-- Le produit servi et son secteur, comme le CV les nomme. Du
-               texte et non un lien : le site d'un employeur n'est pas une
-               référence du portfolio, et un lien sortant de plus dans une
-               liste de cinq fiches dilue ceux qui comptent. -->
-          <p class="about__product" data-reveal-item>
-            {{ job.product }}<span class="about__sector">{{ job.sector }}</span>
-          </p>
+            <!-- Le produit servi et son secteur, comme le CV les nomme. Du
+                 texte et non un lien : le site d'un employeur n'est pas une
+                 référence du portfolio, et un lien sortant de plus dans une
+                 liste de cinq fiches dilue ceux qui comptent. -->
+            <p class="about__product" data-reveal-item>
+              {{ job.product }}<span class="about__sector">{{ job.sector }}</span>
+            </p>
 
-          <p class="about__summary" data-reveal-item>{{ job.summary }}</p>
+            <p class="about__summary" data-reveal-item>{{ job.summary }}</p>
+          </div>
 
           <!-- Les missions entrent en un bloc : une ligne par mission
                découperait une énumération qui se lit d'un seul tenant. -->
-          <ul class="about__missions" data-reveal-item>
+          <ul class="about__missions" data-reveal-section data-reveal-item>
             <li v-for="mission in job.missions" :key="mission">{{ mission }}</li>
           </ul>
 
-          <!-- Technos, outils et méthode : trois lignes d'un même registre,
-               plus discrètes que les missions. Le CV les sépare, et la
-               distinction se lit — un recruteur technique cherche la techno,
-               un recruteur RH reconnaît l'outil. La méthode manque aux deux
-               fiches les plus anciennes, qui n'en déclarent aucune. -->
-          <p class="about__stack" data-reveal-item>{{ job.stack.join(' · ') }}</p>
-          <p class="about__tools" data-reveal-item>{{ job.tools.join(' · ') }}</p>
-          <p v-if="job.method" class="about__method" data-reveal-item>{{ job.method }}</p>
+          <!-- Technos, outils et méthode : une liste de définitions, comme la
+               rubrique « Compétences » de cette page. Trois paragraphes de
+               noms sans libellé se lisaient d'un bloc, et un lecteur d'écran
+               n'avait rien pour les distinguer. Le pied entre en une seule
+               ligne de cascade : il répond à une seule question. -->
+          <dl class="about__pile" data-reveal-section data-reveal-item>
+            <div class="about__pile-entry">
+              <dt>Technos</dt>
+              <dd>{{ job.stack.join(' · ') }}</dd>
+            </div>
+
+            <div class="about__pile-entry">
+              <dt>Outils</dt>
+              <dd>{{ job.tools.join(' · ') }}</dd>
+            </div>
+
+            <div v-if="job.method" class="about__pile-entry">
+              <dt>Méthode</dt>
+              <dd class="about__method">{{ job.method }}</dd>
+            </div>
+          </dl>
         </li>
       </ol>
     </section>
@@ -152,6 +166,8 @@ useRevealCascade(root)
 </template>
 
 <style scoped lang="scss">
+@use '../styles/breakpoints' as bp;
+
 /* Tête de page : des délais fixes, hors de la cascade mesurée. Le `@keyframes`
    et les règles communes vivent dans `app/styles/_motion.scss`.
 
@@ -305,23 +321,39 @@ useRevealCascade(root)
   margin-top: var(--space-2xs);
 }
 
-/* Technos, outils et méthode forment un bloc en pied de fiche : un seul écart
-   au-dessus, puis des lignes serrées. Trois écarts pleins les feraient lire
-   comme trois rubriques, alors qu'ils répondent à la même question. */
-.about__stack,
-.about__tools,
-.about__method {
+/* Le pied de fiche : un libellé par ligne, dans la forme de la rubrique
+   « Compétences » de cette page. Les trois lignes se ressemblaient trait pour
+   trait — même encre, même corps, même séparateur, 4 px d'écart —, et se
+   lisaient donc comme un seul bloc de noms, sans rien pour dire où finissent
+   les technos. Un lecteur d'écran n'avait pas davantage de prise. */
+.about__pile {
+  margin: var(--space-s) 0 0;
   color: var(--color-fg-muted);
   font-size: var(--step--1);
 }
 
-.about__stack {
-  margin-top: var(--space-s);
+.about__pile-entry + .about__pile-entry {
+  margin-top: var(--space-2xs);
 }
 
-.about__tools,
-.about__method {
-  margin-top: var(--space-3xs);
+.about__pile dt {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.about__pile dd {
+  margin: 0;
+}
+
+@include bp.respond-up(m) {
+  /* Le libellé passe en colonne dès qu'il y a la place : les trois lignes
+     s'alignent alors sur la même gouttière, et le pied tient en trois lignes
+     au lieu de six. */
+  .about__pile-entry {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--space-s);
+  }
 }
 
 /* La méthode est une phrase, pas une énumération : l'italique la distingue des
