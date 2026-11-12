@@ -24,9 +24,13 @@ export const profile: Profile = {
    * Ligne de compétences de l'accueil, réécrite par Arnaud le 09/11/2026.
    * Ce ne sont plus les quatre axes de l'en-tête du CV : c'est la liste des
    * domaines, séparés par des barres verticales.
+   *
+   * TypeScript s'y est ajouté le 12/11/2026, après JavaScript. La ligne sert
+   * désormais aussi le repère « Socle » de l'accueil (issue #53) : la
+   * modifier change la page à deux endroits.
    */
   tagline:
-    'Développeur Front-end | FullStack Agentic | Design Systems | JavaScript | Vue/Nuxt | React | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
+    'Développeur Front-end | FullStack Agentic | Design Systems | JavaScript | TypeScript | Vue/Nuxt | React | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
   /**
    * Texte de présentation de `/a-propos`, réécrit par Arnaud le 09/11/2026.
    * Ce n'est plus la transcription du PDF : c'est la version du site, plus
