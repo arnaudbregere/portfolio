@@ -31,7 +31,7 @@ useSeoMeta(
  * fichier, dans l'ordre : RueDuCommerce en mai 2009 pour l'entrée dans le
  * métier, BrandAlley en décembre 2010 pour « Webdesigner et intégrateur
  * web », Groupe La Poste en septembre 2018 pour le premier poste intitulé
- * « Développeur front-end », Figaro Classifieds en octobre 2019 pour
+ * « Développeur front-end senior », Figaro Classifieds en octobre 2019 pour
  * le poste en cours — après un premier passage de février 2015 à septembre
  * 2018 comme intégrateur. Soit, au 12/11/2026 : 17, 16, 8 et 7.
  *

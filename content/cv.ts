@@ -138,7 +138,14 @@ export const experiences: readonly Experience[] = [
   },
   {
     company: 'Groupe La Poste',
-    role: 'Développeur front-end',
+    /**
+     * Écart assumé au PDF, maintenu par Arnaud le 12/11/2026 : le CV écrit
+     * « Développeur Front-end », cette fiche garde « senior ». C'est le
+     * troisième écart signalé de ce fichier à sa source, après l'adresse
+     * postale écartée et le « et » de `availability`. Il se referme à la
+     * prochaine version du PDF.
+     */
+    role: 'Développeur front-end senior',
     start: '2018-09',
     end: '2019-10',
     location: 'Paris',
