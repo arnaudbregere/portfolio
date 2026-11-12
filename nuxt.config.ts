@@ -1,3 +1,5 @@
+import { securityHeaders } from './server/utils/security-headers'
+
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-26',
   devtools: { enabled: true },
@@ -80,6 +82,19 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/sitemap.xml', '/robots.txt'],
     },
+  },
+
+  /**
+   * Les en-têtes de sécurité, sur toutes les réponses — documents,
+   * `/api/health`, plan du site et fichiers de `public/`.
+   *
+   * Des valeurs constantes, posées par le routage : aucun greffon, rien
+   * d'accroché au rendu. Leur contenu et leur justification — notamment la
+   * tolérance du script en ligne — sont dans
+   * `server/utils/security-headers.ts`.
+   */
+  routeRules: {
+    '/**': { headers: securityHeaders },
   },
 
   typescript: {

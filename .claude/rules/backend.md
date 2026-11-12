@@ -23,6 +23,24 @@ elles tiennent en une couche de transport et un utilitaire testable. Les
 couches `services/` et `schemas/` décrites plus bas naîtront avec la première
 route qui en aura besoin — pas avant.
 
+**`server/plugins/` n'existe pas, et c'est une décision.** Les en-têtes de
+sécurité (12/11/2026, issue #46) sont des constantes de
+`server/utils/security-headers.ts`, posées sur toutes les réponses par les
+`routeRules` de `nuxt.config.ts` — documents, `/api/health`, routes
+prérendues et fichiers de `public/` compris.
+
+La politique de sécurité du contenu tolère le script en ligne
+(`'unsafe-inline'`). L'alternative — un jeton tiré par réponse — demande un
+greffon accroché à trois hooks de rendu de Nuxt, dont les noms ont changé en
+4.6, et ne protégerait que d'un script injecté dans la page. **Le site n'a
+aucune entrée par où en injecter un** : contenu TypeScript typé, pas de
+formulaire (issue #5), pas de `v-html`, aucun script tiers. Le raisonnement
+complet est dans l'utilitaire.
+
+Cette tolérance tombe dès qu'une de ces conditions tombe : entrée
+utilisateur, script tiers, mesure d'audience. Le jeton devient alors
+obligatoire, et seul `server/utils/security-headers.ts` change.
+
 ## Conventions
 
 - Routes Nitro dans `server/api/`, nommées par méthode
@@ -45,6 +63,11 @@ route qui en aura besoin — pas avant.
   générique au client, détail dans les journaux serveur.
 - Toute route exposée publiquement et coûteuse (envoi d'e-mail, appel à une API
   tierce) est limitée en débit et protégée par un piège à robots.
+- **Un en-tête de sécurité ne se relâche pas en silence.** Ajouter une origine
+  tierce, un joker, `'unsafe-eval'` ou une permission de navigateur rend rouge
+  `tests/unit/security-headers.spec.ts`, qui énonce les interdictions une par
+  une. Le remède est de justifier le changement dans l'utilitaire et de
+  déplacer l'interdiction, jamais de retirer le test.
 
 ## Tests
 
@@ -56,5 +79,11 @@ route qui en aura besoin — pas avant.
   variable d'environnement — échoue avant d'atteindre la production.
 - Une route qui validerait une entrée aurait en plus : cas nominal, cas de
   validation en échec, cas de limitation de débit.
+- Un en-tête se vérifie aux deux bouts : Vitest sur la valeur
+  (`tests/unit/security-headers.spec.ts`), Playwright sur la réponse servie et
+  sur la page **sous** la politique
+  (`e2e/tests/en-tetes-securite.spec.ts`). Une politique qui casse
+  l'hydratation serait verte en unitaire et rouge pour le visiteur : le test
+  de bout en bout charge donc la page et bascule le thème.
 - Les services externes sont simulés (`vi.mock`). Un test ne doit jamais
   provoquer d'envoi réel ni d'appel réseau sortant.
