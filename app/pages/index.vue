@@ -131,7 +131,11 @@ const family = rest.join(' ')
         </div>
         <div class="home__fact" data-reveal-item>
           <dt>Socle</dt>
-          <dd>Vue 3, Nuxt, TypeScript, accessibilité RGAA, référencement</dd>
+          <!-- La ligne de compétences de `content/cv.ts`, et non une liste
+               réécrite ici : deux énumérations des mêmes savoir-faire
+               divergeraient à la première mise à jour. Elle paraît aussi en
+               tête de page, sous le nom. -->
+          <dd class="home__fact-stack">{{ profile.tagline }}</dd>
         </div>
       </dl>
     </section>
@@ -406,6 +410,13 @@ const family = rest.join(' ')
 .home__fact dd {
   margin: 0;
   font-size: var(--step-1);
+}
+
+/* Le socle est une énumération longue, séparée par des barres verticales :
+   un cran de texte en dessous des autres repères, pour qu'il tienne sans
+   couper un terme en deux sur un téléphone. */
+.home__fact-stack {
+  font-size: var(--step-0);
 }
 
 .home__fact {
