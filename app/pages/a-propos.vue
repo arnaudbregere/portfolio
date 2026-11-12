@@ -60,6 +60,14 @@ useRevealCascade(root)
             <span class="about__place">{{ job.location }}</span>
           </p>
 
+          <!-- Le produit servi et son secteur, comme le CV les nomme. Du
+               texte et non un lien : le site d'un employeur n'est pas une
+               référence du portfolio, et un lien sortant de plus dans une
+               liste de cinq fiches dilue ceux qui comptent. -->
+          <p class="about__product" data-reveal-item>
+            {{ job.product }}<span class="about__sector">{{ job.sector }}</span>
+          </p>
+
           <p class="about__summary" data-reveal-item>{{ job.summary }}</p>
 
           <!-- Les missions entrent en un bloc : une ligne par mission
@@ -68,7 +76,14 @@ useRevealCascade(root)
             <li v-for="mission in job.missions" :key="mission">{{ mission }}</li>
           </ul>
 
+          <!-- Technos, outils et méthode : trois lignes d'un même registre,
+               plus discrètes que les missions. Le CV les sépare, et la
+               distinction se lit — un recruteur technique cherche la techno,
+               un recruteur RH reconnaît l'outil. La méthode manque aux deux
+               fiches les plus anciennes, qui n'en déclarent aucune. -->
           <p class="about__stack" data-reveal-item>{{ job.stack.join(' · ') }}</p>
+          <p class="about__tools" data-reveal-item>{{ job.tools.join(' · ') }}</p>
+          <p v-if="job.method" class="about__method" data-reveal-item>{{ job.method }}</p>
         </li>
       </ol>
     </section>
@@ -264,6 +279,19 @@ useRevealCascade(root)
   margin-right: var(--space-2xs);
 }
 
+/* Le produit prolonge la ligne de période : même registre, collé dessous,
+   parce qu'il situe le poste autant que la date et le lieu. */
+.about__product {
+  margin-top: var(--space-3xs);
+  color: var(--color-fg-muted);
+  font-size: var(--step--1);
+}
+
+.about__sector::before {
+  content: '·';
+  margin: 0 var(--space-2xs);
+}
+
 .about__summary {
   margin-top: var(--space-s);
 }
@@ -277,10 +305,29 @@ useRevealCascade(root)
   margin-top: var(--space-2xs);
 }
 
-.about__stack {
-  margin-top: var(--space-s);
+/* Technos, outils et méthode forment un bloc en pied de fiche : un seul écart
+   au-dessus, puis des lignes serrées. Trois écarts pleins les feraient lire
+   comme trois rubriques, alors qu'ils répondent à la même question. */
+.about__stack,
+.about__tools,
+.about__method {
   color: var(--color-fg-muted);
   font-size: var(--step--1);
+}
+
+.about__stack {
+  margin-top: var(--space-s);
+}
+
+.about__tools,
+.about__method {
+  margin-top: var(--space-3xs);
+}
+
+/* La méthode est une phrase, pas une énumération : l'italique la distingue des
+   deux listes qu'elle suit sans ajouter de couleur ni de graisse. */
+.about__method {
+  font-style: italic;
 }
 
 .about__skills {

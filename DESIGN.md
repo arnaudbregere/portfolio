@@ -732,6 +732,35 @@ explicitement un `<div>` autour d'un groupe `dt` / `dd` dans un `<dl>`, et les
 sélecteurs de la page visent des descendants, donc la mise en forme ne bouge
 pas.
 
+### La fiche d'expérience de `/a-propos`
+
+Six niveaux de lecture, du plus fort au plus discret. Tranché le 12/11/2026
+(issue #58), quand la fiche a reçu le produit servi, les outils et la méthode
+du PDF du CV :
+
+1. **le rôle et l'entreprise** — un `h3`, l'entreprise en texte atténué ;
+2. **la période et le lieu** — petit corps, texte atténué ;
+3. **le produit et son secteur** — même registre, collé dessous : il situe le
+   poste autant que la date, et c'est pour cela qu'il prolonge cette ligne au
+   lieu d'ouvrir le corps de la fiche. En texte, jamais en lien — le site d'un
+   employeur n'est pas une référence du portfolio, et cinq liens sortants de
+   plus dilueraient ceux qui comptent ;
+4. **le résumé**, en corps de texte plein ;
+5. **les missions**, en liste ;
+6. **les technos, les outils et la méthode** — trois lignes d'un même
+   registre, en pied de fiche, séparées du reste par un seul écart puis
+   serrées entre elles. Trois écarts pleins les feraient lire comme trois
+   rubriques, alors qu'elles répondent à la même question. La méthode est une
+   phrase et non une énumération : l'italique la distingue des deux listes
+   qu'elle suit, sans ajouter de couleur ni de graisse.
+
+**Le CV sépare les technos des outils, et la page garde cette séparation** :
+un recruteur technique cherche la techno, un recruteur RH reconnaît l'outil.
+Les mélanger — « Suite Adobe » à côté de « Vue 3 » — annulait la distinction.
+
+La méthode manque aux deux fiches les plus anciennes, qui n'en déclarent
+aucune au CV. Rien ne s'invente pour remplir un champ ; la ligne disparaît.
+
 ## 8. Organisation du code
 
 **Un seul système : Atomic Design.** ITCSS a été abandonné le 26/10/2026 —

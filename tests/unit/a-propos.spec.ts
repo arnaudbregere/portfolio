@@ -13,6 +13,40 @@ describe('page À propos', () => {
     expect(roles[0]).toContain(experiences[0]!.company)
   })
 
+  /**
+   * Ce que le contenu porte, la page le rend — y compris les champs venus du
+   * PDF le 12/11/2026 (issue #58) : le produit servi, son secteur, les outils
+   * et la méthode. Sans ce test, un champ ajouté à `content/cv.ts` et oublié
+   * dans le gabarit resterait invisible sans que rien ne tombe.
+   */
+  it('rend le produit, le secteur, les outils et la méthode de chaque poste', async () => {
+    const page = await mountSuspended(AProposPage)
+    const text = page.text()
+
+    for (const job of experiences) {
+      expect(text, job.company).toContain(job.product)
+      expect(text, job.company).toContain(job.sector)
+
+      for (const tool of job.tools) expect(text, `${job.company} — ${tool}`).toContain(tool)
+
+      if (job.method) expect(text, job.company).toContain(job.method)
+    }
+  })
+
+  /**
+   * La méthode est facultative : les deux fiches les plus anciennes n'en
+   * déclarent aucune au CV. Une ligne vide ou un séparateur orphelin
+   * trahirait un `v-if` oublié.
+   */
+  it('n’affiche pas de ligne de méthode là où le CV n’en donne pas', async () => {
+    const page = await mountSuspended(AProposPage)
+
+    const declared = experiences.filter((job) => job.method).length
+
+    expect(page.findAll('.about__method')).toHaveLength(declared)
+    expect(declared).toBeLessThan(experiences.length)
+  })
+
   it('rend chaque mission et chaque formation', async () => {
     const page = await mountSuspended(AProposPage)
     const text = page.text()
