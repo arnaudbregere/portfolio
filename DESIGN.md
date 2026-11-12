@@ -237,8 +237,15 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
 - **Un élément de second niveau porte une puce.** Même décision. Sous un titre
   numéroté, la puce dit qu'une expérience ou une formation est un élément de
   la rubrique, et non une rubrique de plus : le document a deux niveaux, il
-  les montre. La puce est en encre atténuée. Les listes du site restent
-  autrement sans marqueur, `_reset.scss` les ayant toutes remises à plat.
+  les montre. La puce est en encre atténuée.
+- **Les missions d'une expérience portent un tiret cadratin**, lui aussi en
+  encre atténuée. Ajouté le 12/11/2026 : elles n'avaient aucun marqueur, et
+  flottaient sous le résumé, seulement décalées. Rien ne disait où commence
+  une mission, et la fiche en cours en compte onze. Un tiret et non un
+  disque — le disque est la puce de l'expérience, un niveau au-dessus, et
+  deux marqueurs de même forme diraient la même chose deux fois.
+  Les autres listes du site restent sans marqueur, `_reset.scss` les ayant
+  toutes remises à plat.
 - **Les deux marqueurs ne se cumulent jamais sur un même bloc.** `/projets`
   n'a qu'un niveau — sa liste de projets — et ses projets sont donc numérotés
   sans puce : le rang et la puce diraient deux fois la même chose, et

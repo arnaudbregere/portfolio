@@ -312,9 +312,27 @@ useRevealCascade(root)
   margin-top: var(--space-s);
 }
 
+/* Les missions portent un tiret cadratin, en encre atténuée.
+   `_reset.scss` remet toutes les listes à plat, et `DESIGN.md` posait qu'un
+   seul niveau — l'expérience — porte un marqueur. Les missions flottaient
+   alors sous le résumé, seulement décalées : rien ne disait où commence une
+   mission, et la fiche en compte jusqu'à onze.
+
+   Un tiret et non un disque : le disque est déjà la puce de l'expérience, un
+   niveau au-dessus. Deux marqueurs de même forme à deux niveaux diraient la
+   même chose deux fois. */
 .about__missions {
   margin-top: var(--space-s);
   padding-left: var(--space-m);
+  list-style-type: '—';
+}
+
+.about__missions li {
+  padding-left: var(--space-2xs);
+}
+
+.about__missions li::marker {
+  color: var(--color-fg-muted);
 }
 
 .about__missions li + li {
