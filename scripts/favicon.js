@@ -11,7 +11,12 @@
  * | `favicon.svg` | l'icône, vectorielle, les deux thèmes dans un fichier |
  * | `favicon-32.png` | secours des navigateurs qui ignorent le SVG |
  * | `favicon.ico` | secours du chemin `/favicon.ico`, demandé sans `link` |
+ * | `favicon-192.png` | 192 × 192, taille que Google lit pour ses résultats |
  * | `apple-touch-icon.png` | 180 × 180, écran d'accueil iOS |
+ *
+ * Le 192 n'est pas un doublon du 32 : Google demande une icône carrée d'un
+ * multiple de 48 px pour l'afficher à côté d'un résultat de recherche sur
+ * mobile, et redimensionne mal un 32. Le 180 d'iOS n'en est pas un.
  *
  * **Les tracés ne sont pas recopiés** : ils sont lus dans
  * `app/components/atoms/Logo.vue`, qui reste la source du dessin. Redessiner
@@ -120,6 +125,7 @@ const raster = (file, size, scale) => {
 }
 
 raster('favicon-32.png', 32, 1)
+raster('favicon-192.png', 192, 0.84)
 raster('apple-touch-icon.png', 180, 0.72)
 
 /**

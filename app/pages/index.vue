@@ -13,7 +13,7 @@ useSeoMeta(
   pageSeoMeta({
     title: 'Arnaud Brégère — Développeur front-end senior',
     description:
-      'Développeur front-end senior, Vue 3 et Nuxt, six ans chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV et contact.',
+      'Développeur front-end senior, Vue 3 et Nuxt, dix ans d’expérience front-end dont sept chez Figaro Classifieds. Migration, performance, référencement et accessibilité. CV, téléphone et adresse e-mail.',
   }),
 )
 

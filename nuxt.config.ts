@@ -43,6 +43,10 @@ export default defineNuxtConfig({
         // document.
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+        // Google affiche une icône à côté d'un résultat de recherche sur
+        // mobile, et demande pour cela un carré d'un multiple de 48 px : il
+        // redimensionne mal le 32, et le 180 d'iOS n'est pas un multiple.
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicon-192.png' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
       ],
     },

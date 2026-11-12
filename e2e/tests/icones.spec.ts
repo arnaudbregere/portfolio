@@ -22,14 +22,18 @@ test.describe('Icônes du site', () => {
     expect(declared).toEqual([
       ['icon', '/favicon.svg'],
       ['icon', '/favicon-32.png'],
+      // Carré d'un multiple de 48 px : la taille que Google lit pour poser
+      // une icône à côté d'un résultat de recherche sur mobile.
+      ['icon', '/favicon-192.png'],
       ['apple-touch-icon', '/apple-touch-icon.png'],
     ])
   })
 
-  test('les quatre fichiers sont servis, chacun dans son type', async ({ request }) => {
+  test('les cinq fichiers sont servis, chacun dans son type', async ({ request }) => {
     const expected = {
       '/favicon.svg': 'image/svg+xml',
       '/favicon-32.png': 'image/png',
+      '/favicon-192.png': 'image/png',
       '/apple-touch-icon.png': 'image/png',
       // Demandé par les clients qui ne lisent pas le document. Le fichier de
       // `public/` prend le pas sur la réponse par défaut de Nitro.

@@ -8,7 +8,7 @@ useSeoMeta(
   pageSeoMeta({
     title: 'À propos — Arnaud Brégère',
     description:
-      'Parcours d’Arnaud Brégère, développeur front-end senior : six ans de Vue et Nuxt chez Figaro Classifieds, une formation en arts graphiques, et le CV en téléchargement.',
+      'Parcours d’Arnaud Brégère, développeur front-end senior : sept ans de Vue et Nuxt chez Figaro Classifieds, une formation en arts graphiques, et le CV en téléchargement.',
   }),
 )
 

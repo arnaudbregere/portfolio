@@ -50,4 +50,59 @@ test.describe('Référencement', () => {
     const response = await request.get('/_ds')
     expect(response.status()).toBe(404)
   })
+
+  /**
+   * La donnée structurée `Person`, posée une fois pour tout le site. Elle dit
+   * à un moteur qui est l'auteur et où le joindre — le téléphone s'y est
+   * ajouté le 12/11/2026 (issue #53), quand le numéro est passé sur
+   * l'accueil. Une donnée structurée qui annonce moins que la page visible
+   * n'a pas d'intérêt ; une qui annonce autre chose est une faute.
+   */
+  test('le JSON-LD Person annonce les coordonnées de la page', async ({ page }) => {
+    await page.goto('/')
+
+    const blocks = await page
+      .locator('script[type="application/ld+json"]')
+      .evaluateAll((nodes) => nodes.map((node) => JSON.parse(node.textContent ?? '{}')))
+
+    const person = blocks.find((block) => block['@type'] === 'Person')
+
+    expect(person, 'aucun bloc Person').toBeTruthy()
+    expect(person.telephone).toMatch(/^\+33\d{9}$/)
+    expect(person.email).toMatch(/^mailto:/)
+
+    // Les mêmes coordonnées que celles rendues dans la page, sans recopie.
+    const phone = await page.locator('a[href^="tel:"]').first().getAttribute('href')
+    const mail = await page.locator('a[href^="mailto:"]').first().getAttribute('href')
+
+    expect(`tel:${person.telephone}`).toBe(phone)
+    expect(person.email).toBe(mail)
+  })
+
+  /**
+   * Les descriptions portent des durées — « dix ans d'expérience », « sept ans
+   * chez Figaro ». Elles disaient « six ans » jusqu'au 12/11/2026, ce qui
+   * était déjà faux : l'entrée chez Figaro date d'octobre 2019. Une méta
+   * fausse se voit dans un résultat de recherche, pas dans la page.
+   */
+  test('chaque page porte une description non vide et unique', async ({ page }) => {
+    const seen = new Map<string, string>()
+
+    for (const { path, name } of sitePages) {
+      await page.goto(path)
+
+      const description = await page
+        .locator('meta[name="description"]')
+        .getAttribute('content')
+
+      expect(description, name).toBeTruthy()
+      expect(description!.length, name).toBeGreaterThan(50)
+      expect(description!.length, `${name} : au-delà de ~160 signes, le résultat de recherche tronque`)
+        .toBeLessThanOrEqual(230)
+      expect(seen.has(description!), `${name} partage sa description avec ${seen.get(description!)}`)
+        .toBe(false)
+
+      seen.set(description!, name)
+    }
+  })
 })
