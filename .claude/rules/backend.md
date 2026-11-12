@@ -6,10 +6,11 @@ sept pages sortent du build en fichiers statiques. La règle décrivait
 jusque-là une intention, pas la configuration.
 
 Une route serveur n'existe que si elle est indispensable ; aucune n'est créée
-« au cas où ». `/api/health` est exclu du prérendu, et c'est la seule
-exclusion : il rend l'identité du build et doit répondre à la requête, non la
-rejouer depuis un fichier. Pas de base de données, pas
-de secret, aucune donnée d'utilisateur.
+« au cas où ». Pas de base de données, pas de secret, aucune donnée
+d'utilisateur.
+
+`/api/health` est la seule exclusion du prérendu : il rend l'identité du build
+et doit répondre à la requête, non la rejouer depuis un fichier.
 
 **`server/` porte trois routes, et seulement trois.** La règle disait
 « `server/` est vide, et le reste » ; c'était faux depuis P3 et corrigé le
