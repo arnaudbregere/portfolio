@@ -66,3 +66,22 @@ export const settle = async (page: Page) => {
       .every(({ playState }) => playState === 'finished' || playState === 'idle'),
   )
 }
+
+/**
+ * Attend que la bascule de thème soit montée, donc cliquable.
+ *
+ * `ThemeToggle` pose `data-hydrated` sur son bouton au montage. Avant lui, le
+ * document est servi, lisible, stylé et le bouton correctement nommé — mais
+ * aucun gestionnaire n'est attaché, et un clic n'y fait rien.
+ *
+ * Née le 12/11/2026 avec l'issue #56. Le nom du bouton tenait ce rôle sans le
+ * dire : il n'apparaissait qu'après le montage, parce qu'il venait d'un
+ * `aria-label` posé par un `ref`. Ce libellé vient maintenant du HTML du
+ * serveur — ce qui était l'objet du correctif — et les specs qui cliquaient
+ * dessus se sont mises à cliquer trop tôt, par intermittence.
+ *
+ * Vue pose bien `data-v-app` sur un conteneur monté, mais pas sur celui de
+ * Nuxt : vérifié le 12/11/2026, `#__nuxt` ne porte aucun attribut.
+ */
+export const hydrated = (page: Page) =>
+  page.locator('button[data-hydrated]').first().waitFor()

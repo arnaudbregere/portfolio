@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { sitePages } from './support/site'
+import { hydrated, sitePages } from './support/site'
 
 /**
  * Les en-têtes de sécurité, tels que le serveur de production les sert.
@@ -117,9 +117,19 @@ test.describe('Politique de sécurité du contenu', () => {
       // bouton de thème ne bascule la classe de `<html>` qu'une fois
       // l'application montée. Un script bloqué le laisserait inerte, sans
       // autre symptôme visible.
+      //
+      // L'attente est explicite depuis l'issue #56 : le nom du bouton vient
+      // désormais du HTML du serveur, donc il est cliquable avant que Vue
+      // n'ait attaché son gestionnaire.
+      await hydrated(page)
+
       const before = await page.locator('html').getAttribute('class')
 
-      await page.getByRole('button', { name: /^Activer le thème/ }).click()
+      // Expression insensible à la casse : le nom du bouton vient de son
+      // texte depuis l'issue #56 — « Activer le » masqué visuellement, puis
+      // « Thème sombre ». Playwright n'ignore la casse que pour une chaîne,
+      // jamais pour une expression régulière.
+      await page.getByRole('button', { name: /^activer le thème/i }).click()
 
       await expect(page.locator('html')).not.toHaveClass(String(before))
 
