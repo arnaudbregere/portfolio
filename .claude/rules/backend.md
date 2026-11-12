@@ -1,8 +1,16 @@
 # Règles backend (`server/`)
 
-Le site est prérendu par défaut. Une route serveur n'existe que si elle est
-indispensable ; aucune n'est créée « au cas où ». Pas de base de données, pas
-de secret, aucune donnée d'utilisateur.
+Le site est prérendu par défaut — **réellement depuis le 12/11/2026**
+(issue #17) : `nitro.prerender` suit les liens internes depuis `/`, et les
+sept pages sortent du build en fichiers statiques. La règle décrivait
+jusque-là une intention, pas la configuration.
+
+Une route serveur n'existe que si elle est indispensable ; aucune n'est créée
+« au cas où ». Pas de base de données, pas de secret, aucune donnée
+d'utilisateur.
+
+`/api/health` est la seule exclusion du prérendu : il rend l'identité du build
+et doit répondre à la requête, non la rejouer depuis un fichier.
 
 **`server/` porte trois routes, et seulement trois.** La règle disait
 « `server/` est vide, et le reste » ; c'était faux depuis P3 et corrigé le

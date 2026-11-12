@@ -2,8 +2,8 @@
 
 **En ligne : [arnaud-bregere.fr](https://arnaud-bregere.fr)**
 
-Portfolio personnel. **Nuxt 4 / Vue 3**, rendu hybride — pages rendues à la
-requête, routes serveur Nitro pour ce qui en a besoin. Design system Atomic
+Portfolio personnel. **Nuxt 4 / Vue 3**, rendu hybride — pages prérendues au
+build, routes serveur Nitro pour ce qui en a besoin. Design system Atomic
 Design mobile first, thème clair/sombre, aucun framework CSS.
 
 Le site est lui-même une pièce du dossier : son code, ses tests et son
@@ -14,7 +14,7 @@ accessibilité comptent autant que son contenu.
 | Hébergement | **Vercel**, redéployé à chaque push sur `main` |
 | Domaine | enregistré chez Hostinger, qui n'en tient que le DNS |
 | Vérification du déploiement | [`/api/health`](https://arnaud-bregere.fr/api/health) rend le commit en ligne |
-| Tests | **199** tests unitaires (Vitest), **65** tests de bout en bout (Playwright) |
+| Tests | **210** tests unitaires (Vitest), **82** tests de bout en bout (Playwright) |
 | Audit | `@axe-core/playwright` sur les sept pages, dans les deux thèmes |
 | Lighthouse mobile | 99 / 96 / 100 / 100 — mesuré sur la production, le 12/11/2026 |
 
@@ -79,6 +79,9 @@ Un dossier n'est créé qu'au moment où un fichier y entre : un composant naît
 de la page qui en a besoin.
 
 ## Intégration continue
+
+Les sept pages sortent du build en fichiers statiques ; seules `/api/health`
+et les deux routes de référencement sont rendues à la requête.
 
 `main` est **protégée** : jamais de push direct, toujours une branche puis une
 PR. Cinq checks sont requis, un par vérification — `Lint`, `Types`,
