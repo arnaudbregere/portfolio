@@ -42,33 +42,62 @@ useRevealCascade(root)
       <h2 id="experiences" data-reveal-section data-reveal-item>Expériences professionnelles</h2>
 
       <ol class="about__list">
-        <!-- Une expérience = une rubrique. Prises ensemble elles feraient
-             2296 px de haut, et une rubrique se classe sur son `top` seul :
-             les quatre dernières joueraient leur entrée hors écran. -->
-        <li
-          v-for="job in experiences"
-          :key="`${job.company}-${job.start}`"
-          class="about__item"
-          data-reveal-section
-        >
-          <h3 class="about__role" data-reveal-item>
-            {{ job.role }}<span class="about__company">, {{ job.company }}</span>
-          </h3>
+        <!-- Trois rubriques de cascade par expérience, et non une : une
+             rubrique se classe sur son `top` seul, donc elle ne doit pas
+             dépasser la hauteur de la fenêtre. Depuis que la fiche porte le
+             produit, les outils et la méthode, elle mesure 1113 px à 390 px
+             de large pour une fenêtre de 844 — ses dernières lignes
+             joueraient leur entrée hors écran, puis paraîtraient immobiles
+             au défilement. Mesuré le 12/11/2026, `DESIGN.md` § 7. -->
+        <li v-for="job in experiences" :key="`${job.company}-${job.start}`" class="about__item">
+          <div class="about__head" data-reveal-section>
+            <h3 class="about__role" data-reveal-item>
+              {{ job.role }}<span class="about__company">, {{ job.company }}</span>
+            </h3>
 
-          <p class="about__meta" data-reveal-item>
-            <time :datetime="job.start">{{ formatPeriod(job.start, job.end) }}</time>
-            <span class="about__place">{{ job.location }}</span>
-          </p>
+            <p class="about__meta" data-reveal-item>
+              <time :datetime="job.start">{{ formatPeriod(job.start, job.end) }}</time>
+              <span class="about__place">{{ job.location }}</span>
+            </p>
 
-          <p class="about__summary" data-reveal-item>{{ job.summary }}</p>
+            <!-- Le produit servi et son secteur, comme le CV les nomme. Du
+                 texte et non un lien : le site d'un employeur n'est pas une
+                 référence du portfolio, et un lien sortant de plus dans une
+                 liste de cinq fiches dilue ceux qui comptent. -->
+            <p class="about__product" data-reveal-item>
+              {{ job.product }}<span class="about__sector">{{ job.sector }}</span>
+            </p>
+
+            <p class="about__summary" data-reveal-item>{{ job.summary }}</p>
+          </div>
 
           <!-- Les missions entrent en un bloc : une ligne par mission
                découperait une énumération qui se lit d'un seul tenant. -->
-          <ul class="about__missions" data-reveal-item>
+          <ul class="about__missions" data-reveal-section data-reveal-item>
             <li v-for="mission in job.missions" :key="mission">{{ mission }}</li>
           </ul>
 
-          <p class="about__stack" data-reveal-item>{{ job.stack.join(' · ') }}</p>
+          <!-- Technos, outils et méthode : une liste de définitions, comme la
+               rubrique « Compétences » de cette page. Trois paragraphes de
+               noms sans libellé se lisaient d'un bloc, et un lecteur d'écran
+               n'avait rien pour les distinguer. Le pied entre en une seule
+               ligne de cascade : il répond à une seule question. -->
+          <dl class="about__pile" data-reveal-section data-reveal-item>
+            <div class="about__pile-entry">
+              <dt>Technos</dt>
+              <dd>{{ job.stack.join(' · ') }}</dd>
+            </div>
+
+            <div class="about__pile-entry">
+              <dt>Outils</dt>
+              <dd>{{ job.tools.join(' · ') }}</dd>
+            </div>
+
+            <div v-if="job.method" class="about__pile-entry">
+              <dt>Méthode</dt>
+              <dd class="about__method">{{ job.method }}</dd>
+            </div>
+          </dl>
         </li>
       </ol>
     </section>
@@ -137,6 +166,8 @@ useRevealCascade(root)
 </template>
 
 <style scoped lang="scss">
+@use '../styles/breakpoints' as bp;
+
 /* Tête de page : des délais fixes, hors de la cascade mesurée. Le `@keyframes`
    et les règles communes vivent dans `app/styles/_motion.scss`.
 
@@ -264,23 +295,89 @@ useRevealCascade(root)
   margin-right: var(--space-2xs);
 }
 
+/* Le produit prolonge la ligne de période : même registre, collé dessous,
+   parce qu'il situe le poste autant que la date et le lieu. */
+.about__product {
+  margin-top: var(--space-3xs);
+  color: var(--color-fg-muted);
+  font-size: var(--step--1);
+}
+
+.about__sector::before {
+  content: '·';
+  margin: 0 var(--space-2xs);
+}
+
 .about__summary {
   margin-top: var(--space-s);
 }
 
+/* Les missions portent un tiret cadratin, en encre atténuée.
+   `_reset.scss` remet toutes les listes à plat, et `DESIGN.md` posait qu'un
+   seul niveau — l'expérience — porte un marqueur. Les missions flottaient
+   alors sous le résumé, seulement décalées : rien ne disait où commence une
+   mission, et la fiche en compte jusqu'à onze.
+
+   Un tiret et non un disque : le disque est déjà la puce de l'expérience, un
+   niveau au-dessus. Deux marqueurs de même forme à deux niveaux diraient la
+   même chose deux fois. */
 .about__missions {
   margin-top: var(--space-s);
   padding-left: var(--space-m);
+  list-style-type: '—';
+}
+
+.about__missions li {
+  padding-left: var(--space-2xs);
+}
+
+.about__missions li::marker {
+  color: var(--color-fg-muted);
 }
 
 .about__missions li + li {
   margin-top: var(--space-2xs);
 }
 
-.about__stack {
-  margin-top: var(--space-s);
+/* Le pied de fiche : un libellé par ligne, dans la forme de la rubrique
+   « Compétences » de cette page. Les trois lignes se ressemblaient trait pour
+   trait — même encre, même corps, même séparateur, 4 px d'écart —, et se
+   lisaient donc comme un seul bloc de noms, sans rien pour dire où finissent
+   les technos. Un lecteur d'écran n'avait pas davantage de prise. */
+.about__pile {
+  margin: var(--space-s) 0 0;
   color: var(--color-fg-muted);
   font-size: var(--step--1);
+}
+
+.about__pile-entry + .about__pile-entry {
+  margin-top: var(--space-2xs);
+}
+
+.about__pile dt {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.about__pile dd {
+  margin: 0;
+}
+
+@include bp.respond-up(m) {
+  /* Le libellé passe en colonne dès qu'il y a la place : les trois lignes
+     s'alignent alors sur la même gouttière, et le pied tient en trois lignes
+     au lieu de six. */
+  .about__pile-entry {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--space-s);
+  }
+}
+
+/* La méthode est une phrase, pas une énumération : l'italique la distingue des
+   deux listes qu'elle suit sans ajouter de couleur ni de graisse. */
+.about__method {
+  font-style: italic;
 }
 
 .about__skills {

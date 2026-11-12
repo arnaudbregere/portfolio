@@ -40,10 +40,30 @@ export type Experience = {
   /** `YYYY-MM`, ou `null` quand le poste est en cours. */
   end: string | null
   location: string
+  /**
+   * Le produit servi, tel que le CV le nomme : `immobilier.lefigaro.fr`. Un
+   * nom de domaine, jamais une URL — le site d'un employeur n'est pas un lien
+   * du portfolio.
+   */
+  product: string
+  /** Son secteur, tel que le CV le nomme : « Jobboard », « Marketplace ». */
+  sector: string
   /** Ce que le poste consiste à faire, en une phrase. */
   summary: string
   missions: readonly string[]
+  /**
+   * Les technologies, au sens où le CV l'entend : ce qui s'écrit ou s'exécute.
+   * La séparation d'avec `tools` est celle du PDF, et elle se lit — un
+   * recruteur technique cherche la techno, un recruteur RH reconnaît l'outil.
+   */
   stack: readonly string[]
+  /** Les outils : éditeurs, suivi, intégration continue, hébergement. */
+  tools: readonly string[]
+  /**
+   * La méthode de travail. Facultative : les deux postes les plus anciens
+   * n'en déclarent aucune au CV, et rien ne s'invente pour remplir un champ.
+   */
+  method?: string
 }
 
 export type Education = {

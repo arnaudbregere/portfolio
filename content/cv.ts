@@ -88,16 +88,21 @@ export const experiences: readonly Experience[] = [
     start: '2019-10',
     end: null,
     location: 'Paris',
+    product: 'immobilier.lefigaro.fr',
+    sector: 'Portail Immo/Edito',
     summary:
-      'Portail immobilier et éditorial immobilier.lefigaro.fr : développement de fonctionnalités, maintenance et optimisation continue.',
+      'Développement de fonctionnalités, maintenance et optimisation continue.',
     missions: [
       'Migration de la page d’accueil de Vue 2 vers Nuxt 3 — moteur de recherche, menu, articles éditoriaux et carte de France — pour améliorer le LCP.',
       'Refonte du cartouche d’annonce sur les pages de liste, pour réduire le CLS.',
       'Galerie photo et points d’intérêt sur la page de détail d’une annonce.',
+      'Maintenance applicative : gestion des alertes et refactoring du moteur de recherche, pour améliorer l’INP.',
       'Référencement : HTML sémantique, métadonnées, JSON-LD et fil d’Ariane sur les pages de liste.',
       'Fonctionnalités : favoris en stockage local, atouts du bien, DPE et GES.',
       'Migration du suivi d’audience de TagCommander vers Google Analytics.',
-      'Revues de code, git flow et processus de mise en production.',
+      'Publicité : mise en place de Google Ads et de Hubvisor.',
+      'Performances : Core Web Vitals, optimisation des requêtes et des images.',
+      'Intégration continue : revues de code, git flow et processus de mise en production, en synchronisation avec les équipes business et produit.',
       'Tests unitaires, tests de bout en bout et tests A/B.',
     ],
     stack: [
@@ -106,31 +111,57 @@ export const experiences: readonly Experience[] = [
       'React',
       'JavaScript',
       'TypeScript',
+      'CSS3',
       'SCSS',
       'API REST',
       'GraphQL',
-      'ElasticSearch',
+      'Elasticsearch',
       'Vitest',
       'Cypress',
       'Golang',
-      'Docker',
+      'JSP',
       'Git',
     ],
+    tools: [
+      'IntelliJ',
+      'VS Code',
+      'Copilot',
+      'Claude AI',
+      'Figma',
+      'Jira',
+      'Jenkins',
+      'Rundeck',
+      'GitHub',
+      'GCP',
+      'Docker',
+    ],
+    method: 'Agile/Scrum — planification, poker planning, rétrospectives, cadrages techniques',
   },
   {
     company: 'Groupe La Poste',
+    /**
+     * Écart assumé au PDF, maintenu par Arnaud le 12/11/2026 : le CV écrit
+     * « Développeur Front-end », cette fiche garde « senior ». C'est le
+     * troisième écart signalé de ce fichier à sa source, après l'adresse
+     * postale écartée et le « et » de `availability`. Il se referme à la
+     * prochaine version du PDF.
+     */
     role: 'Développeur front-end senior',
     start: '2018-09',
     end: '2019-10',
     location: 'Paris',
-    summary: 'Mise en place de la première marketplace de laposte.fr.',
+    product: 'laposte.fr',
+    sector: 'Marketplace',
+    summary: 'Mise en place de la première marketplace du groupe.',
     missions: [
       'Pages de liste : intégration, responsive design, filtres du moteur de recherche et pose de TagCommander.',
       'Pages produit : intégration, responsive design, galerie photo et ajout au panier.',
-      'Reprise du code existant et introduction de la convention BEM.',
+      'Amélioration du code existant, et introduction de la convention BEM.',
       'Revues de code jusqu’à la livraison de la marketplace.',
     ],
-    stack: ['JavaScript', 'jQuery', 'HTML5', 'JSP', 'CSS3', 'SCSS', 'Gulp', 'Git', 'GitLab'],
+    stack: ['JavaScript', 'jQuery', 'HTML5', 'JSP', 'CSS3', 'SCSS', 'Gulp', 'Git'],
+    tools: ['WebStorm', 'Jira', 'Suite Adobe', 'GitLab'],
+    method: 'Kanban',
   },
   {
     company: 'Figaro Classifieds',
@@ -138,13 +169,17 @@ export const experiences: readonly Experience[] = [
     start: '2015-02',
     end: '2018-09',
     location: 'Paris',
-    summary: 'Jobboard cadremploi.fr : refontes successives et migration continue.',
+    product: 'cadremploi.fr',
+    sector: 'Jobboard',
+    summary: 'Refontes successives et migration continue.',
     missions: [
       'Refonte du menu de l’espace personnel, mise en place du responsive et migration de CSS vers SCSS.',
       'Refonte de la page d’accueil sur une grille matricielle, pour se démarquer des jobboards concurrents.',
       'Refonte de la partie éditoriale en migration continue : nouvelles interactions et nouvelle interface.',
     ],
     stack: ['HTML5', 'JSP', 'CSS3', 'SCSS', 'jQuery', 'Gulp', 'Java', 'Kotlin', 'Scala', 'Git'],
+    tools: ['IntelliJ', 'Trello', 'Suite Adobe', 'GitHub'],
+    method: 'Agile/Scrum — planification, poker planning, rétrospectives',
   },
   {
     company: 'BrandAlley',
@@ -152,12 +187,17 @@ export const experiences: readonly Experience[] = [
     start: '2010-12',
     end: '2015-02',
     location: 'Paris',
-    summary: 'Site de ventes privées brandalley.fr : opérations marketing et animations commerciales.',
+    product: 'brandalley.fr',
+    sector: 'E-commerce',
+    summary: 'Site de ventes privées : opérations marketing et animations commerciales.',
     missions: [
       'Proposition de refonte complète de la page d’accueil en flat design, validée et livrée : grille produits et menu.',
-      'Création et intégration des opérations commerciales saisonnières.',
+      'Création et intégration des opérations commerciales : Noël, soldes, rentrée et collections saisonnières.',
     ],
-    stack: ['HTML', 'CSS3', 'jQuery', 'Suite Adobe', 'SVN', 'Git'],
+    stack: ['HTML', 'CSS3', 'jQuery'],
+    // `Git` est un outil ici et une techno sur les trois fiches récentes :
+    // c'est le classement du CV, poste par poste, et il est gardé tel quel.
+    tools: ['DreamWeaver', 'Suite Adobe', 'TortoiseSVN', 'Git'],
   },
   {
     company: 'RueDuCommerce',
@@ -165,13 +205,23 @@ export const experiences: readonly Experience[] = [
     start: '2009-05',
     end: '2010-12',
     location: 'Paris',
-    summary: 'Régie publicitaire du site rueducommerce.com.',
+    product: 'rueducommerce.com',
+    sector: 'E-commerce',
+    summary: 'Animations commerciales au sein de la régie publicitaire du site.',
     missions: [
-      'Kits commerciaux : bannières animées orientées marque.',
+      'Kits commerciaux : bannières animées en GIF et en Flash, orientées marque.',
       'Intégration des newsletters quotidiennes.',
-      'Pages d’atterrissage et mini-sites.',
+      'Pages d’atterrissage et mini-sites : Halo 3, domotique.',
+      'Campagnes : Noël, printemps, promotions, ventes flash et soldes.',
     ],
-    stack: ['HTML', 'CSS', 'ActionScript', 'Suite Adobe'],
+    // Le CV écrit « Notions ActionScript » : la réserve fait partie de la
+    // compétence déclarée, et la retirer monterait le niveau annoncé.
+    stack: ['HTML', 'CSS', 'Notions ActionScript'],
+    // L'ombrelle du CV est gardée, comme sur les trois autres fiches —
+    // « Adobe (PhotoShop, Illustrator, Flash) » y était aplati en quatre
+    // entrées, ce qui donnait deux granularités pour le même éditeur à deux
+    // fiches d'intervalle.
+    tools: ['Suite Adobe (Photoshop, Illustrator, Flash)', 'DreamWeaver'],
   },
 ]
 
