@@ -113,9 +113,31 @@ export default defineNuxtConfig({
     },
   },
 
+  /**
+   * **Les pages sont prérendues au build**, et non rendues à chaque requête.
+   *
+   * `CLAUDE.md` et `PRODUCT.md` l'annonçaient depuis l'origine ; seuls
+   * `/sitemap.xml` et `/robots.txt` l'étaient. Livré le 12/11/2026
+   * (issue #17).
+   *
+   * Le contenu est statique : il vient de `content/`, en TypeScript typé, et
+   * ne change qu'au déploiement. Rendre chaque visite au serveur coûtait un
+   * rendu pour un résultat identique à l'octet près.
+   *
+   * `crawlLinks` suit les liens internes depuis `/` : les sept pages du site
+   * en sortent, fiches de projet comprises, sans liste à tenir à jour. Les
+   * deux routes de référencement restent nommées — aucun lien du document ne
+   * les désigne, le crawler ne les trouverait pas.
+   *
+   * `/api/health` est exclu : il rend l'identité du build et doit répondre à
+   * la requête, non la rejouer depuis un fichier. `/_ds` l'est aussi par
+   * ceinture et bretelles — `$production` le retire déjà du routage.
+   */
   nitro: {
     prerender: {
-      routes: ['/sitemap.xml', '/robots.txt'],
+      crawlLinks: true,
+      routes: ['/', '/sitemap.xml', '/robots.txt'],
+      ignore: ['/api/health', '/_ds'],
     },
   },
 
