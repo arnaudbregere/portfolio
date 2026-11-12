@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { profile } from '~~/content/cv'
 import { profileLinks } from '~~/content/nav'
+import { jsonLdScript } from '~/utils/json-ld'
 import { absoluteUrl } from '~/utils/page-seo'
 
 const route = useRoute()
@@ -18,7 +19,7 @@ const canonical = computed(() => {
  * balise `meta` n'exprime.
  */
 const personJsonLd = computed(() =>
-  JSON.stringify({
+  jsonLdScript({
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: profile.name,

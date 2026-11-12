@@ -9,6 +9,9 @@ dist
 # Dépendances
 node_modules
 
+# Vercel : sortie du préréglage et liaison locale au projet
+.vercel
+
 # Tests
 coverage
 test-results

@@ -69,8 +69,14 @@ export const constantSecurityHeaders = {
  *   contact est abandonné (issue #5). Une soumission serait donc une
  *   injection.
  * - `frame-ancestors 'none'` : personne n'affiche le site dans un cadre.
- * - `img-src` accepte `data:` pour les images encodées que `@nuxt/image`
- *   produit en remplacement de chargement.
+ *
+ * `img-src` portait `data:` jusqu'au 12/11/2026, pour « les images encodées
+ * que `@nuxt/image` produit en remplacement de chargement ». La
+ * justification était fausse : le seul `<NuxtImg>` du dépôt ne passe aucun
+ * `placeholder`, et aucune URL `data:` n'existe dans `app/`, `content/` ni
+ * les feuilles de style. `manifest-src 'self'` est tombé pour la même raison
+ * — il n'y a pas de manifeste web, et la directive retombe de toute façon sur
+ * `default-src`.
  *
  * ## Pourquoi `'unsafe-inline'` sur les scripts
  *
@@ -99,10 +105,9 @@ export const contentSecurityPolicy = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
+  "img-src 'self'",
   "font-src 'self'",
   "connect-src 'self'",
-  "manifest-src 'self'",
   "base-uri 'none'",
   "object-src 'none'",
   "form-action 'none'",

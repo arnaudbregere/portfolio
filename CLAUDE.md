@@ -81,6 +81,11 @@ Règles de passage :
 - Toujours lancer lint + typecheck + tests après une modif, avant de proposer
   un commit, et rapporter la sortie réelle — pas une affirmation que « ça
   devrait passer ».
+- **Une montée de version de Nuxt se vérifie aussi par `npm run dev`.** La CI
+  ne le lance jamais : ses cinq jobs sont lint, types, tests unitaires, build
+  et e2e. Le passage en 4.6.4 (PR #49) a cassé le serveur de développement
+  avec cinq checks verts — `options.hostname.toLowerCase is not a function`,
+  corrigé par `devServer.host` dans `nuxt.config.ts`.
 
 ## Périmètre
 

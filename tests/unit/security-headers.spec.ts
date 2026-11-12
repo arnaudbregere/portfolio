@@ -47,16 +47,39 @@ describe('en-têtes constants', () => {
     expect(hsts).not.toContain('preload')
   })
 
-  it('refuse toute permission du navigateur', () => {
-    const policy = constantSecurityHeaders['permissions-policy']
+  /**
+   * La liste est **close**, et chaque entrée vaut exactement `=()`.
+   *
+   * Elle ne nommait que cinq fonctionnalités jusqu'au 12/11/2026 : en retirer
+   * une des onze autres était silencieux, et `camera=*` passait le garde-fou
+   * — pas de parenthèse ouvrante, donc rien à faire correspondre.
+   */
+  it('refuse toute permission du navigateur, et les refuse toutes', () => {
+    const entries = constantSecurityHeaders['permissions-policy'].split(', ')
 
-    for (const feature of ['camera', 'microphone', 'geolocation', 'payment', 'usb']) {
-      expect(policy).toContain(`${feature}=()`)
-    }
+    expect(entries).toEqual([
+      'accelerometer=()',
+      'autoplay=()',
+      'camera=()',
+      'display-capture=()',
+      'encrypted-media=()',
+      'geolocation=()',
+      'gyroscope=()',
+      'magnetometer=()',
+      'microphone=()',
+      'midi=()',
+      'payment=()',
+      'picture-in-picture=()',
+      'publickey-credentials-get=()',
+      'screen-wake-lock=()',
+      'usb=()',
+      'xr-spatial-tracking=()',
+    ])
 
-    // Une permission accordée s'écrirait `camera=(self)` : aucune liste
-    // d'origines ne doit apparaître.
-    expect(policy).not.toMatch(/=\((?!\))/)
+    // Une permission accordée s'écrirait `camera=(self)`, `camera=*` ou
+    // `camera=(https://…)`. Aucune valeur autre que la liste vide n'est
+    // tolérée.
+    for (const entry of entries) expect(entry).toMatch(/^[a-z-]+=\(\)$/)
   })
 
   it('isole le contexte de navigation', () => {
@@ -71,19 +94,52 @@ describe('politique de sécurité du contenu', () => {
     expect(found.get('default-src')).toEqual(["'self'"])
   })
 
-  it('ne charge aucune ressource d’un autre domaine', () => {
-    expect(contentSecurityPolicy).not.toMatch(/https?:\/\//)
-    expect(contentSecurityPolicy).not.toContain('*')
-
-    for (const directive of [
+  /**
+   * **La liste des directives est close.**
+   *
+   * Elle ne l'était pas jusqu'au 12/11/2026, et c'était le trou le plus grave
+   * de ce fichier : ajouter `frame-src youtube.com` ne cassait rien, et
+   * surtout `script-src-elem 'self' cdn.jsdelivr.net` non plus — alors que
+   * cette directive **l'emporte** sur `script-src` pour les balises
+   * `<script>`. Une origine tierce pouvait donc entrer par une directive que
+   * le test ne regardait pas.
+   *
+   * `.claude/rules/backend.md` impose déjà une liste close aux clés d'une
+   * réponse publique ; la même discipline s'applique ici.
+   */
+  it('n’énonce que les dix directives attendues', () => {
+    expect([...found.keys()]).toEqual([
+      'default-src',
       'script-src',
       'style-src',
       'img-src',
       'font-src',
       'connect-src',
-      'manifest-src',
-    ]) {
-      expect(found.get(directive)?.[0], directive).toBe("'self'")
+      'base-uri',
+      'object-src',
+      'form-action',
+      'frame-ancestors',
+    ])
+  })
+
+  /**
+   * Chaque directive est vérifiée **en entier**, pas par sa première valeur.
+   * Le test ne lisait que `found.get(directive)?.[0]` jusqu'au 12/11/2026 :
+   * `font-src 'self' fonts.gstatic.com` passait au vert, et le garde-fou sur
+   * `https?://` ne voit pas une origine écrite sans schéma.
+   */
+  it('ne charge aucune ressource d’un autre domaine', () => {
+    expect(contentSecurityPolicy).not.toMatch(/https?:\/\//)
+    expect(contentSecurityPolicy).not.toContain('*')
+
+    for (const directive of ['img-src', 'font-src', 'connect-src']) {
+      expect(found.get(directive), directive).toEqual(["'self'"])
+    }
+
+    // Les deux seules directives à porter plus d'une valeur. Leur tolérance
+    // est justifiée dans l'utilitaire, et vérifiée nommément plus bas.
+    for (const directive of ['script-src', 'style-src']) {
+      expect(found.get(directive), directive).toEqual(["'self'", "'unsafe-inline'"])
     }
   })
 
@@ -114,14 +170,20 @@ describe('politique de sécurité du contenu', () => {
     expect(contentSecurityPolicy).not.toContain('unsafe-hashes')
   })
 
-  it('accepte les images encodées, et aucun autre schéma', () => {
-    expect(found.get('img-src')).toEqual(["'self'", 'data:'])
-    expect(contentSecurityPolicy).not.toContain('blob:')
+  /**
+   * Aucun schéma d'URL n'est autorisé : les images du site sont des fichiers
+   * de `public/`. `data:` y figurait sur une justification fausse, retirée le
+   * 12/11/2026.
+   */
+  it('n’autorise aucun schéma d’URL', () => {
+    for (const scheme of ['data:', 'blob:', 'filesystem:']) {
+      expect(contentSecurityPolicy, scheme).not.toContain(scheme)
+    }
   })
 })
 
 describe('en-têtes posés par le routage', () => {
-  it('réunit les constantes et la politique, sans rien perdre', () => {
+  it('réunit les constantes et la politique, et rien d’autre', () => {
     expect(Object.keys(securityHeaders).sort()).toEqual([
       'content-security-policy',
       'cross-origin-opener-policy',

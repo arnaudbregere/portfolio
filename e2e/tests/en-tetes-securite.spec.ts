@@ -41,10 +41,25 @@ test.describe('En-têtes de sécurité', () => {
   /**
    * Les réponses qui ne sont pas des documents passent par les mêmes
    * `routeRules` ; elles sont le cas qu'un oubli de couverture laisserait nu.
+   *
+   * `/fonts/…woff2` est un fichier de `public/`, servi par le gestionnaire
+   * d'actifs statiques — en production, par le CDN de Vercel sans passer par
+   * Node. C'est exactement la couverture que `nuxt.config.ts` revendique, et
+   * elle n'était pas testée avant le 12/11/2026.
    */
-  for (const path of ['/robots.txt', '/sitemap.xml', '/api/health']) {
+  for (const path of [
+    '/robots.txt',
+    '/sitemap.xml',
+    '/api/health',
+    '/fonts/archivo-variable-latin.woff2',
+    '/og/arnaud-bregere.png',
+  ]) {
     test(`${path} porte les en-têtes de sécurité`, async ({ request }) => {
-      const headers = (await request.get(path)).headers()
+      const response = await request.get(path)
+
+      expect(response.status(), `${path} doit exister`).toBe(200)
+
+      const headers = response.headers()
 
       for (const [header, value] of Object.entries(expected)) {
         expect(headers[header], `${header} sur ${path}`).toBe(value)
@@ -53,6 +68,24 @@ test.describe('En-têtes de sécurité', () => {
       expect(headers['content-security-policy']).toContain("default-src 'self'")
     })
   }
+
+  /**
+   * Les modules bâtis portent une empreinte dans leur nom : leur adresse est
+   * relevée dans le document plutôt qu'écrite ici, qui serait fausse au build
+   * suivant.
+   */
+  test('les modules de /_nuxt/ portent les en-têtes de sécurité', async ({ request }) => {
+    const document = await (await request.get('/')).text()
+    const asset = document.match(/\/_nuxt\/[\w.-]+\.js/)?.[0]
+
+    expect(asset, 'aucun module trouvé dans le document').toBeTruthy()
+
+    const headers = (await request.get(asset!)).headers()
+
+    for (const [header, value] of Object.entries(expected)) {
+      expect(headers[header], `${header} sur ${asset}`).toBe(value)
+    }
+  })
 })
 
 test.describe('Politique de sécurité du contenu', () => {

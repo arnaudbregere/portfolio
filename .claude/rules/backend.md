@@ -63,11 +63,21 @@ obligatoire, et seul `server/utils/security-headers.ts` change.
   générique au client, détail dans les journaux serveur.
 - Toute route exposée publiquement et coûteuse (envoi d'e-mail, appel à une API
   tierce) est limitée en débit et protégée par un piège à robots.
-- **Un en-tête de sécurité ne se relâche pas en silence.** Ajouter une origine
-  tierce, un joker, `'unsafe-eval'` ou une permission de navigateur rend rouge
-  `tests/unit/security-headers.spec.ts`, qui énonce les interdictions une par
-  une. Le remède est de justifier le changement dans l'utilitaire et de
-  déplacer l'interdiction, jamais de retirer le test.
+- **Un en-tête de sécurité ne se relâche pas en silence.**
+  `tests/unit/security-headers.spec.ts` tient trois listes **closes** — les
+  dix directives de la politique, les seize permissions refusées, les sept
+  en-têtes posés — et vérifie chaque directive en entier, pas par sa première
+  valeur. Ajouter une origine tierce, un joker, un schéma d'URL,
+  `'unsafe-eval'`, une directive de plus ou une permission accordée rend donc
+  la suite rouge. Le remède est de justifier le changement dans l'utilitaire
+  et de déplacer l'interdiction, jamais de retirer le test.
+
+  Cette promesse était fausse jusqu'au 12/11/2026 : le test ne lisait que la
+  première valeur de `font-src`, `connect-src` et `manifest-src`, la liste des
+  directives n'était pas close — `script-src-elem 'self' cdn.jsdelivr.net`
+  passait au vert, alors qu'il **l'emporte** sur `script-src` pour les balises
+  `<script>` — et `camera=*` échappait au garde-fou des permissions. Une règle
+  qui promet plus que son test ne tient est pire que pas de règle.
 
 ## Tests
 
