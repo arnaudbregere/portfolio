@@ -33,9 +33,20 @@ Règles détaillées par domaine : @.claude/rules/frontend.md,
   avertissement et poursuit — ce n'est pas un refus. `package.json` reprend la
   plage que `nuxt` déclare lui-même. Avant toute commande npm dans une session
   neuve : `export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use`.
-- Versions verrouillées par `package.json` : `vue-router` doit rester en **5.x**
-  (Nuxt 4.6 génère un `tsconfig` qui référence `vue-router/volar/*`, absent de
-  la 4.x — `npm run typecheck` casse sinon), `vitest` en **5.x** avec
+- **`package.json` ne déclare que ce que ce dépôt importe** : `nuxt` et
+  `@nuxt/image`. `vue` et `vue-router` en sortent le 13/11/2026 — `nuxt@4.6.4`
+  les déclare lui-même (`vue: ^3.5.44`, `vue-router: ^5.4.0`), aucun fichier
+  n'importe l'un ou l'autre en direct, et deux plages déclarées en double
+  finissent par diverger à une montée de version, ce qui installe deux copies.
+  `npm ls vue-router` doit donc rendre un arbre à une seule branche, sous
+  `nuxt`.
+
+  Le verrou qui tenait `vue-router` en **5.x** disparaît avec la ligne, et il
+  ne protégeait plus rien : Nuxt 4.6 génère un `tsconfig` qui référence
+  `vue-router/volar/*`, absent de la 4.x, mais c'est `nuxt` qui exige déjà
+  `^5.4.0` — npm ne peut pas résoudre une 4.x. Le juge reste le même,
+  `npm run typecheck`.
+- Versions verrouillées par `package.json` : `vitest` en **5.x** avec
   `@nuxt/test-utils` en **4.x** (la 3.x exige Vitest 3, incompatible avec le
   Vite 8 de Nuxt 4.6).
 
