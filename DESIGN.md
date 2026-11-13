@@ -300,6 +300,29 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   n'a qu'un niveau — sa liste de projets — et ses projets sont donc numérotés
   sans puce : le rang et la puce diraient deux fois la même chose, et
   l'ordre y porte une information que la puce ne porte pas.
+- **Un bloc de liste qui mène quelque part se clique en entier.** Décision
+  d'Arnaud du 13/11/2026, pour les fiches de `/projets` : le titre seul était
+  la cible, et un visiteur qui vise le résumé ou l'année ne va nulle part.
+
+  **La cible s'étend, le lien ne se duplique pas.** Le lien du titre pose une
+  couche en `::after` sur le bloc, qui prend `position: relative`. Le bloc
+  entier devient cliquable sans qu'aucun lien s'ajoute : un seul arrêt de
+  tabulation, un seul texte d'ancre — le titre du projet — et un graphe de
+  liens inchangé pour un moteur de recherche. Envelopper le bloc dans un `<a>`
+  aurait donné au lien un nom accessible de trois lignes, année, rôle, résumé
+  et neuf technos comprises ; deux liens vers la même fiche auraient partagé
+  le signal du texte d'ancre et ajouté un arrêt de tabulation sans rien
+  offrir de plus.
+
+  **L'anneau de focus passe sur le bloc**, par
+  `:has(.projects__link:focus-visible)` : au clavier, l'anneau doit cerner ce
+  qui est activable, et c'est désormais le bloc. C'est le seul `outline: none`
+  du dépôt, et il est remplacé dans la même règle — jamais supprimé.
+
+  **Le coût est connu** : la couche couvre le texte du bloc, qui ne se
+  sélectionne donc plus à la souris. C'est le prix d'une cible étendue sans
+  lien dupliqué, et il ne porte que sur une liste d'aperçus — la fiche, elle,
+  reste entièrement sélectionnable.
 - **Une surface, une passe.** La preuve reste sur la page. Rien ne se cache
   derrière un survol ou un accordéon : ni le clavier ni le tactile n'ont de
   survol.

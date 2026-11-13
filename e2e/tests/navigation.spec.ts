@@ -63,6 +63,59 @@ test.describe('Navigation entre les rubriques', () => {
     await expect(page).toHaveURL('/projets')
   })
 
+  /**
+   * La fiche entière mène au projet depuis le 13/11/2026 (`DESIGN.md` § 5) :
+   * le lien du titre pose une couche sur le bloc. Le clic part donc du
+   * résumé, qui n'est pas un lien — c'est tout l'objet de la décision.
+   *
+   * L'entrée de page est attendue avant le clic : le temps de la figure, le
+   * `h2` porte un `translate` et la couche se réduit au titre. Le test
+   * cliquerait alors à côté, par intermittence.
+   */
+  test('la fiche de projet s’ouvre hors du titre', async ({ page }) => {
+    await page.goto('/projets')
+
+    const fiche = page
+      .getByRole('listitem')
+      .filter({ has: page.getByRole('link', { name: /Japan Manga Explorer/i }) })
+      .first()
+
+    await expect(fiche).toBeVisible()
+
+    // L'entrée de page est attendue : le temps de la figure, le `h2` porte un
+    // `translate` et la couche se réduit au titre. Le clic partirait alors à
+    // côté, par intermittence.
+    await page.waitForTimeout(1500)
+
+    // Le bas du bloc : la ligne des technos, qui n'est pas un lien. C'est tout
+    // l'objet de la décision — la cible n'est plus le seul titre.
+    const box = (await fiche.boundingBox())!
+
+    await fiche.click({ position: { x: 24, y: box.height - 8 } })
+
+    await expect(page).toHaveURL(/\/projets\/[a-z0-9-]+$/)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  })
+
+  /**
+   * La cible s'étend sans que le lien se duplique : un seul arrêt de
+   * tabulation par fiche, et un nom accessible qui reste le titre du projet.
+   * Un bloc enveloppé dans un `<a>` l'aurait allongé de trois lignes.
+   */
+  test('la fiche cliquable n’ajoute ni lien ni arrêt de tabulation', async ({ page }) => {
+    await page.goto('/projets')
+
+    const fiche = page
+      .getByRole('listitem')
+      .filter({ has: page.getByRole('link', { name: /Japan Manga Explorer/i }) })
+      .first()
+
+    const link = fiche.getByRole('link')
+
+    await expect(link).toHaveCount(1)
+    await expect(link).toHaveAccessibleName(/^Japan Manga Explorer$/i)
+  })
+
   test('chaque page ne porte qu’un seul h1', async ({ page }) => {
     for (const path of ['/', '/projets', '/a-propos', '/contact']) {
       await page.goto(path)
