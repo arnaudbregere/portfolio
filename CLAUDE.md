@@ -87,6 +87,29 @@ Règles de passage :
   et e2e. Le passage en 4.6.4 (PR #49) a cassé le serveur de développement
   avec cinq checks verts — `options.hostname.toLowerCase is not a function`,
   corrigé par `devServer.host` dans `nuxt.config.ts`.
+- **`/_ds` n'est dans aucun des cinq jobs.** `nuxt.config.ts` retire la route
+  du build de production, donc rien ne compile son style hors de `npm run dev`.
+  Un commentaire `// 44px` dans son `<style scoped lang="scss">` a fait
+  `CssSyntaxError · Unknown word 44px` le 13/11/2026, cinq checks verts :
+  écrire `/* */` dans ce fichier, et ouvrir la planche après l'avoir touchée.
+- **Ne jamais conclure depuis un `nuxt dev` qui tourne depuis longtemps.** Le
+  13/11/2026, le serveur lancé à 16:41 a continué de rendre l'ancien
+  `content/cv.ts` — l'objet brut à la place du texte, à l'écran — pendant que
+  le disque, les tests et le build de production étaient justes. `touch` sur
+  le fichier n'y a rien changé, et les fichiers d'`app/` se rechargeaient
+  normalement dans la même session : **`content/` sort du périmètre du
+  rechargement à chaud**.
+
+  Un rendu faux à l'écran se **prouve** avant d'être attribué à un cache. La
+  preuve tient en une commande, et elle ne touche pas au serveur en cours :
+
+  ```bash
+  NUXT_IGNORE_LOCK=1 npm run dev -- --port 3031
+  ```
+
+  Deux rendus différents du même disque disent où est le défaut. Le même
+  rendu faux des deux côtés dit que le code est en cause. Sans cette
+  comparaison, « c'est le cache » est une hypothèse, pas un diagnostic.
 
 ## Périmètre
 
