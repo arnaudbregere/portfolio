@@ -1,4 +1,5 @@
-import { readFileSync, readdirSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
@@ -23,32 +24,26 @@ import { describe, expect, it } from 'vitest'
 const root = resolve(__dirname, '../..')
 
 /** Les dossiers où un nom peut être cité : tout ce que ce dépôt écrit. */
-const sources = ['app', 'content', 'server', 'scripts', 'tests', 'e2e/tests']
-
-const ignores = new Set(['node_modules', '.git', '.output', '.nuxt', 'dist'])
+const sources = ['app/', 'content/', 'server/', 'scripts/', 'tests/', 'e2e/tests/']
 
 const extensions = ['.vue', '.ts', '.js', '.mjs', '.scss']
 
-const fichiersSources = () => {
-  const trouves: string[] = []
+/**
+ * Les fichiers **suivis par git**, et non ceux présents sur le disque : un
+ * brouillon non versionné citerait un composant que personne d'autre n'emploie,
+ * et la suite passerait au vert en local pour tomber dans la CI.
+ */
+const suivis = execFileSync('git', ['ls-files', '-z'], { cwd: root, encoding: 'utf8' })
+  .split('\0')
+  .filter(Boolean)
 
-  const parcourir = (dossier: string) => {
-    for (const entree of readdirSync(join(root, dossier), { withFileTypes: true })) {
-      if (ignores.has(entree.name)) continue
-
-      const chemin = `${dossier}/${entree.name}`
-
-      if (entree.isDirectory()) parcourir(chemin)
-      else if (extensions.some((suffixe) => entree.name.endsWith(suffixe))) trouves.push(chemin)
-    }
-  }
-
-  for (const dossier of sources) parcourir(dossier)
-
-  trouves.push('nuxt.config.ts')
-
-  return trouves
-}
+const fichiersSources = () =>
+  suivis.filter(
+    (chemin) =>
+      (chemin === 'nuxt.config.ts' ||
+        sources.some((dossier) => chemin.startsWith(dossier))) &&
+      extensions.some((suffixe) => chemin.endsWith(suffixe)),
+  )
 
 const lus = new Map<string, string>()
 
@@ -64,45 +59,21 @@ const citePar = (nom: string, declarePar: string) =>
     (fichier) => fichier !== declarePar && new RegExp(`\\b${nom}\\b`).test(contenu(fichier)),
   )
 
-const composants = () => {
-  const trouves: string[] = []
-
-  const parcourir = (dossier: string) => {
-    for (const entree of readdirSync(join(root, dossier), { withFileTypes: true })) {
-      const chemin = `${dossier}/${entree.name}`
-
-      if (entree.isDirectory()) parcourir(chemin)
-      else if (entree.name.endsWith('.vue')) trouves.push(chemin)
-    }
-  }
-
-  parcourir('app/components')
-
-  return trouves
-}
+const composants = () =>
+  suivis.filter((chemin) => chemin.startsWith('app/components/') && chemin.endsWith('.vue'))
 
 /** Les `export const` d'un module, dans l'ordre du fichier. */
 const exports = (fichier: string) =>
   [...contenu(fichier).matchAll(/export const (\w+)/g)].map(([, nom]) => nom!)
 
-const modules = () => {
-  const trouves: string[] = []
-
-  const parcourir = (dossier: string) => {
-    for (const entree of readdirSync(join(root, dossier), { withFileTypes: true })) {
-      const chemin = `${dossier}/${entree.name}`
-
-      if (entree.isDirectory()) parcourir(chemin)
-      else if (entree.name.endsWith('.ts')) trouves.push(chemin)
-    }
-  }
-
-  for (const dossier of ['app/utils', 'app/composables', 'content', 'server/utils']) {
-    parcourir(dossier)
-  }
-
-  return trouves
-}
+const modules = () =>
+  suivis.filter(
+    (chemin) =>
+      chemin.endsWith('.ts') &&
+      ['app/utils/', 'app/composables/', 'content/', 'server/utils/'].some((dossier) =>
+        chemin.startsWith(dossier),
+      ),
+  )
 
 describe('aucun fichier mort, aucun export mort', () => {
   it('cite chaque composant depuis une page, un organisme ou un test', () => {

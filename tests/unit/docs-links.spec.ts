@@ -1,5 +1,6 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+import { join, posix, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /**
@@ -72,10 +73,19 @@ const horsPerimetre = [
   '.claude/skills/speckit-',
   '.claude/agents/impeccable-',
   '.specify/',
-  'node_modules/',
-  '.output/',
-  '.nuxt/',
 ]
+
+/**
+ * Ce que le build produit n'est pas un fichier du dépôt. `e2e/README.md` cite
+ * `.output/server/index.mjs` pour dire comment la suite sert l'application :
+ * le chemin est juste, et il n'existe qu'après `npm run build`.
+ *
+ * La distinction n'est pas théorique. La première version de ce test lisait le
+ * disque, et elle est passée au vert en local — où `.output/` traînait d'un
+ * build précédent — pour tomber dans la CI, qui part d'un dépôt propre. Un
+ * test qui dépend de ce qui traîne ne vérifie pas ce qu'il annonce.
+ */
+const produitsParLeBuild = ['.output/', '.nuxt/', 'node_modules/', 'dist/', 'playwright-report/']
 
 /** Les rapports horodatés ; leur README, lui, est un document vivant. */
 const estInstantane = (chemin: string) =>
@@ -103,31 +113,42 @@ const absencesVoulues: Record<string, string> = {
 const lire = (chemin: string) =>
   readFileSync(join(root, chemin), 'utf8').replace(/^```[\s\S]*?^```/gm, '')
 
-const existe = (cible: string) => existsSync(resolve(root, cible))
+/**
+ * Les fichiers **suivis par git**, et non ceux présents sur le disque.
+ *
+ * Un fichier non versionné n'existe pas pour les autres : un renvoi vers lui
+ * mène quelque part sur une machine et nulle part ailleurs. C'est ce qui a
+ * fait diverger ce test entre une machine de développement et la CI.
+ */
+const suivis = new Set(
+  execFileSync('git', ['ls-files', '-z'], { cwd: root, encoding: 'utf8' })
+    .split('\0')
+    .filter(Boolean),
+)
 
-/** Tous les `.md` du dépôt, outillage tiers et dépendances exclus. */
-const tousLesDocuments = () => {
-  const trouves: string[] = []
-  const ignores = new Set(['node_modules', '.git', '.output', '.nuxt', '.vercel', 'dist'])
+/** Les dossiers suivis se déduisent des fichiers : git n'en suit aucun. */
+const dossiersSuivis = new Set(
+  [...suivis].flatMap((fichier) => {
+    const segments = fichier.split('/')
 
-  const parcourir = (dossier: string) => {
-    for (const entree of readdirSync(join(root, dossier || '.'), { withFileTypes: true })) {
-      if (ignores.has(entree.name)) continue
+    return segments.slice(0, -1).map((_, index) => segments.slice(0, index + 1).join('/'))
+  }),
+)
 
-      const chemin = dossier ? `${dossier}/${entree.name}` : entree.name
+const existe = (cible: string) => {
+  const chemin = posix.normalize(cible).replace(/\/$/, '')
 
-      if (entree.isDirectory()) parcourir(chemin)
-      else if (entree.name.endsWith('.md')) trouves.push(chemin)
-    }
-  }
-
-  parcourir('')
-
-  return trouves.filter(
-    (chemin) =>
-      !horsPerimetre.some((prefixe) => chemin.startsWith(prefixe)) && !estInstantane(chemin),
-  )
+  return suivis.has(chemin) || dossiersSuivis.has(chemin)
 }
+
+/** Tous les `.md` suivis, outillage tiers et instantanés exclus. */
+const tousLesDocuments = () =>
+  [...suivis].filter(
+    (chemin) =>
+      chemin.endsWith('.md') &&
+      !horsPerimetre.some((prefixe) => chemin.startsWith(prefixe)) &&
+      !estInstantane(chemin),
+  )
 
 describe('les documents de contexte se citent sans renvoi mort', () => {
   /**
@@ -159,10 +180,10 @@ describe('les documents de contexte se citent sans renvoi mort', () => {
 
       const cible = lien!.split('#')[0]!
       const resolu = cible.startsWith('/')
-        ? resolve(root, `.${cible}`)
-        : resolve(dirname(join(root, document)), cible)
+        ? cible.slice(1)
+        : posix.join(posix.dirname(document), cible)
 
-      expect(existsSync(resolu), `${document} → ${cible}`).toBe(true)
+      expect(existe(resolu), `${document} → ${cible}`).toBe(true)
     }
   })
 
@@ -178,6 +199,7 @@ describe('les documents de contexte se citent sans renvoi mort', () => {
       if (cite.startsWith('/')) continue
       if (!/\.[a-z]{2,5}$/.test(cite) && !cite.endsWith('/')) continue
       if (cite in absencesVoulues) continue
+      if (produitsParLeBuild.some((prefixe) => cite.startsWith(prefixe))) continue
 
       expect(existe(cite), `${document} → ${cite}`).toBe(true)
     }
