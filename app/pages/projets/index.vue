@@ -46,7 +46,18 @@ useSeoMeta(
         </p>
 
         <p class="projects__problem" data-reveal-item>{{ project.problem }}</p>
-        <p class="projects__stack" data-reveal-item>{{ project.stack.join(' · ') }}</p>
+
+        <!-- Les technos en étiquettes depuis le 13/11/2026 : un paragraphe
+             joint par ` · ` n'avait rien pour dire où finit une techno et où
+             commence la suivante, et ne se lisait ni à l'œil ni au lecteur
+             d'écran comme une énumération. L'`aria-label` nomme ce que la
+             liste énumère — sans lui, elle s'annonce « liste, 5 éléments ». -->
+        <TagList
+          class="projects__stack"
+          :items="project.stack"
+          label="Technologies"
+          data-reveal-item
+        />
       </li>
     </ol>
   </article>
@@ -146,9 +157,9 @@ useSeoMeta(
   margin-top: var(--space-s);
 }
 
+/* L'écart appartient à la page : l'atome `TagList` ne pose aucune marge
+   extérieure. La couleur et le corps du libellé viennent de lui. */
 .projects__stack {
   margin-top: var(--space-s);
-  color: var(--color-fg-muted);
-  font-size: var(--step--1);
 }
 </style>

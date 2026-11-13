@@ -83,14 +83,21 @@ useRevealCascade(root)
                n'avait rien pour les distinguer. Le pied entre en une seule
                ligne de cascade : il répond à une seule question. -->
           <dl class="about__pile" data-reveal-section data-reveal-item>
+            <!-- Technos et outils en étiquettes depuis le 13/11/2026, comme
+                 `/projets`. Le `dt` nomme déjà la liste : `TagList` n'y prend
+                 pas d'`aria-label`, qui redirait le même mot. -->
             <div class="about__pile-entry">
               <dt>Technos</dt>
-              <dd>{{ job.stack.join(' · ') }}</dd>
+              <dd>
+                <TagList :items="job.stack" />
+              </dd>
             </div>
 
             <div class="about__pile-entry">
               <dt>Outils</dt>
-              <dd>{{ job.tools.join(' · ') }}</dd>
+              <dd>
+                <TagList :items="job.tools" />
+              </dd>
             </div>
 
             <div v-if="job.method" class="about__pile-entry">

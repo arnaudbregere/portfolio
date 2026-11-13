@@ -30,6 +30,19 @@ describe('page Accueil', () => {
     expect(page.text()).toContain('10 ans')
   })
 
+  /**
+   * Le repère vient du contenu, paragraphe par paragraphe, et rien ne s'y
+   * perd en chemin. Ce test est né le 13/11/2026 avec la réécriture du
+   * repère : la page n'en rendait aucun avant, et un paragraphe oublié dans
+   * le gabarit serait passé inaperçu.
+   */
+  it('rend chaque paragraphe du repère, tel que le contenu le porte', async () => {
+    const page = await mountSuspended(IndexPage)
+    const paragraphs = page.findAll('.home__pitch').map((node) => node.text())
+
+    expect(paragraphs).toEqual([...profile.pitch])
+  })
+
   it('propose le CV et les deux voies de contact', async () => {
     const page = await mountSuspended(IndexPage)
 

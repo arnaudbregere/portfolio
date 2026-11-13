@@ -41,8 +41,16 @@ describe('page À propos', () => {
 
       expect(text, job.company).toContain(job.product)
       expect(text, job.company).toContain(job.sector)
-      expect(text, job.company).toContain(job.stack.join(' · '))
-      expect(text, job.company).toContain(job.tools.join(' · '))
+
+      /**
+       * Technos et outils sont des étiquettes depuis le 13/11/2026, et non
+       * plus deux chaînes jointes par ` · ` : la liste rendue est donc
+       * comparée élément par élément, dans l'ordre. Un séparateur revenu dans
+       * un libellé, ou une liste tronquée, fait rougir ce test.
+       */
+      const tags = item.findAll('.a-tag-list__item').map((node) => node.text())
+
+      expect(tags, job.company).toEqual([...job.stack, ...job.tools])
 
       if (job.method) expect(text, job.company).toContain(job.method)
     })

@@ -174,6 +174,17 @@ const spaces = [
     </section>
 
     <section class="ds__figure">
+      <h2 class="ds__label">Étiquette de taxonomie</h2>
+      <div class="ds__tags">
+        <!-- La seule forme arrondie du site, `DESIGN.md` § 5 : filet et
+             libellé en encre, rayon `--radius-s`. Elle est posée ici pour que
+             la bascule de thème la montre dans ses deux encres. -->
+        <TagList :items="['Vue', 'Nuxt', 'TypeScript', 'SCSS']" label="Exemple de technologies" />
+        <p class="ds__token">--radius-s · --rule-ink · --color-ink</p>
+      </div>
+    </section>
+
+    <section class="ds__figure">
       <h2 class="ds__label">Espacement</h2>
       <ul class="ds__spaces">
         <li v-for="space in spaces" :key="space">
@@ -211,7 +222,7 @@ const spaces = [
   border: var(--rule-strong);
 
   button {
-    min-height: 2.75rem; // 44px : cible tactile RGAA
+    min-height: 2.75rem; /* 44px : cible tactile RGAA */
     padding: var(--space-2xs) var(--space-s);
     border: 0;
     background-color: transparent;
@@ -314,6 +325,12 @@ const spaces = [
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-display);
   text-transform: uppercase;
+}
+
+.ds__tags {
+  display: grid;
+  gap: var(--space-2xs);
+  justify-items: start;
 }
 
 .ds__spaces {
