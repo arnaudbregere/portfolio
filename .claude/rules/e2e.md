@@ -51,7 +51,7 @@ coûterait plus cher que l'angle mort lui-même.
 Le document servi est complet, lisible et correctement nommé **avant** que Vue
 n'attache quoi que ce soit : un clic lancé dans cet intervalle ne fait rien, et
 le test échoue par intermittence. `ThemeToggle` pose `data-hydrated` sur son
-bouton au montage, et `hydrated(page)` de `tests/support/site.ts` attend cet
+bouton au montage, et `hydrated(page)` de `e2e/tests/support/site.ts` attend cet
 attribut.
 
 Jusqu'au 12/11/2026, le nom du bouton de thème tenait ce rôle sans que
