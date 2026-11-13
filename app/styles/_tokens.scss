@@ -80,6 +80,13 @@
   --control-min-height: 2.75rem;
   --control-min-width: 6rem;
 
+  /* Rayon — une seule valeur, et un seul emploi.
+     L'étiquette de taxonomie (les technos de `/projets` et de `/a-propos`) est
+     la seule forme arrondie du site : `DESIGN.md` § 5 réserve l'arrondi à la
+     taxonomie et laisse les contrôles en rectangles à filet. 5 px tranchés par
+     Arnaud le 13/11/2026, en rem pour suivre le corps de texte. */
+  --radius-s: 0.3125rem;
+
   /* Mise en page */
   --measure: 68ch;
   --page-gutter: var(--space-s);
@@ -101,6 +108,9 @@
   /* Filets — la page se divise par des traits, jamais par des cartes */
   --rule: 1px solid var(--color-line);
   --rule-strong: 1px solid var(--color-line-strong);
+  /* Le filet de l'étiquette de taxonomie, seul filet en encre : il cerne un
+     libellé au lieu de diviser la page. `DESIGN.md` § 5. */
+  --rule-ink: 1px solid var(--color-ink);
 }
 
 /* Thème sombre, « presse » — @nuxtjs/color-mode pose .dark sur <html> */

@@ -23,7 +23,15 @@ export type Profile = {
   coreStack: string
   /** Présentation de `/a-propos`, en paragraphes. Un élément, un paragraphe. */
   intro: readonly string[]
-  /** Présentation de l'accueil, en paragraphes. Un élément, un paragraphe. */
+  /**
+   * Présentation de l'accueil, en paragraphes. Un élément, un paragraphe.
+   *
+   * Découpée en segments porteurs d'un `emphasis` le 13/11/2026, le temps
+   * d'un essai : les mots clés passaient alors en encre. Arnaud a jugé la
+   * page trop chargée le jour même et le repère est redevenu du texte plat —
+   * `DESIGN.md` § 2. Le type suit, plutôt que de garder une structure que
+   * plus rien n'emploie.
+   */
   pitch: readonly string[]
   location: string
   email: string

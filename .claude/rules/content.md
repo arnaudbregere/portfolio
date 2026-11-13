@@ -32,6 +32,25 @@ Le contenu éditorial du site vit dans `content/`, en **TypeScript typé**.
 - Les fichiers de `content/` ne contiennent aucune logique : uniquement des
   constantes typées exportées.
 
+## Une modification de `content/` ne se voit pas dans un `nuxt dev` déjà lancé
+
+Relevé le 13/11/2026 : `content/cv.ts` réécrit, disque juste, tests verts,
+build de production juste — et le serveur de développement lancé une heure
+plus tôt rendait toujours l'ancienne valeur. `touch` sur le fichier n'a rien
+changé ; les fichiers d'`app/` se rechargeaient normalement dans la même
+session.
+
+Conséquence pratique : après une modification de `content/`, **relancer le
+serveur** avant de juger la page, ou vérifier sur une instance neuve
+(`NUXT_IGNORE_LOCK=1 npm run dev -- --port 3031`). Un écran qui contredit le
+disque se prouve avant d'être expliqué — `CLAUDE.md` § « Tests et
+vérifications ».
+
+Le piège est aggravé par Vue : `{{ paragraph }}` sur autre chose qu'une
+chaîne ne casse rien, il **affiche l'objet** en toutes lettres. Un
+changement de forme dans `content/` qui n'arriverait pas jusqu'au gabarit se
+lit donc en clair sur la page, et nulle part ailleurs.
+
 ## Le contenu change, le référencement change avec lui
 
 **Un contenu modifié n'est pas livré tant que ce qui le décrit n'a pas été

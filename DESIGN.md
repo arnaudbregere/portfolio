@@ -63,6 +63,34 @@ qui est sous examen et sur l'action principale unique.
 | `--color-logo-ink-fg` | Texte sur la marque | `#121110` | `#121110` |
 | `--color-focus` | Indicateur de focus | `var(--color-fg)` | `var(--color-fg)` |
 
+### L'encre ne marque pas les mots clés d'une phrase
+
+Essayé puis retiré le 13/11/2026, dans la même journée. Les mots clés du
+repère de l'accueil sont passés en encre, à la demande d'Arnaud ; il a arrêté
+l'essai en les voyant rendus. **La mesure est le nombre** : le premier
+paragraphe comptait seize fragments en encre sur trois lignes, et le regard y
+lisait le rose avant la phrase. Un signal posé sur les deux tiers d'un
+paragraphe n'en est plus un.
+
+La règle d'en haut tient donc sans exception : **l'encre ne se dépense que sur
+ce qui est sous examen et sur l'action principale unique**. Les étiquettes de
+technos (§ 5) la portent, parce qu'elles cernent des libellés courts et
+dénombrables. Une phrase ne se marque pas, elle se lit.
+
+**Si l'encre revenait un jour sur du texte courant, elle prendrait
+`--color-ink` et non le rose de la marque.** Le rose `#ff5c72` est la valeur
+**sombre** de l'encre ; en clair elle vaut `#b3122b`. Le rose fixe dans les
+deux thèmes n'existe que pour `--color-logo-ink`, et le § 5 dit pourquoi : WCAG
+exempte les logotypes de son plancher. Un mot d'une phrase n'est pas un
+logotype — c'est du texte, WCAG 1.4.3 lui demande 4,5:1, et ce rose ne tient
+que **2,72:1** sur le papier clair. L'imposer ajouterait un second écart
+nominatif à l'audit `@axe-core/playwright`, à côté du seul qu'il tolère, le
+prénom du `h1` : une tolérance qui s'étend cesse d'en être une. `--color-ink`
+tient **6,30:1** en clair et **6,31:1** en sombre.
+
+Le repère est donc redevenu du texte plat, et `Profile.pitch` un tableau de
+chaînes : la structure en segments ne survit pas à l'essai qu'elle servait.
+
 ### L'icône du site
 
 Les **cinq** icônes de `public/` — `favicon.svg`, `favicon-32.png`,
@@ -212,6 +240,28 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   ne porte d'ombre. `--rule` et `--rule-strong` sont les deux filets.
 - **Les contrôles sont des rectangles à filet.** Les formes en pilule sont
   réservées à la taxonomie — tags, catégories — et à rien d'autre.
+- **Une taxonomie se rend en étiquettes cernées d'encre.** Décision d'Arnaud du
+  13/11/2026 : les technos de `/projets`, la rubrique « Stack » de la fiche
+  projet et le pied de fiche de `/a-propos` étaient des paragraphes joints par
+  ` · `, où rien ne disait où finit une techno. L'étiquette porte un filet d'encre (`--rule-ink`), un rayon de 5 px
+  (`--radius-s`) et un intérieur d'un `--space-3xs` sur un `--space-2xs`. Le
+  libellé prend l'encre : c'est du texte, et `--color-ink` lui tient ses 4,5:1
+  dans les deux thèmes — le rose fixe n'en tiendrait que 2,72 sur le papier
+  clair, comme le dit le § 2.
+
+  **C'est la seule forme arrondie du site**, et le seul token de rayon :
+  l'arrondi reste réservé à la taxonomie, les contrôles restent des rectangles.
+  Cinq pixels, et non une pilule : l'étiquette adoucit un rectangle, elle ne
+  devient pas une capsule. La valeur est en `rem` pour suivre le corps du
+  texte.
+
+  **La forme vit dans l'atome `TagList`**, pas en trois copies de style : trois
+  surfaces en avaient besoin le même jour, et l'ancien portfolio est mort d'une
+  duplication de styles. L'atome ne pose aucune marge extérieure — l'écart
+  appartient à la page. Sa liste porte un nom accessible **quand rien ne la
+  nomme** : `/projets` lui donne « Technologies », `/a-propos` s'en passe, son
+  `dt` nommant déjà la liste, et la fiche projet aussi, son `h2` « Stack »
+  ouvrant la rubrique juste au-dessus.
 - **Le rang s'encode dans la taille du texte**, pas dans une grille uniforme de
   cartes égales. L'ordre d'affiche est la hiérarchie.
 - **Un bloc de premier niveau porte son rang en figure numérotée.** Décision
@@ -250,6 +300,29 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   n'a qu'un niveau — sa liste de projets — et ses projets sont donc numérotés
   sans puce : le rang et la puce diraient deux fois la même chose, et
   l'ordre y porte une information que la puce ne porte pas.
+- **Un bloc de liste qui mène quelque part se clique en entier.** Décision
+  d'Arnaud du 13/11/2026, pour les fiches de `/projets` : le titre seul était
+  la cible, et un visiteur qui vise le résumé ou l'année ne va nulle part.
+
+  **La cible s'étend, le lien ne se duplique pas.** Le lien du titre pose une
+  couche en `::after` sur le bloc, qui prend `position: relative`. Le bloc
+  entier devient cliquable sans qu'aucun lien s'ajoute : un seul arrêt de
+  tabulation, un seul texte d'ancre — le titre du projet — et un graphe de
+  liens inchangé pour un moteur de recherche. Envelopper le bloc dans un `<a>`
+  aurait donné au lien un nom accessible de trois lignes, année, rôle, résumé
+  et neuf technos comprises ; deux liens vers la même fiche auraient partagé
+  le signal du texte d'ancre et ajouté un arrêt de tabulation sans rien
+  offrir de plus.
+
+  **L'anneau de focus passe sur le bloc**, par
+  `:has(.projects__link:focus-visible)` : au clavier, l'anneau doit cerner ce
+  qui est activable, et c'est désormais le bloc. C'est le seul `outline: none`
+  du dépôt, et il est remplacé dans la même règle — jamais supprimé.
+
+  **Le coût est connu** : la couche couvre le texte du bloc, qui ne se
+  sélectionne donc plus à la souris. C'est le prix d'une cible étendue sans
+  lien dupliqué, et il ne porte que sur une liste d'aperçus — la fiche, elle,
+  reste entièrement sélectionnable.
 - **Une surface, une passe.** La preuve reste sur la page. Rien ne se cache
   derrière un survol ou un accordéon : ni le clavier ni le tactile n'ont de
   survol.

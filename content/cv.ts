@@ -60,9 +60,27 @@ export const profile: Profile = {
    * Texte de présentation de l'accueil, choisi par Arnaud le 09/11/2026. Il
    * est distinct de `intro`, qui sert `/a-propos` : l'accueil dit le
    * parcours, la page À propos dit le point d'arrivée.
+   *
+   * **Réécrit par Arnaud le 13/11/2026.** Les deux premiers paragraphes
+   * remplacent la phrase « Je me suis ensuite spécialisé en développement
+   * front-end… », qui disait une spécialisation sans dire sur quoi. Le
+   * troisième — le parcours atypique — est conservé tel quel, en bas, par
+   * décision du même jour.
+   *
+   * **Le repère reste en texte plein.** Ses mots clés sont passés en encre le
+   * 13/11/2026, le temps d'un essai : le paragraphe en comptait seize sur
+   * trois lignes, et la page s'est retrouvée plus rose que lisible. Arnaud l'a
+   * arrêté le jour même — l'encre reste aux étiquettes de technos, où elle
+   * cerne une liste courte. `DESIGN.md` § 2 porte le constat.
+   *
+   * Deux écarts au texte dicté, tous deux orthographiques : « test
+   * unitaires » est écrit « tests unitaires », et « Core web Vitals » prend
+   * ses capitales — c'est un nom propre de métrique Google, et la page est
+   * lue par des recruteurs techniques.
    */
   pitch: [
-    'Je me suis ensuite spécialisé en développement front-end, en consolidant mes compétences en JavaScript et sur les frameworks modernes.',
+    'Développeur Front-end / Javascript depuis plus de 10 ans (Vue/Nuxt, React/Next, SCSS, Design System / ITCSS, GraphQL / API REST, Javascript/Typescript, Agentic IA), je gère des sujets variés : migrations, SEO, performances / Core Web Vitals, Responsive/Mobile First, tests unitaires — en agile/Scrum et CI/CD.',
+    'J’utilise l’IA au quotidien, intégrée dans tout mon processus de CI/CD.',
     'Mon parcours atypique me permet d’allier créativité, rigueur et adaptabilité pour concevoir des expériences web performantes.',
   ],
   location: 'Paris',

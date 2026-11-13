@@ -83,7 +83,12 @@ useRevealCascade(root)
 
     <section class="o-project__section" aria-labelledby="stack" data-reveal-section>
       <h2 id="stack" data-reveal-item>Stack</h2>
-      <p class="o-project__stack" data-reveal-item>{{ project.stack.join(' · ') }}</p>
+      <!-- Les mêmes étiquettes que la liste `/projets` et que le pied de
+           fiche de `/a-propos` : une pile jointe par ` · ` ne disait pas où
+           finit une techno. Pas d'`aria-label` ici — le `h2` « Stack » ouvre
+           la rubrique juste au-dessus, et le redire nommerait la liste deux
+           fois. -->
+      <TagList class="o-project__stack" :items="project.stack" data-reveal-item />
     </section>
 
     <section
@@ -207,8 +212,10 @@ useRevealCascade(root)
   font-size: var(--step--1);
 }
 
+/* La couleur et le corps du libellé viennent de l'atome `TagList` ; la
+   rubrique ne pose que l'écart qui la sépare de son titre. */
 .o-project__stack {
-  color: var(--color-fg-muted);
+  margin-top: var(--space-s);
 }
 
 .o-project__links {

@@ -83,6 +83,10 @@ const family = rest.join(' ')
     </h1>
     <p class="home__tagline">{{ profile.tagline }}</p>
 
+    <!-- Le repère est du texte plein. Ses mots clés ont porté l'encre le
+         temps d'un essai, le 13/11/2026 : seize fragments sur trois lignes,
+         et la page lisait plus le rose que la phrase. `DESIGN.md` § 2 garde
+         le constat ; l'encre reste aux étiquettes de technos. -->
     <p v-for="paragraph in profile.pitch" :key="paragraph" class="home__pitch">
       {{ paragraph }}
     </p>
