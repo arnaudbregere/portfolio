@@ -87,6 +87,23 @@ Règles de passage :
   et e2e. Le passage en 4.6.4 (PR #49) a cassé le serveur de développement
   avec cinq checks verts — `options.hostname.toLowerCase is not a function`,
   corrigé par `devServer.host` dans `nuxt.config.ts`.
+- **Les renvois entre fichiers de contexte sont opposables depuis le
+  13/11/2026.** `tests/unit/docs-links.spec.ts` vérifie les imports
+  `@chemin` de ce fichier, les liens Markdown relatifs et les chemins cités
+  entre accents graves, dans les dix-neuf documents vivants du dépôt. La liste
+  de ces documents est **close**, et le test la tient complète : une règle
+  ajoutée dans `.claude/rules/` sans rejoindre la liste fait rougir la suite.
+  Hors périmètre, et pour deux raisons opposées : l'outillage tiers
+  (`impeccable`, `speckit-*`, `.specify/`), que ce dépôt n'écrit pas, et les
+  rapports de `docs/sessions/`, qui sont des instantanés — un chemin devenu
+  faux y est exact pour sa date. Ce qu'aucun test ne tient : un renvoi en
+  prose, « `DESIGN.md` § 5 », qui reste vert si la section change de numéro.
+- **Rien d'écrit n'est spéculatif, et `tests/unit/no-dead-code.spec.ts` le
+  tient.** Un composant, un export d'`app/utils`, d'`app/composables`, de
+  `content/` ou de `server/utils`, ou un token de `_tokens.scss` que
+  **personne d'autre ne nomme** fait rougir la suite. C'est le garde-fou de la
+  règle de `.claude/rules/design-system.md` — « nommer la page qui l'utilise
+  dans le même commit » — qui ne tenait jusque-là qu'à la relecture.
 - **`/_ds` n'est dans aucun des cinq jobs.** `nuxt.config.ts` retire la route
   du build de production, donc rien ne compile son style hors de `npm run dev`.
   Un commentaire `// 44px` dans son `<style scoped lang="scss">` a fait
