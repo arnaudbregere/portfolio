@@ -27,20 +27,51 @@ export const projects: readonly Project[] = [
       { label: 'Application en ligne', url: 'https://japan-react.vercel.app' },
       { label: 'Code source', url: 'https://github.com/arnaudbregere/japan-react' },
     ],
+    /**
+     * Cinq vues de l'application sur téléphone, et non deux vues desktop :
+     * `japan-react` est une application mobile first, et une capture de 1440 px
+     * ne dit rien de ce que le visiteur verra. Reprises le 16/11/2026
+     * (issue #82) depuis `https://japan-react.vercel.app`, à une densité de 2
+     * sur une fenêtre de 383 × 675 — d'où les 766 × 1350.
+     *
+     * L'ordre est celui d'un parcours, pas celui d'un catalogue : on arrive,
+     * on voit la liste, on cherche, on bascule sur les lieux, on pagine.
+     */
     images: [
       {
-        src: '/visuels/japan-manga-explorer/liste-mangas.webp',
-        alt: 'Liste de mangas en grille de quatre colonnes, avec champ de recherche, note sur dix et genres sous chaque couverture.',
-        caption: 'Liste des mangas : recherche, note et genres, paginée.',
-        width: 1440,
-        height: 682,
+        src: '/visuels/japan-manga-explorer/accueil.webp',
+        alt: 'Accueil sur fond noir : le titre « Explorez mangas et lieux incontournables du Japon » en rouge, une accroche, et deux boutons « Explorer les mangas » et « Découvrir le Japon ».',
+        caption: 'L’accueil : deux entrées, une par source de données.',
+        width: 766,
+        height: 1350,
+      },
+      {
+        src: '/visuels/japan-manga-explorer/mangas-populaires.webp',
+        alt: 'Section « Mangas populaires » : grille de deux colonnes de couvertures, chacune suivie du titre, d’une note sur dix et de ses genres.',
+        caption: 'Les mangas populaires : couverture, note et genres.',
+        width: 766,
+        height: 1350,
+      },
+      {
+        src: '/visuels/japan-manga-explorer/recherche-mangas.webp',
+        alt: 'Page « Explorez les mangas » : un champ « Rechercher un manga », un bouton rouge « Rechercher », et les premiers résultats en grille.',
+        caption: 'La recherche : un champ, un bouton, des résultats.',
+        width: 766,
+        height: 1350,
       },
       {
         src: '/visuels/japan-manga-explorer/lieux.webp',
-        alt: 'Liste de lieux japonais en grille de quatre colonnes : tour de Tokyo, Tokyo Skytree, Sensō-ji, Meiji-jingū, chacun avec sa photo et un début de description.',
-        caption: 'Liste des lieux : même grille, autre source de données.',
-        width: 1440,
-        height: 723,
+        alt: 'Page « Lieux incontournables du Japon » : grille de deux colonnes, tour de Tokyo, Tokyo Skytree, Sensō-ji et Meiji-jingū, chacun avec sa photo et un début de description.',
+        caption: 'Les lieux : même grille, autre source de données.',
+        width: 766,
+        height: 1350,
+      },
+      {
+        src: '/visuels/japan-manga-explorer/lieux-pagination.webp',
+        alt: 'Bas de la liste des lieux : Arashiyama, château d’Osaka, Dōtonbori et Itsukushima-jinja, puis la pagination « Page précédente », « Page 1 », « Page suivante ».',
+        caption: 'La pagination, au bas de la liste des lieux.',
+        width: 766,
+        height: 1350,
       },
     ],
     featured: true,
