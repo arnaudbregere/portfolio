@@ -238,6 +238,23 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
 - **Le cadrage appartient au gabarit.** `app/layouts/default.vue` pose la
   gouttière et la largeur maximale ; aucune page ne repose les siennes, sans
   quoi deux pages dérivent l'une de l'autre au premier ajustement.
+- **L'écart sous l'en-tête suit la fenêtre : 2,5 rem en mobile, 4 rem à
+  partir de `m`** (48 em / 768 px). Quatre rem partout posaient 64 px entre le
+  filet de l'en-tête et le titre d'une page, sur un téléphone dont la première
+  vue n'a que 660 px à répartir — et où la figure du portrait de l'accueil
+  déborde de 196 px. Tranché le 16/11/2026 (issue #72) ; la figure remonte de
+  24 px, et le débordement tombe à 172 px.
+
+  C'est le **second** écart à varier avec la fenêtre, et il ne passe pas par
+  un token : la variante vit dans `app/layouts/default.vue`, avec le cadrage
+  qu'il tient déjà. `--space-xl` sert aussi trois écarts intérieurs — le pied
+  de page, `/projets`, `/a-propos` — que rien n'oblige à bouger avec celui-ci.
+  Le token reste donc à 4 rem à toute largeur, et la règle du doublon mobile
+  ci-dessus ne change pas.
+
+  Le reste du débordement n'est pas un problème d'espacement : la ligne de
+  métier tient 178 px sur six lignes à 400 px de large, et la raccourcir est
+  une décision de contenu, pas de mise en page.
 - Mobile first. Le mixin `respond-up()` de `app/styles/_breakpoints.scss` est le
   **seul** emploi de variables Sass pour une valeur de design : le CSS natif
   n'accepte pas de custom property dans une media query.
@@ -670,6 +687,33 @@ La règle vit dans la molécule `SiteLink`, et nulle part ailleurs : le
 soulignement est une propriété du lien, pas de la page qui l'affiche. Tout lien
 de libellé passe par ce composant — interne comme sortant. Aucun mixin, aucune
 classe utilitaire : un seul système d'organisation, Atomic Design.
+
+### Ce que l'entrée de page coûte au LCP
+
+Relevé le 16/11/2026 (issue #72), sur la build de production, bridé au
+préréglage mobile de Lighthouse — 4x processeur, 1,6 Mbit/s, 150 ms de
+latence —, trois chargements par format :
+
+| Format | FCP | LCP | Élément LCP |
+|---|---|---|---|
+| 400 × 660 | 544 ms | 1408 ms | le portrait (`img`), 81 000 px² |
+| 1440 × 900 | 548 ms | 1188 ms | `.home__tagline`, 127 065 px² |
+
+**En desktop, le LCP n'attend aucune ressource : il attend cette figure.**
+548 ms de FCP, plus les 140 ms de délai de la ligne de métier, plus les 480 ms
+de `--dur-slow`, font 1168 ms — à 20 ms du LCP mesuré. Chrome ne compte pas un
+élément peint à `opacity: 0`, donc la durée de l'entrée entre en entier dans la
+métrique. La police, elle, n'arrive qu'à 1950 ms et ne peint aucun LCP :
+`font-display: swap` a déjà rendu le texte dans la fonte de repli.
+
+En mobile, l'image arrive à 1385 ms et l'entrée se termine à 1300 ms : c'est le
+réseau qui borne, de 85 ms. L'entrée n'y est donc pas le facteur limitant —
+elle le redeviendrait dès que la police serait sous-ensemblée (issue #73), les
+88 Ko de fonte partageant le lien avec les 31 Ko de l'image.
+
+Rien n'est tranché ici : le budget de `PRODUCT.md` est de 2,0 s et il est tenu.
+C'est consigné pour que le prochain qui cherche 600 ms de LCP sache où ils
+sont, et ne les cherche pas dans le réseau.
 
 **Une page peut entrer en deux mouvements.** Décision du 05/11/2026, prise sur
 `/contact` (issue #5).

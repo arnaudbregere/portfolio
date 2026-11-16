@@ -173,6 +173,28 @@ describe('page Accueil', () => {
   })
 
   /**
+   * Le portrait est l'élément LCP de l'accueil **en mobile**, et il porte donc
+   * les deux attributs que cela impose : `loading="eager"` et
+   * `fetchpriority="high"`.
+   *
+   * Ce test existe parce que l'issue #72 demandait de retirer
+   * `fetchpriority`, sur une mesure périmée qui donnait la ligne de métier
+   * pour LCP. La mesure du 16/11/2026, sur la build de production à 400 × 660
+   * et bridée au préréglage mobile de Lighthouse, donne l'`img` : 1408 ms,
+   * 81 000 px² d'aire visible. Le gabarit porte le relevé complet.
+   *
+   * L'attribut se vérifie ici plutôt qu'en relecture : une mesure vieille de
+   * quelques jours suffit à le faire retirer de bonne foi.
+   */
+  it('garde le portrait en chargement immédiat et en priorité haute', async () => {
+    const page = await mountSuspended(IndexPage)
+    const image = page.get('figure.home__portrait img')
+
+    expect(image.attributes('loading')).toBe('eager')
+    expect(image.attributes('fetchpriority')).toBe('high')
+  })
+
+  /**
    * L'alternative décrit l'image, la légende nomme le sujet. Les deux se
    * lisent à la suite dans un lecteur d'écran : si l'alternative redisait le
    * nom, il serait annoncé deux fois pour une seule image.

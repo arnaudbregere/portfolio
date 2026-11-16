@@ -93,9 +93,31 @@ const family = rest.join(' ')
            `DESIGN.md` § 5 réserve l'arrondi à la taxonomie, et rien du site
            n'est enfermé dans une carte.
 
-           `loading="eager"` et `fetchpriority="high"` : c'est l'image la plus
-           grande de la première vue, donc le LCP de l'accueil. La laisser
-           paresseuse la ferait charger après la découverte du document.
+           `loading="eager"` et `fetchpriority="high"` : **cette image est
+           l'élément LCP de l'accueil en mobile**, et c'est mesuré, non
+           supposé. Relevé le 16/11/2026 sur la build de production, à
+           400 × 660, bridé au préréglage mobile de Lighthouse (4x processeur,
+           1,6 Mbit/s, 150 ms de latence), trois chargements : LCP à 1408 ms,
+           81 000 px² d'aire, et l'élément est l'`img`. La figure commence à
+           404 px du haut du document, donc son quart supérieur est dans la
+           première vue — c'est cette portion visible qui compte, et elle
+           dépasse la ligne de métier.
+
+           L'issue #72 demandait de retirer `fetchpriority`, en croyant que
+           le LCP était la ligne de métier et que la priorité haute prenait
+           la bande passante de la police. Les deux moitiés sont fausses, et
+           la mesure du 16/11/2026 le montre : l'élément LCP est cette image,
+           et la police arrive **565 ms après elle** (1950 ms contre 1385) —
+           elle ne peint donc aucun LCP, `font-display: swap` affichant le
+           texte dans la fonte de repli bien avant. L'attribut reste, parce
+           que la pratique documentée est de le poser sur l'élément LCP, et
+           sur aucun autre.
+
+           Retirer l'attribut a été mesuré avant d'être écarté : LCP à
+           1408 ms contre 1412 ms, image servie à 1383 ms contre 1385. Aucun
+           effet, dans un sens comme dans l'autre — deux ressources ne font
+           pas une file d'attente à réordonner. L'attribut est donc gardé
+           pour ce qu'il déclare, pas pour ce qu'il gagne ici.
 
            Les dimensions sont celles du fichier et viennent du contenu : la
            boîte est réservée avant le chargement, donc rien ne se décale.
