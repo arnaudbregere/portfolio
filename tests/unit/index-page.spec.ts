@@ -164,4 +164,34 @@ describe('page Accueil', () => {
     expect(headings).not.toContain(profile.availability)
     expect(page.text()).toContain(profile.availability)
   })
+
+  /**
+   * Le portrait vient du contenu, alternative et légende comprises : une
+   * alternative improvisée dans le gabarit est exactement ce que
+   * `.claude/rules/content.md` interdit.
+   *
+   * Les dimensions sont dans le même test que le reste, parce qu'elles
+   * servent la même promesse : la boîte est réservée avant que l'image
+   * n'arrive, donc rien ne se décale sous les yeux du visiteur.
+   */
+  it('rend le portrait en figure, avec l’alternative et la légende du contenu', async () => {
+    const page = await mountSuspended(IndexPage)
+    const figure = page.get('figure.home__portrait')
+    const image = figure.get('img')
+
+    expect(image.attributes('alt')).toBe(profile.portrait.alt)
+    expect(image.attributes('width')).toBe(String(profile.portrait.width))
+    expect(image.attributes('height')).toBe(String(profile.portrait.height))
+    expect(figure.get('figcaption').text()).toBe(profile.portrait.caption)
+  })
+
+  /**
+   * L'alternative décrit l'image, la légende nomme le sujet. Les deux se
+   * lisent à la suite dans un lecteur d'écran : si l'alternative redisait le
+   * nom, il serait annoncé deux fois pour une seule image.
+   */
+  it('ne redit pas la légende du portrait dans son alternative', async () => {
+    expect(profile.portrait.alt).not.toBe(profile.portrait.caption)
+    expect(profile.portrait.alt).not.toContain(profile.name)
+  })
 })

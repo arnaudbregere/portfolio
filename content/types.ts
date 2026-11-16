@@ -6,6 +6,30 @@
  * a besoin de la date lisible par machine.
  */
 
+/**
+ * Le portrait d'Arnaud, tel que la tête de l'accueil l'affiche en figure.
+ *
+ * Même forme que `ProjectImage` et pourtant un type à part : une capture
+ * d'application et un portrait ne se remplacent pas l'un l'autre, et le jour
+ * où l'un gagne un champ — un cadrage, un crédit photo — l'autre n'a pas à le
+ * porter.
+ */
+export type Portrait = {
+  /** Chemin servi depuis `public/`. */
+  src: string
+  /**
+   * Texte alternatif. Il décrit l'image, là où la légende nomme le sujet :
+   * les deux se lisent à la suite dans un lecteur d'écran, et redire le nom
+   * deux fois ne renseigne personne.
+   */
+  alt: string
+  /** Légende visible sous l'image, dans le style des libellés de figure. */
+  caption: string
+  /** Dimensions du fichier servi, posées sur la balise contre tout décalage. */
+  width: number
+  height: number
+}
+
 export type Profile = {
   name: string
   /** Intitulé de poste visé, pas l'intitulé du poste actuel. */
@@ -38,6 +62,8 @@ export type Profile = {
   /** Affiché tel quel ; `tel:` est construit par le composant. */
   phone: string
   availability: string
+  /** Le portrait de la tête de l'accueil. */
+  portrait: Portrait
 }
 
 export type Experience = {
