@@ -37,6 +37,14 @@ luxe que ce sujet ne peut pas fournir : les captures de Figaro Classifieds et de
 La Poste sont propriétaires. La charge passe sur une **encre d'annotation
 réservée** et sur des **figures numérotées**, empruntées à la planche de brevet.
 
+**Un portrait, et un seul, depuis le 16/11/2026.** La tête de l'accueil porte
+une photographie d'Arnaud. Elle ne revient pas sur le report de charge
+ci-dessus : ce n'est pas la photographie de production que le monde Mazarine
+dépense sur chaque surface, c'est une figure de plus sur la planche, cadrée,
+cernée d'un filet et légendée comme les autres. Les captures de clients restent
+interdites, l'encre d'annotation et les figures numérotées portent toujours la
+charge, et aucune autre page n'en reçoit.
+
 Contrat de direction complet, avec les cinq hausses nommées et le tirage
 `concept-seed` qu'elles viennent de :
 `.impeccable/surfaces/app-pages-ds-vue.md`.
@@ -480,6 +488,36 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
 - Cible tactile **44 px** minimum sur tout contrôle (RGAA 4.1).
 - `--color-focus` est visible dans les deux thèmes et ne se supprime jamais. Il
   reprend `--color-fg` : le contraste est le plus élevé de la palette.
+
+- **Le portrait de l'accueil est une figure, pas un médaillon.** Décision
+  d'Arnaud du 16/11/2026. Rectangle en 4:5, cerné d'un `--rule-strong`,
+  légendé dessous dans la forme des libellés de repère — capitales, encre
+  atténuée, `--step--1`. Aucun rayon : le § ci-dessus réserve l'arrondi à la
+  taxonomie, et un portrait en rond serait la seule autre forme arrondie du
+  site. Aucune ombre, aucun fond : la figure tient par son filet, comme tout
+  le reste de la planche.
+
+  **Largeur fixe, 20 rem, dans les deux mises en page.** À partir de `l`
+  (64 em), la tête de page devient une grille de deux colonnes et la figure
+  occupe la seconde, sur la ligne du nom. En dessous, elle reste dans le flux,
+  entre la ligne de métier et le repère, bornée à la même largeur — une
+  figure pleine largeur sur une tablette ferait du portrait le sujet de la
+  page, à la place du nom.
+
+  **Centrée en une colonne, calée à gauche en deux.** Sous `l`, la figure
+  est centrée dans la largeur du texte : bornée à 20 rem quand le texte court
+  sur toute la gouttière, calée à gauche elle creusait un vide à sa droite.
+  En deux colonnes, elle reprend le bord gauche de la sienne. La légende, elle,
+  reste alignée sur le bord gauche de l'image dans les deux cas — un libellé
+  du site ne se centre jamais.
+
+  **Elle entre dans la cadence de la tête de page**, au troisième temps :
+  nom, métier, portrait, repère, CV, à 140 ms d'écart comme le § 7 l'exige.
+  Elle n'a pas de figure propre — c'est `page-entry`, comme les autres lignes.
+
+  Le fichier est en noir et blanc, servi depuis `public/visuels/`, et son
+  alternative comme sa légende sont des propriétés de `content/cv.ts` :
+  l'alternative décrit l'image, la légende nomme le sujet.
 
 ## 6. Navigation
 

@@ -97,6 +97,26 @@ export const profile: Profile = {
    */
   availability:
     'À l’écoute d’opportunités en CDI, en Île-de-France et en télétravail hybride.',
+  /**
+   * Le portrait de la tête de l'accueil, en figure (`DESIGN.md` § 5).
+   *
+   * **Fichier de maquette au 16/11/2026** : recadré depuis un export
+   * filigrané de 729 px, il ne couvre que 496 px de large — soit 248 px
+   * rendus sur un écran à densité double, là où la figure en occupe 320.
+   * Il tient pour juger la composition, pas pour paraître en ligne. À
+   * remplacer par l'original de la prise de vue avant tout déploiement.
+   *
+   * L'alternative décrit l'image ; la légende nomme le sujet. Un lecteur
+   * d'écran lit les deux à la suite, et redire « Arnaud Brégère » deux fois
+   * ne renseigne personne.
+   */
+  portrait: {
+    src: '/visuels/portrait-arnaud-bregere.webp',
+    alt: 'Portrait en noir et blanc, de trois quarts, sur un fond clair flouté.',
+    caption: 'Arnaud Brégère',
+    width: 496,
+    height: 620,
+  },
 }
 
 export const experiences: readonly Experience[] = [

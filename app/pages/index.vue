@@ -69,31 +69,66 @@ const family = rest.join(' ')
 
 <template>
   <article ref="root" class="home">
-    <!-- Le prénom est isolé pour porter la couleur de marque. Le nom reste
-         `profile.name` : il n'est pas recopié, seulement coupé à sa première
-         espace, et l'espace entre les deux mots est conservée — c'est elle
-         que `word-spacing` resserre, et c'est elle qui fait lire deux mots à
-         un lecteur d'écran. La minuscule est posée par le style, donc le
-         texte de la page garde ses capitales. -->
-    <!-- Les deux `span` restent sur la même ligne : un retour à la ligne
-         entre eux entrerait dans le `textContent` du titre, et c'est cette
-         espace unique que `word-spacing` resserre. -->
-    <h1 class="home__name">
-      <span class="home__given">{{ given }}</span> <span class="home__family">{{ family }}</span>
-    </h1>
-    <p class="home__tagline">{{ profile.tagline }}</p>
+    <!-- La tête de page est une grille : une colonne en mobile, deux à
+         partir de `l`, le portrait en seconde colonne. La mise en page
+         ne change pas l'ordre du document — ce que lisent un lecteur
+         d'écran et un robot d'indexation reste nom, métier, portrait,
+         repère, CV. -->
+    <div class="home__head">
+      <!-- Le prénom est isolé pour porter la couleur de marque. Le nom reste
+           `profile.name` : il n'est pas recopié, seulement coupé à sa première
+           espace, et l'espace entre les deux mots est conservée — c'est elle
+           que `word-spacing` resserre, et c'est elle qui fait lire deux mots à
+           un lecteur d'écran. La minuscule est posée par le style, donc le
+           texte de la page garde ses capitales. -->
+      <!-- Les deux `span` restent sur la même ligne : un retour à la ligne
+           entre eux entrerait dans le `textContent` du titre, et c'est cette
+           espace unique que `word-spacing` resserre. -->
+      <h1 class="home__name">
+        <span class="home__given">{{ given }}</span> <span class="home__family">{{ family }}</span>
+      </h1>
+      <p class="home__tagline">{{ profile.tagline }}</p>
 
-    <!-- Le repère est du texte plein. Ses mots clés ont porté l'encre le
-         temps d'un essai, le 13/11/2026 : seize fragments sur trois lignes,
-         et la page lisait plus le rose que la phrase. `DESIGN.md` § 2 garde
-         le constat ; l'encre reste aux étiquettes de technos. -->
-    <p v-for="paragraph in profile.pitch" :key="paragraph" class="home__pitch">
-      {{ paragraph }}
-    </p>
+      <!-- La figure du portrait. Rectangle à filet et légende de libellé :
+           `DESIGN.md` § 5 réserve l'arrondi à la taxonomie, et rien du site
+           n'est enfermé dans une carte.
 
-    <p class="home__download">
-      <CvLink :href="cvFile.path" :format="cvFile.format" :size-kb="cvFile.sizeKb" />
-    </p>
+           `loading="eager"` et `fetchpriority="high"` : c'est l'image la plus
+           grande de la première vue, donc le LCP de l'accueil. La laisser
+           paresseuse la ferait charger après la découverte du document.
+
+           Les dimensions sont celles du fichier et viennent du contenu : la
+           boîte est réservée avant le chargement, donc rien ne se décale.
+
+           `sizes="320px"` et non une largeur de fenêtre : la figure est
+           bornée à `--portrait-width` dans les deux mises en page, mobile
+           comprise. Une taille en `vw` ferait servir un fichier de la largeur
+           d'une tablette pour une image qui n'en occupe jamais plus de 320. -->
+      <figure class="home__portrait">
+        <NuxtImg
+          :src="profile.portrait.src"
+          :alt="profile.portrait.alt"
+          :width="profile.portrait.width"
+          :height="profile.portrait.height"
+          sizes="320px"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <figcaption>{{ profile.portrait.caption }}</figcaption>
+      </figure>
+
+      <!-- Le repère est du texte plein. Ses mots clés ont porté l'encre le
+           temps d'un essai, le 13/11/2026 : seize fragments sur trois lignes,
+           et la page lisait plus le rose que la phrase. `DESIGN.md` § 2 garde
+           le constat ; l'encre reste aux étiquettes de technos. -->
+      <p v-for="paragraph in profile.pitch" :key="paragraph" class="home__pitch">
+        {{ paragraph }}
+      </p>
+
+      <p class="home__download">
+        <CvLink :href="cvFile.path" :format="cvFile.format" :size-kb="cvFile.sizeKb" />
+      </p>
+    </div>
 
     <section class="home__section" aria-labelledby="projets" data-reveal-section>
       <h2 id="projets" data-reveal-item>Projets</h2>
@@ -217,6 +252,7 @@ const family = rest.join(' ')
    Propriétés longues et non le raccourci `animation` : un `var()` dans le
    raccourci met tous ses longhands en substitution différée. */
 .home__tagline,
+.home__portrait,
 .home__pitch,
 .home__download {
   animation-name: page-entry;
@@ -231,12 +267,16 @@ const family = rest.join(' ')
   animation-delay: 140ms;
 }
 
-.home__pitch {
+.home__portrait {
   animation-delay: 280ms;
 }
 
-.home__download {
+.home__pitch {
   animation-delay: 420ms;
+}
+
+.home__download {
+  animation-delay: 560ms;
 }
 
 /* La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
@@ -245,6 +285,7 @@ const family = rest.join(' ')
    `_motion.scss`. */
 @media (prefers-reduced-motion: reduce) {
   .home__tagline,
+  .home__portrait,
   .home__pitch,
   .home__download {
     animation-delay: 0ms !important;
@@ -364,6 +405,78 @@ const family = rest.join(' ')
    doit tenir. */
 .home__given {
   color: var(--color-logo-ink);
+}
+
+/* La tête de page : une colonne en mobile, deux à partir de `l`. Les enfants
+   restent en colonne 1 ; seule la figure passe en colonne 2, sur la ligne du
+   nom. La largeur de la seconde colonne est celle de la figure, pour que la
+   mesure du texte ne dépende pas d'elle. */
+.home__head {
+  /* La largeur de la figure, déclarée sur la grille et non sur la figure :
+     c'est la grille qui en a besoin pour sa seconde colonne, et une custom
+     property posée sur l'enfant ne remonte pas au parent. */
+  --portrait-width: 20rem;
+
+  display: grid;
+}
+
+.home__head > * {
+  grid-column: 1;
+}
+
+.home__head {
+  @include bp.respond-up(l) {
+    grid-template-columns: minmax(0, 1fr) var(--portrait-width);
+    column-gap: var(--space-2xl);
+  }
+}
+
+/* -- Portrait -------------------------------------------------------------
+   Rectangle à filet, sans rayon : `DESIGN.md` § 5 réserve l'arrondi à la
+   taxonomie et refuse la carte. La légende reprend la forme des libellés de
+   repère — capitales, encre atténuée, un cran de texte en dessous. */
+.home__portrait {
+  /* Centrée tant que la tête tient en une colonne : le texte court sur toute
+     la largeur, la figure non, et une figure bornée à 20 rem calée à gauche
+     laissait un creux à droite d'elle seule. Décision d'Arnaud du
+     16/11/2026. La légende reste calée sur le bord gauche de l'image, comme
+     tous les libellés du site. */
+  margin: var(--space-l) auto 0;
+  max-width: var(--portrait-width);
+}
+
+.home__portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: var(--rule-strong);
+}
+
+.home__portrait figcaption {
+  margin-top: var(--space-2xs);
+  color: var(--color-fg-muted);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.home__portrait {
+  @include bp.respond-up(l) {
+    grid-column: 2;
+    /* La figure couvre les six lignes de la colonne de texte — nom, métier,
+       les trois paragraphes du repère, le CV — et non la seule ligne du nom.
+       Posée sur `grid-row: 1`, elle y imposait sa hauteur : la ligne du titre
+       passait à 400 px et un vide s'ouvrait entre le nom et le métier.
+       `1 / -1` ne vaut rien ici, faute de lignes explicites à numéroter.
+
+       L'étendue doit rester au moins aussi haute que la figure. Six lignes
+       valent ~700 px pour une figure de 400 : un paragraphe ajouté au repère
+       ne rouvre pas le vide. */
+    grid-row: 1 / span 6;
+    /* Deux colonnes : la figure reprend le bord gauche de la sienne, et le
+       centrage mobile n'a plus d'objet. */
+    margin: 0;
+  }
 }
 
 .home__tagline {
