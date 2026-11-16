@@ -173,18 +173,12 @@ describe('page Accueil', () => {
   })
 
   /**
-   * Le portrait est l'élément LCP de l'accueil **en mobile**, et il porte donc
-   * les deux attributs que cela impose : `loading="eager"` et
-   * `fetchpriority="high"`.
+   * Le portrait est l'élément LCP de l'accueil en mobile, et porte les deux
+   * attributs que cela impose. Le relevé et la règle sont dans
+   * `.claude/rules/frontend.md` § « La priorité de chargement se mesure ».
    *
-   * Ce test existe parce que l'issue #72 demandait de retirer
-   * `fetchpriority`, sur une mesure périmée qui donnait la ligne de métier
-   * pour LCP. La mesure du 16/11/2026, sur la build de production et bridée
-   * au préréglage mobile de Lighthouse, donne l'`img` : 1404 ms et
-   * 52 942 px², portrait resserré compris. Le gabarit porte le relevé.
-   *
-   * L'attribut se vérifie ici plutôt qu'en relecture : une mesure vieille de
-   * quelques jours suffit à le faire retirer de bonne foi.
+   * L'attribut se vérifie ici plutôt qu'en relecture : une mesure périmée
+   * suffit à le faire retirer de bonne foi, et l'issue #72 le demandait.
    */
   it('garde le portrait en chargement immédiat et en priorité haute', async () => {
     const page = await mountSuspended(IndexPage)

@@ -89,44 +89,12 @@ const family = rest.join(' ')
       </h1>
       <p class="home__tagline">{{ profile.tagline }}</p>
 
-      <!-- La figure du portrait. Rectangle à filet et légende de libellé :
-           `DESIGN.md` § 5 réserve l'arrondi à la taxonomie, et rien du site
-           n'est enfermé dans une carte.
-
-           `loading="eager"` et `fetchpriority="high"` : **cette image est
-           l'élément LCP de l'accueil en mobile**, et c'est mesuré, non
-           supposé. Relevé le 16/11/2026 sur la build de production, bridé au
-           préréglage mobile de Lighthouse (4x processeur, 1,6 Mbit/s, 150 ms
-           de latence), trois chargements par format : LCP à 1404 ms à
-           375 × 667 et 1408 ms à 400 × 660, l'élément étant l'`img`, pour
-           52 942 px² d'aire — plus que la ligne de métier, qui tient cinq
-           lignes de `--step-1` en mobile. La figure est entière dans la
-           première vue depuis ce même jour, donc elle compte pour sa surface
-           entière.
-
-           L'issue #72 demandait de retirer `fetchpriority`, en croyant que
-           le LCP était la ligne de métier et que la priorité haute prenait
-           la bande passante de la police. Les deux moitiés sont fausses, et
-           la mesure du 16/11/2026 le montre : l'élément LCP est cette image,
-           et la police arrive **565 ms après elle** (1950 ms contre 1385) —
-           elle ne peint donc aucun LCP, `font-display: swap` affichant le
-           texte dans la fonte de repli bien avant. L'attribut reste, parce
-           que la pratique documentée est de le poser sur l'élément LCP, et
-           sur aucun autre.
-
-           Retirer l'attribut a été mesuré avant d'être écarté : LCP à
-           1408 ms contre 1412 ms, image servie à 1383 ms contre 1385. Aucun
-           effet, dans un sens comme dans l'autre — deux ressources ne font
-           pas une file d'attente à réordonner. L'attribut est donc gardé
-           pour ce qu'il déclare, pas pour ce qu'il gagne ici.
-
-           Les dimensions sont celles du fichier et viennent du contenu : la
-           boîte est réservée avant le chargement, donc rien ne se décale.
-
-           `sizes="320px"` et non une largeur de fenêtre : la figure est
-           bornée à `--portrait-width` dans les deux mises en page, mobile
-           comprise. Une taille en `vw` ferait servir un fichier de la largeur
-           d'une tablette pour une image qui n'en occupe jamais plus de 320. -->
+      <!-- La forme est en § 5 de `DESIGN.md`, la priorité de chargement dans
+           `.claude/rules/frontend.md` § « La priorité de chargement se
+           mesure » : cette image est l'élément LCP en mobile, relevé à
+           l'appui. Les dimensions viennent du contenu, donc la boîte est
+           réservée avant le chargement. `sizes="320px"` et non une largeur de
+           fenêtre : la figure est bornée à `--portrait-width` partout. -->
       <figure class="home__portrait">
         <NuxtImg
           :src="profile.portrait.src"
@@ -424,12 +392,8 @@ const family = rest.join(' ')
 .home__head {
   /* La largeur de la figure, déclarée sur la grille et non sur la figure :
      c'est la grille qui en a besoin pour sa seconde colonne, et une custom
-     property posée sur l'enfant ne remonte pas au parent.
-
-     Treize rem en mobile, vingt à partir de `m`. Le rapport 4:5 est conservé
-     partout : le visage occupe 520 px des 620 du fichier, donc aucun recadrage
-     plus carré ne le contient. C'est donc la largeur qui cède, et le portrait
-     devient un encart plutôt qu'un pavé. */
+     property posée sur l'enfant ne remonte pas au parent. Les deux largeurs
+     et le 4:5 conservé sont en § 5 de `DESIGN.md`. */
   --portrait-width: 13rem;
 
   display: grid;
@@ -501,16 +465,9 @@ const family = rest.join(' ')
   }
 }
 
-/* La ligne de métier est le chapô de la page : `h1 + p` de `_base.scss` lui
-   donne déjà son écart, sa couleur et `--step-1`. Elle ne prend sa taille
-   d'affiche qu'à partir de `m` (48 em / 768 px).
-
-   Onze domaines séparés par des barres : à `--step-2`, cela tenait six lignes
-   et 210 px sur un téléphone de 360 px, et repoussait le portrait hors de la
-   première vue. Le cran du dessous en rend cinq. Décision d'Arnaud du
-   16/11/2026 — « le texte est trop gros en mobile » (issue #72).
-
-   Seule la largeur reste posée ici : le chapô n'en borne pas. */
+/* Le chapô `h1 + p` de `_base.scss` donne l'écart, la couleur et `--step-1` ;
+   seule la largeur reste posée ici. La taille d'affiche n'arrive qu'à partir
+   de `m` (`DESIGN.md` § 3). */
 .home__tagline {
   max-width: var(--measure);
 }

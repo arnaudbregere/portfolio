@@ -1,23 +1,17 @@
 import { expect, test } from '@playwright/test'
 
 /**
- * La première vue de l'accueil sur un téléphone (issue #72).
+ * La première vue de l'accueil sur un téléphone (issue #72). Le pourquoi et le
+ * relevé sont en § 5 de `DESIGN.md`.
  *
- * Relevé le 16/11/2026, avant correction : la figure du portrait dépassait le
- * bas de l'écran de 195 px sur un iPhone SE et de 219 px sur un 360 × 640. Le
- * visiteur voyait un visage coupé au menton — ce qui se lit comme un défaut
- * d'affichage, pas comme un cadrage. Arnaud l'a relevé deux fois.
+ * Ce qui est tenu ici est la promesse, pas les valeurs qui la servent : le
+ * portrait entier dans la première vue, légende comprise. Largeur de la
+ * figure, taille de la ligne de métier et écart sous l'en-tête y concourent
+ * tous les trois ; un test par valeur rougirait au premier ajustement sans
+ * rien dire du résultat.
  *
- * Ce qui est tenu ici n'est pas une valeur de style mais la promesse qu'elle
- * sert : **le portrait tient entier dans la première vue, légende comprise**,
- * sur le plus petit téléphone encore en circulation. La largeur de la figure,
- * la taille de la ligne de métier et l'écart sous l'en-tête concourent tous
- * les trois à cette promesse ; un test par valeur rougirait au premier
- * ajustement sans rien dire du résultat.
- *
- * Les formats sont ceux du relevé. 360 × 640 est le plancher — il ne tient
- * qu'à 1 px près, et c'est voulu : il dit qu'il n'y a plus de marge à dépenser
- * sans retoucher la composition.
+ * 360 × 640 est le plancher, et il ne tient qu'à 1 px près : il n'y a plus de
+ * marge à dépenser sans retoucher la composition.
  */
 const PHONES = [
   { width: 360, height: 640, name: 'Android compact' },
