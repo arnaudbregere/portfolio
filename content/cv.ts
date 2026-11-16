@@ -1,6 +1,6 @@
 /**
  * Parcours d'Arnaud Brégère, transcrit depuis le PDF du CV
- * (`arnaud-bregere_cv.pdf`, version du 03/11/2026) — source unique du site.
+ * (`arnaud-bregere_cv.pdf`, version du 16/11/2026) — source unique du site.
  *
  * Rien ici n'est déduit ni arrondi : une ligne absente du CV est une ligne
  * absente de ce fichier. Seule exception, signalée sur place : le texte de
@@ -8,11 +8,18 @@
  * (« +40 % de Core Web Vitals », « 5+ développeurs formés ») n'ont pas été
  * reprises faute de source.
  *
- * L'adresse postale du PDF ne figure pas ici : une page publique n'a pas à
- * porter le domicile de qui que ce soit. Le téléphone y est, par décision du
- * 03/11/2026. Il paraissait alors seulement sur `/a-propos` ; depuis le
- * 05/11/2026 (issue #5) il paraît aussi sur `/contact`, qui a remplacé son
- * formulaire par les coordonnées en clair.
+ * L'adresse postale ne figure pas ici : une page publique n'a pas à porter le
+ * domicile de qui que ce soit. L'écart n'en est plus un depuis la version du
+ * 16/11/2026, qui ne porte plus que « Paris ». Le téléphone, lui, y est par
+ * décision du 03/11/2026. Il paraissait alors seulement sur `/a-propos` ;
+ * depuis le 05/11/2026 (issue #5) il paraît aussi sur `/contact`, qui a
+ * remplacé son formulaire par les coordonnées en clair.
+ *
+ * Le PDF du 16/11/2026 porte trois choses que la version précédente n'avait
+ * pas : la certification Formapedia, ITCSS dans la ligne des langages, et le
+ * comparateur d'annonces dans les projets de Figaro Classifieds. Elles sont
+ * reprises telles quelles. Sa ligne des langages se termine par « Claude
+ * Claude » — une coquille du PDF, et une coquille ne se transcrit pas.
  */
 
 import type { CvFile, Education, Experience, Profile, SkillGroup } from './types'
@@ -69,13 +76,14 @@ export const profile: Profile = {
   email: 'arnaud.bregere@gmail.com',
   phone: '06 07 98 52 85',
   /**
-   * Écart assumé au PDF, demandé par Arnaud le 12/11/2026 (issue #53) : le CV
-   * écrit « en Île-de-France **ou** en télétravail hybride », cette ligne dit
-   * « **et** ». Le « ou » laissait lire une alternative — l'un ou l'autre —
-   * là où les deux sont acceptés ensemble.
+   * Demandé par Arnaud le 12/11/2026 (issue #53) : le CV écrivait alors « en
+   * Île-de-France **ou** en télétravail hybride », cette ligne dit « **et** ».
+   * Le « ou » laissait lire une alternative — l'un ou l'autre — là où les deux
+   * sont acceptés ensemble.
    *
-   * C'est le deuxième écart de ce fichier au PDF, et il est signalé sur place
-   * comme le premier. Il se referme à la prochaine version du PDF.
+   * Ce n'est plus un écart : la version du 16/11/2026 du PDF ne porte plus de
+   * ligne de disponibilité du tout. La phrase ci-dessous n'a donc plus de
+   * source ailleurs que dans ce fichier.
    */
   availability:
     'À l’écoute d’opportunités en CDI, en Île-de-France et en télétravail hybride.',
@@ -115,7 +123,7 @@ export const experiences: readonly Experience[] = [
     missions: [
       'Migration de la page d’accueil de Vue 2 vers Nuxt 3 — moteur de recherche, menu, articles éditoriaux et carte de France — pour améliorer le LCP.',
       'Refonte du cartouche d’annonce sur les pages de liste, pour réduire le CLS.',
-      'Galerie photo et points d’intérêt sur la page de détail d’une annonce.',
+      'Galerie photo, points d’intérêt et comparateur d’annonces sur la page de détail.',
       'Maintenance applicative : gestion des alertes et refactoring du moteur de recherche, pour améliorer l’INP.',
       'Référencement : HTML sémantique, métadonnées, JSON-LD et fil d’Ariane sur les pages de liste.',
       'Fonctionnalités : favoris en stockage local, atouts du bien, DPE et GES.',
@@ -161,10 +169,10 @@ export const experiences: readonly Experience[] = [
     company: 'Groupe La Poste',
     /**
      * Écart assumé au PDF, maintenu par Arnaud le 12/11/2026 : le CV écrit
-     * « Développeur Front-end », cette fiche garde « senior ». C'est le
-     * troisième écart signalé de ce fichier à sa source, après l'adresse
-     * postale écartée et le « et » de `availability`. Il se referme à la
-     * prochaine version du PDF.
+     * « Développeur Front-end », cette fiche garde « senior ». C'est le seul
+     * écart qui reste au 16/11/2026 — l'adresse postale a quitté le PDF, et
+     * la ligne de disponibilité aussi. Il se referme à la version du PDF qui
+     * écrira « senior ».
      */
     role: 'Développeur front-end senior',
     start: '2018-09',
@@ -247,6 +255,13 @@ export const experiences: readonly Experience[] = [
 
 export const education: readonly Education[] = [
   {
+    // Juillet à août 2026. Le PDF n'annonce ni mention ni note : rien ne
+    // s'invente pour remplir `result`.
+    title: 'Claude Certified Developer (Foundations)',
+    school: 'Formapedia',
+    year: '2026',
+  },
+  {
     title: 'Certification Développement front-end de sites et applications web',
     school: 'Webecom',
     year: '2025-2026',
@@ -280,7 +295,7 @@ export const education: readonly Education[] = [
 export const skillGroups: readonly SkillGroup[] = [
   {
     title: 'Langages',
-    skills: ['HTML5', 'CSS3', 'SCSS', 'JavaScript', 'TypeScript', 'YAML'],
+    skills: ['HTML5', 'CSS3', 'SCSS', 'ITCSS', 'JavaScript', 'TypeScript', 'YAML'],
   },
   {
     title: 'Frameworks et bibliothèques',
@@ -343,9 +358,21 @@ export const skillGroups: readonly SkillGroup[] = [
   },
 ]
 
+/**
+ * Le fichier servi est **une image**, et c'est une décision d'Arnaud du
+ * 16/11/2026 : deux JPEG, aucun texte à l'intérieur. L'export Figma trace
+ * chaque lettre en courbes de Bézier et pèse 2600 Ko ; rasterisé à 400 dpi
+ * sur une A4, il tombe à 926 Ko.
+ *
+ * Ce que cela coûte, et qui n'est tenu par aucun test : le CV n'est lisible
+ * ni par un lecteur d'écran, ni par un moteur de recherche, et son texte ne
+ * se sélectionne pas. Un allègement vectoriel gardait la couche de texte à
+ * 1603 Ko — mesuré le 16/11/2026, écarté pour le poids. L'arbitrage se
+ * reprend à la prochaine version du PDF.
+ */
 export const cvFile: CvFile = {
   path: '/pdf/arnaud-bregere_cv.pdf',
   format: 'PDF',
-  sizeKb: 449,
-  updated: '2026-11-03',
+  sizeKb: 926,
+  updated: '2026-11-16',
 }

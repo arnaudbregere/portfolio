@@ -478,8 +478,13 @@ const family = rest.join(' ')
   }
 }
 
+/* Centré, comme la figure au-dessus : décision d'Arnaud du 16/11/2026,
+   `DESIGN.md` § 5. `margin: … auto` ne centre rien sur un `<p>`, qui prend
+   toute la largeur — c'est `width: fit-content` qui ramène la boîte à la
+   taille du lien et laisse les marges automatiques faire leur travail. */
 .home__download {
-  margin-top: var(--space-l);
+  width: fit-content;
+  margin: var(--space-l) auto;
 }
 
 .home__section {
