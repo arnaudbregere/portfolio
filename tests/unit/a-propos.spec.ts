@@ -4,6 +4,25 @@ import { education, experiences, profile, skillGroups } from '~~/content/cv'
 import AProposPage from '~/pages/a-propos.vue'
 
 describe('page À propos', () => {
+  /**
+   * La présentation vient de `profile.intro`, paragraphe par paragraphe, et
+   * rien ne s'y perd en chemin. Elle a quitté l'accueil le 16/11/2026
+   * (issue #70) : la page n'en rendait qu'un seul avant, et deux paragraphes
+   * oubliés dans le gabarit seraient passés inaperçus.
+   *
+   * Le premier est le chapeau — `_base.scss` compose en chapeau le
+   * paragraphe qui suit le `h1`, sans classe pour cela.
+   */
+  it('rend chaque paragraphe de la présentation, le premier en chapeau', async () => {
+    const page = await mountSuspended(AProposPage)
+    const paragraphs = [
+      page.get('h1 + p').text(),
+      ...page.findAll('.about__intro').map((node) => node.text()),
+    ]
+
+    expect(paragraphs).toEqual([...profile.intro])
+  })
+
   it('liste chaque expérience du contenu, dans l’ordre', async () => {
     const page = await mountSuspended(AProposPage)
     const roles = page.findAll('.about__role').map((node) => node.text())

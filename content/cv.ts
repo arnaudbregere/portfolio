@@ -45,40 +45,22 @@ export const profile: Profile = {
   coreStack:
     'Front-end | FullStack Agentic | Design System | JavaScript | TypeScript | Vue/Nuxt | React/Next | SSR/CSR | Performance | Accessibilité | SEO | IA Tools',
   /**
-   * Texte de présentation de `/a-propos`, réécrit par Arnaud le 09/11/2026.
-   * Ce n'est plus la transcription du PDF : c'est la version du site, plus
-   * courte, et elle fait foi ici.
+   * Présentation de `/a-propos`. Le premier élément est le chapeau de la
+   * page. Ce n'est pas la transcription du PDF : c'est la version du site,
+   * et elle fait foi ici.
    *
-   * La phrase sur le parcours atypique en a été retirée le même jour : elle
-   * vit dans `pitch`, sur l'accueil, et la garder ici la faisait lire deux
-   * fois à un paragraphe d'intervalle.
+   * **Déplacée depuis l'accueil le 16/11/2026** (issue #70), telle quelle.
+   * Elle y tenait sous le nom de `pitch` ; la phrase qu'elle remplace ici —
+   * « Initialement webdesigner, j'ai évolué vers le rôle d'intégrateur web
+   * et aujourd'hui développeur front-end. » — disait en une ligne ce que le
+   * parcours détaillé dit en entier, trois sections plus bas.
+   *
+   * Écrite par Arnaud le 13/11/2026. Deux écarts au texte dicté, tous deux
+   * orthographiques : « test unitaires » est écrit « tests unitaires », et
+   * « Core web Vitals » prend ses capitales — c'est un nom propre de
+   * métrique Google, et la page est lue par des recruteurs techniques.
    */
   intro: [
-    'Initialement webdesigner, j’ai évolué vers le rôle d’intégrateur web et aujourd’hui développeur front-end.',
-  ],
-  /**
-   * Texte de présentation de l'accueil, choisi par Arnaud le 09/11/2026. Il
-   * est distinct de `intro`, qui sert `/a-propos` : l'accueil dit le
-   * parcours, la page À propos dit le point d'arrivée.
-   *
-   * **Réécrit par Arnaud le 13/11/2026.** Les deux premiers paragraphes
-   * remplacent la phrase « Je me suis ensuite spécialisé en développement
-   * front-end… », qui disait une spécialisation sans dire sur quoi. Le
-   * troisième — le parcours atypique — est conservé tel quel, en bas, par
-   * décision du même jour.
-   *
-   * **Le repère reste en texte plein.** Ses mots clés sont passés en encre le
-   * 13/11/2026, le temps d'un essai : le paragraphe en comptait seize sur
-   * trois lignes, et la page s'est retrouvée plus rose que lisible. Arnaud l'a
-   * arrêté le jour même — l'encre reste aux étiquettes de technos, où elle
-   * cerne une liste courte. `DESIGN.md` § 2 porte le constat.
-   *
-   * Deux écarts au texte dicté, tous deux orthographiques : « test
-   * unitaires » est écrit « tests unitaires », et « Core web Vitals » prend
-   * ses capitales — c'est un nom propre de métrique Google, et la page est
-   * lue par des recruteurs techniques.
-   */
-  pitch: [
     'Développeur Front-end / Javascript depuis plus de 10 ans (Vue/Nuxt, React/Next, SCSS, Design System / ITCSS, GraphQL / API REST, Javascript/Typescript, Agentic IA), je gère des sujets variés : migrations, SEO, performances / Core Web Vitals, Responsive/Mobile First, tests unitaires — en agile/Scrum et CI/CD.',
     'J’utilise l’IA au quotidien, intégrée dans tout mon processus de CI/CD.',
     'Mon parcours atypique me permet d’allier créativité, rigueur et adaptabilité pour concevoir des expériences web performantes.',

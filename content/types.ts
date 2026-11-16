@@ -45,18 +45,17 @@ export type Profile = {
    * l'autre.
    */
   coreStack: string
-  /** Présentation de `/a-propos`, en paragraphes. Un élément, un paragraphe. */
-  intro: readonly string[]
   /**
-   * Présentation de l'accueil, en paragraphes. Un élément, un paragraphe.
+   * Présentation de `/a-propos`, en paragraphes. Un élément, un paragraphe,
+   * le premier servant de chapeau.
    *
-   * Découpée en segments porteurs d'un `emphasis` le 13/11/2026, le temps
-   * d'un essai : les mots clés passaient alors en encre. Arnaud a jugé la
-   * page trop chargée le jour même et le repère est redevenu du texte plat —
-   * `DESIGN.md` § 2. Le type suit, plutôt que de garder une structure que
-   * plus rien n'emploie.
+   * Elle porte depuis le 16/11/2026 le texte qui ouvrait l'accueil (issue
+   * #70) : l'accueil disait le parcours en trois paragraphes et la page À
+   * propos une phrase, alors que c'est elle qu'on ouvre pour le parcours.
+   * Le champ `pitch` qui portait ces trois paragraphes disparaît avec le
+   * déplacement — rien d'autre ne le nommait.
    */
-  pitch: readonly string[]
+  intro: readonly string[]
   location: string
   email: string
   /** Affiché tel quel ; `tel:` est construit par le composant. */

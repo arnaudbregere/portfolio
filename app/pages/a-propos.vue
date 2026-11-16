@@ -7,8 +7,13 @@ import { formatPeriod } from '~/utils/period'
 useSeoMeta(
   pageSeoMeta({
     title: 'À propos — Arnaud Brégère',
+    // Relue avec la présentation déplacée depuis l'accueil le 16/11/2026
+    // (issue #70) : la page n'ouvre plus sur une phrase de parcours mais sur
+    // dix ans de JavaScript et l'IA au quotidien, et sa description le dit.
+    // La durée se relit dans `content/cv.ts` et jamais de mémoire —
+    // `.claude/rules/content.md`.
     description:
-      'Parcours d’Arnaud Brégère, développeur front-end senior : sept ans de Vue et Nuxt chez Figaro Classifieds, et une formation en arts graphiques.',
+      'Parcours d’Arnaud Brégère, développeur front-end senior : dix ans de JavaScript, Vue et Nuxt, l’IA au quotidien, et une formation en arts graphiques.',
   }),
 )
 
