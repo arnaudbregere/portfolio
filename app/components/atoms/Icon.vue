@@ -11,7 +11,7 @@
  */
 withDefaults(
   defineProps<{
-    name: 'phone' | 'mail'
+    name: 'phone' | 'mail' | 'chevron-left' | 'chevron-right'
     /** Épaisseur du trait, en unités du `viewBox`. */
     stroke?: number
   }>(),
@@ -35,6 +35,8 @@ withDefaults(
       v-if="name === 'phone'"
       d="M6.3 2.8h2.9l1.4 3.4-1.9 1.2a9.2 9.2 0 0 0 4 4l1.2-1.9 3.4 1.4v2.9a1.5 1.5 0 0 1-1.7 1.5A13.6 13.6 0 0 1 4.5 4.5a1.5 1.5 0 0 1 1.5-1.7Z"
     />
+    <path v-else-if="name === 'chevron-left'" d="M12.5 3.8 6.3 10l6.2 6.2" />
+    <path v-else-if="name === 'chevron-right'" d="M7.5 3.8 13.7 10l-6.2 6.2" />
     <template v-else>
       <rect x="2.4" y="4.4" width="15.2" height="11.2" rx="1.4" />
       <path d="m3 5.4 7 5.2 7-5.2" />

@@ -537,6 +537,49 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   le contient. C'est la largeur qui cède, et le portrait devient un encart
   plutôt qu'un pavé.
 
+- **L'aperçu d'une fiche projet est une pellicule, pas une pile.** Décision
+  du 16/11/2026 (issue #82), et elle en **révise** une autre :
+  `ProjectDetail.vue` posait jusque-là « toutes les captures sur la page :
+  rien derrière une flèche ou un clic ». Cette règle tenait pour deux captures
+  desktop ; elle ne tient plus pour cinq captures de téléphone.
+
+  Le chiffre qui tranche : cinq portraits pleine largeur font environ 3 400 px
+  de défilement sur un téléphone, et une capture de 766 px étirée à la mesure
+  du texte perd sa netteté. La pellicule les sert côte à côte, à leur taille.
+
+  **72 % de la largeur sous `m`, 20 rem au-delà.** Les 72 % laissent dépasser
+  la capture suivante : c'est l'affordance. Les 20 rem valent 320 px, soit
+  0,84 fois la fenêtre de 383 px d'où la capture est née — assez grande pour
+  qu'on lise l'interface. Treize rem et demi, essayés le 16/11/2026, rendaient
+  une vignette illisible.
+
+  **La pellicule déborde la mesure du texte à partir de `m`**, et prend toute
+  la largeur du gabarit. Les captures ne sont pas de la prose : rien ne les
+  oblige à s'arrêter à 68 caractères, et s'y arrêter laissait les deux tiers
+  de l'écran vides. La largeur vient d'une requête de conteneur — `100cqi` sur
+  `.o-project` — et non de `100vw`, qui compte la barre de défilement et
+  ouvrirait un défilement horizontal de page.
+
+  **Pas de modale**, et ce n'est pas une économie de travail : la source est
+  une capture de téléphone, l'agrandir sur un téléphone ne montre aucun détail
+  de plus, et le coût serait un piège à focus, un `inert`, un verrou de
+  défilement et une restitution de focus.
+
+  **Deux flèches, en revanche.** Décision d'Arnaud du 16/11/2026, après essai
+  sans elles. Elles ne remplacent ni le doigt, ni la molette, ni les flèches
+  du clavier : elles les doublent, parce qu'un visiteur à la souris n'avait
+  que la barre de défilement. Cibles de 44 px, rendues au serveur dans leur
+  état désactivé — le client les allume au montage, et la ligne ne saute pas
+  sous les captures.
+
+  **Le conteneur porte le focus, pas les captures.** Une zone qui défile doit
+  s'atteindre sans souris — WCAG 2.1.1 —, et seul le focus rend les flèches du
+  clavier opérantes sur un conteneur qui n'est pas un contrôle. D'où
+  `tabindex="0"` et un libellé qui nomme le projet. **Pas de `role="group"`** :
+  il écrase le rôle `list` implicite de l'`<ol>` et laisse les `<li>`
+  orphelins — cinq violations `serious` par fiche, relevées par axe le
+  16/11/2026.
+
 - **Le bouton de CV de l'accueil est centré**, à toutes les largeurs.
   Décision d'Arnaud du 16/11/2026. Il suit la figure qui le précède plutôt
   que la colonne de texte qui le porte : c'est le seul appel à l'action de la

@@ -12,6 +12,28 @@ describe('Icon', () => {
   })
 
   /**
+   * Les deux chevrons servent les flèches de la pellicule (issue #82). Ils se
+   * distinguent par le sens de leur tracé, et un seul tracé chacun : une
+   * inversion rendrait les deux boutons identiques à l'écran.
+   */
+  it('dessine deux chevrons opposés', async () => {
+    const left = await mountSuspended(Icon, { props: { name: 'chevron-left' } })
+    const right = await mountSuspended(Icon, { props: { name: 'chevron-right' } })
+
+    const trace = (icon: typeof left) => {
+      const paths = icon.findAll('path')
+
+      expect(paths).toHaveLength(1)
+
+      return paths[0]!.attributes('d')
+    }
+
+    expect(trace(left)).not.toBe(trace(right))
+    expect(left.find('rect').exists()).toBe(false)
+    expect(right.find('rect').exists()).toBe(false)
+  })
+
+  /**
    * Le libellé de la ligne porte le sens. Une icône annoncée par un lecteur
    * d'écran répéterait « Téléphone » deux fois.
    */

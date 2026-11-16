@@ -94,15 +94,27 @@ const html = `<!doctype html>
   }
   .note { margin-top: auto; font-size: ${shot ? '24px' : '34px'}; font-weight: 600; line-height: 1.3; }
   .byline { margin-top: 14px; }
+  /* La capture se borne par ses deux côtés, et non par sa largeur seule : une
+     capture de téléphone, en portrait, dépassait les 630 px de la carte dès
+     que sa largeur était imposée. 502 px est la hauteur utile — 630 moins les
+     deux fois 64 px de marge. */
   .shot {
     align-self: center;
-    width: 520px;
+    justify-self: center;
+    max-width: 520px;
+    max-height: 502px;
     border: 1px solid var(--line);
     background: #fff;
     overflow: hidden;
     line-height: 0;
   }
-  .shot img { width: 100%; display: block; }
+  .shot img {
+    display: block;
+    max-width: 520px;
+    max-height: 502px;
+    width: auto;
+    height: auto;
+  }
 </style>
 </head>
 <body>
