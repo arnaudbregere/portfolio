@@ -103,20 +103,61 @@ export const projects: readonly Project[] = [
       { label: 'Application en ligne', url: 'https://agenda-app-event.onrender.com' },
       { label: 'Code source', url: 'https://github.com/arnaudbregere/agenda-app-event' },
     ],
+    /**
+     * Cinq vues sur téléphone, et non deux captures desktop : l'application
+     * est mobile first, et une capture de 1440 px ne dit rien de ce que le
+     * visiteur verra.
+     *
+     * Reprises le 16/11/2026 (issue #84) depuis
+     * `https://agenda-app-event.onrender.com`, à une densité de 2 sur une
+     * fenêtre de 383 × 675 — d'où les 766 × 1350, mêmes dimensions que la
+     * pellicule de Japan Manga Explorer.
+     *
+     * L'ordre va du général au particulier : les vues, puis ce qui les
+     * commande — les filtres de catégorie, et la fiche d'un événement.
+     *
+     * **La vue semaine n'y est pas**, décision d'Arnaud du 16/11/2026, après
+     * l'avoir vue en ligne. Sept colonnes sur 383 px tronquent les titres en
+     * « Da… » et « Re… » : la capture montrait une contrainte plutôt qu'une
+     * fonctionnalité. La vue existe toujours dans l'application, et
+     * `solution` continue de l'annoncer — c'est la capture qui est retirée,
+     * pas la vue.
+     */
     images: [
       {
         src: '/visuels/agenda-app-event/vue-mois.webp',
-        alt: 'Vue mensuelle de novembre 2026, événements colorés par catégorie, panneau latéral avec mini-calendrier et filtres.',
-        caption: 'Vue mois : les catégories filtrent depuis le panneau latéral.',
-        width: 1440,
-        height: 779,
+        alt: 'Vue mois de novembre 2026 sur téléphone : sept colonnes, événements en pastilles colorées par catégorie, et un lien « + 2 de plus » sur les journées chargées.',
+        caption: 'Vue mois : une pastille par événement, la couleur dit la catégorie.',
+        width: 766,
+        height: 1350,
       },
       {
-        src: '/visuels/agenda-app-event/vue-semaine.webp',
-        alt: 'Vue hebdomadaire du 2 au 8 novembre 2026, événements placés sur une grille horaire, journées entières en haut.',
-        caption: 'Vue semaine : grille horaire, journées entières en bandeau.',
-        width: 1440,
-        height: 814,
+        src: '/visuels/agenda-app-event/vue-jour.webp',
+        alt: 'Vue jour du lundi 16 novembre 2026 : cinq événements sur la grille horaire, chacun avec son titre et ses horaires en clair.',
+        caption: 'Vue jour : la colonne unique rend les titres et les horaires lisibles.',
+        width: 766,
+        height: 1350,
+      },
+      {
+        src: '/visuels/agenda-app-event/vue-liste.webp',
+        alt: 'Vue liste de novembre 2026 : les événements groupés par date, horaires à gauche, pastille de catégorie avant chaque titre.',
+        caption: 'Vue liste : les événements groupés par date, sans grille.',
+        width: 766,
+        height: 1350,
+      },
+      {
+        src: '/visuels/agenda-app-event/categories.webp',
+        alt: 'Panneau latéral ouvert : mini-calendrier du mois, les six filtres de catégorie cochés — personnel, travail, important, famille, loisirs, autre — et les liens d’export et d’import de calendrier ICS.',
+        caption: 'Le panneau latéral : filtres de catégorie, export et import ICS.',
+        width: 766,
+        height: 1350,
+      },
+      {
+        src: '/visuels/agenda-app-event/modale-evenement.webp',
+        alt: 'Fiche d’un événement en modale : titre, case « toute la journée », dates et heures de début et de fin, lieu, description, puis les actions supprimer, annuler et enregistrer.',
+        caption: 'La fiche d’un événement : création, modification et suppression au même endroit.',
+        width: 766,
+        height: 1350,
       },
     ],
     featured: true,
