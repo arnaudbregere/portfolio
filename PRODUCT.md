@@ -34,7 +34,22 @@ convaincre en moins de deux minutes. Elle reste accessible depuis `/projets`.
 
 Le **CV n'est qu'un document à télécharger** : décision du 26/10/2026. Il n'y a
 pas de route `/cv` en HTML. Le bouton de téléchargement vit sur `/` et
-`/a-propos` ; le PDF pèse moins de 500 Ko.
+`/a-propos` ; le PDF pèse moins de 1 Mo.
+
+**La borne était de 500 Ko jusqu'au 16/11/2026.** Elle passe à 1 Mo, et le
+fichier servi en pèse 926.
+
+Le poids ne vient pas d'une photo : l'export Figma trace chaque lettre en
+courbes de Bézier, ce qui donne 2600 Ko. Le fichier servi est cet export
+rasterisé à 400 dpi sur une A4 — deux JPEG, et **aucun texte à l'intérieur**.
+Ce que cela coûte : le CV n'est lisible ni par un lecteur d'écran, ni par un
+moteur de recherche, et son texte ne se sélectionne pas. La version
+vectorielle gardait cette couche de texte pour 1603 Ko ; elle a été écartée
+pour le poids le 16/11/2026, et l'arbitrage se reprend à la prochaine version
+du PDF.
+
+Aucun test ne tient cette perte : `e2e/tests/cv.spec.ts` ne vérifie que le
+poids, le type MIME et le téléchargement.
 
 ## Projets retenus
 

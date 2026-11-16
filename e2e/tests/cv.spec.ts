@@ -24,7 +24,7 @@ test.describe('Téléchargement du CV', () => {
     })
   }
 
-  test('le PDF est servi et pèse moins de 500 Ko', async ({ page, request }) => {
+  test('le PDF est servi et pèse moins de 1 Mo', async ({ page, request }) => {
     await page.goto('/')
 
     const href = await page
@@ -38,10 +38,12 @@ test.describe('Téléchargement du CV', () => {
     expect(response.status()).toBe(200)
     expect(response.headers()['content-type']).toContain('application/pdf')
 
-    // La check-list de déploiement borne le PDF à 500 Ko : au-delà, le
-    // téléchargement se paie en données sur mobile.
+    // La check-list de déploiement borne le PDF à 1 Mo : au-delà, le
+    // téléchargement se paie en données sur mobile. La borne était de 500 Ko
+    // jusqu'au 16/11/2026 — `PRODUCT.md` dit pourquoi elle a bougé, et ce que
+    // le fichier servi perd en échange.
     const bytes = (await response.body()).byteLength
-    expect(bytes).toBeLessThan(500 * 1024)
+    expect(bytes).toBeLessThan(1024 * 1024)
   })
 
   test('le clic déclenche bien un téléchargement', async ({ page }) => {

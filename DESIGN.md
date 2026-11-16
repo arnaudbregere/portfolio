@@ -537,6 +537,16 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   le contient. C'est la largeur qui cède, et le portrait devient un encart
   plutôt qu'un pavé.
 
+- **Le bouton de CV de l'accueil est centré**, à toutes les largeurs.
+  Décision d'Arnaud du 16/11/2026. Il suit la figure qui le précède plutôt
+  que la colonne de texte qui le porte : c'est le seul appel à l'action de la
+  tête de page, et le calage à gauche le faisait lire comme la fin du
+  paragraphe de métier. Il reste centré en deux colonnes, dans la largeur de
+  la première — le centrage est celui du bouton, pas celui de la grille.
+
+  La règle le pose en `width: fit-content` et marges automatiques : sur un
+  `<p>`, qui prend toute la largeur, `margin: … auto` seul ne déplace rien.
+
   **Centrée en une colonne, calée à gauche en deux.** Sous `l`, la figure
   est centrée dans la largeur du texte : bornée quand le texte court sur
   toute la gouttière, calée à gauche elle creusait un vide à sa droite.

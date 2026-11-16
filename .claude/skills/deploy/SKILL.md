@@ -37,7 +37,9 @@ Les six doivent passer. La CI les rejoue en cinq jobs — `Lint`, `Types`,
 `Tests unitaires`, `Build`, `Tests e2e` —, tous requis par la protection de
 `main`. En plus :
 
-- [ ] Le PDF du CV dans `public/pdf/` pèse moins de 500 Ko.
+- [ ] Le PDF du CV dans `public/pdf/` pèse moins de 1 Mo, et `cvFile.sizeKb`
+      de `content/cv.ts` annonce le poids réel — c'est lui que le lien de
+      téléchargement affiche avant le clic (RGAA 4.1, critère 13.6).
 - [ ] Aucune clé ni secret dans le diff
       (`git diff --cached | grep -iE "api_key|secret|token"`).
 - [ ] `.env.example` est à jour si une variable d'environnement a été ajoutée.
