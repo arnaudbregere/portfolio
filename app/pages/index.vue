@@ -117,14 +117,6 @@ const family = rest.join(' ')
         <figcaption>{{ profile.portrait.caption }}</figcaption>
       </figure>
 
-      <!-- Le repère est du texte plein. Ses mots clés ont porté l'encre le
-           temps d'un essai, le 13/11/2026 : seize fragments sur trois lignes,
-           et la page lisait plus le rose que la phrase. `DESIGN.md` § 2 garde
-           le constat ; l'encre reste aux étiquettes de technos. -->
-      <p v-for="paragraph in profile.pitch" :key="paragraph" class="home__pitch">
-        {{ paragraph }}
-      </p>
-
       <p class="home__download">
         <CvLink :href="cvFile.path" :format="cvFile.format" :size-kb="cvFile.sizeKb" />
       </p>
@@ -253,7 +245,6 @@ const family = rest.join(' ')
    raccourci met tous ses longhands en substitution différée. */
 .home__tagline,
 .home__portrait,
-.home__pitch,
 .home__download {
   animation-name: page-entry;
   animation-duration: var(--dur-slow);
@@ -262,7 +253,8 @@ const family = rest.join(' ')
 }
 
 /* 140 ms d'écart, comme la tête de `/contact` : le nom, la ligne de métier,
-   le pitch, puis le CV. */
+   le portrait, puis le CV. Le repère tenait le troisième temps jusqu'au
+   16/11/2026 ; il est parti sur `/a-propos` (issue #70). */
 .home__tagline {
   animation-delay: 140ms;
 }
@@ -271,12 +263,8 @@ const family = rest.join(' ')
   animation-delay: 280ms;
 }
 
-.home__pitch {
-  animation-delay: 420ms;
-}
-
 .home__download {
-  animation-delay: 560ms;
+  animation-delay: 420ms;
 }
 
 /* La règle globale de `_reset.scss` écrase les durées, pas les délais : sans
@@ -286,7 +274,6 @@ const family = rest.join(' ')
 @media (prefers-reduced-motion: reduce) {
   .home__tagline,
   .home__portrait,
-  .home__pitch,
   .home__download {
     animation-delay: 0ms !important;
   }
@@ -463,16 +450,17 @@ const family = rest.join(' ')
 .home__portrait {
   @include bp.respond-up(l) {
     grid-column: 2;
-    /* La figure couvre les six lignes de la colonne de texte — nom, métier,
-       les trois paragraphes du repère, le CV — et non la seule ligne du nom.
-       Posée sur `grid-row: 1`, elle y imposait sa hauteur : la ligne du titre
-       passait à 400 px et un vide s'ouvrait entre le nom et le métier.
-       `1 / -1` ne vaut rien ici, faute de lignes explicites à numéroter.
+    /* La figure couvre les trois lignes de la colonne de texte — nom,
+       métier, CV — et non la seule ligne du nom. Posée sur `grid-row: 1`,
+       elle y imposait sa hauteur : la ligne du titre passait à 400 px et un
+       vide s'ouvrait entre le nom et le métier. `1 / -1` ne vaut rien ici,
+       faute de lignes explicites à numéroter.
 
-       L'étendue doit rester au moins aussi haute que la figure. Six lignes
-       valent ~700 px pour une figure de 400 : un paragraphe ajouté au repère
-       ne rouvre pas le vide. */
-    grid-row: 1 / span 6;
+       Depuis le départ du repère sur `/a-propos` (issue #70), la figure est
+       plus haute que la colonne de texte : c'est elle qui donne sa hauteur à
+       la tête de page, et l'espace restant tombe sous le bouton de CV. Le
+       vide du haut, lui, ne revient pas. */
+    grid-row: 1 / span 3;
     /* Deux colonnes : la figure reprend le bord gauche de la sienne, et le
        centrage mobile n'a plus d'objet. */
     margin: 0;
@@ -484,11 +472,6 @@ const family = rest.join(' ')
   margin-top: var(--space-m);
   color: var(--color-fg-muted);
   font-size: var(--step-2);
-}
-
-.home__pitch {
-  max-width: var(--measure);
-  margin-top: var(--space-m);
 }
 
 .home__download {
