@@ -104,31 +104,30 @@ export const projects: readonly Project[] = [
       { label: 'Code source', url: 'https://github.com/arnaudbregere/agenda-app-event' },
     ],
     /**
-     * Six vues sur téléphone, et non deux captures desktop : l'application
-     * est mobile first, et sa fiche annonce quatre vues — mois, semaine,
-     * jour, liste. Une pellicule qui en montrerait deux contredirait le
-     * texte posé au-dessus d'elle.
+     * Cinq vues sur téléphone, et non deux captures desktop : l'application
+     * est mobile first, et une capture de 1440 px ne dit rien de ce que le
+     * visiteur verra.
      *
      * Reprises le 16/11/2026 (issue #84) depuis
      * `https://agenda-app-event.onrender.com`, à une densité de 2 sur une
      * fenêtre de 383 × 675 — d'où les 766 × 1350, mêmes dimensions que la
      * pellicule de Japan Manga Explorer.
      *
-     * L'ordre va du général au particulier : les quatre vues, puis ce qui
-     * les commande — les filtres de catégorie, et la fiche d'un événement.
+     * L'ordre va du général au particulier : les vues, puis ce qui les
+     * commande — les filtres de catégorie, et la fiche d'un événement.
+     *
+     * **La vue semaine n'y est pas**, décision d'Arnaud du 16/11/2026, après
+     * l'avoir vue en ligne. Sept colonnes sur 383 px tronquent les titres en
+     * « Da… » et « Re… » : la capture montrait une contrainte plutôt qu'une
+     * fonctionnalité. La vue existe toujours dans l'application, et
+     * `solution` continue de l'annoncer — c'est la capture qui est retirée,
+     * pas la vue.
      */
     images: [
       {
         src: '/visuels/agenda-app-event/vue-mois.webp',
         alt: 'Vue mois de novembre 2026 sur téléphone : sept colonnes, événements en pastilles colorées par catégorie, et un lien « + 2 de plus » sur les journées chargées.',
         caption: 'Vue mois : une pastille par événement, la couleur dit la catégorie.',
-        width: 766,
-        height: 1350,
-      },
-      {
-        src: '/visuels/agenda-app-event/vue-semaine.webp',
-        alt: 'Vue semaine du 16 au 22 novembre 2026 : bandeau des journées entières en haut, grille horaire en dessous, et deux événements simultanés placés côte à côte le mercredi.',
-        caption: 'Vue semaine : sept colonnes et la grille horaire tiennent sur un téléphone.',
         width: 766,
         height: 1350,
       },
