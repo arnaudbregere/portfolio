@@ -179,9 +179,9 @@ describe('page Accueil', () => {
    *
    * Ce test existe parce que l'issue #72 demandait de retirer
    * `fetchpriority`, sur une mesure périmée qui donnait la ligne de métier
-   * pour LCP. La mesure du 16/11/2026, sur la build de production à 400 × 660
-   * et bridée au préréglage mobile de Lighthouse, donne l'`img` : 1408 ms,
-   * 81 000 px² d'aire visible. Le gabarit porte le relevé complet.
+   * pour LCP. La mesure du 16/11/2026, sur la build de production et bridée
+   * au préréglage mobile de Lighthouse, donne l'`img` : 1404 ms et
+   * 52 942 px², portrait resserré compris. Le gabarit porte le relevé.
    *
    * L'attribut se vérifie ici plutôt qu'en relecture : une mesure vieille de
    * quelques jours suffit à le faire retirer de bonne foi.

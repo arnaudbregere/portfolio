@@ -204,6 +204,14 @@ notation bas niveau non.
   `_base.scss` : `--step-1` en texte secondaire. Aucune classe ne nomme ce que
   la structure exprime déjà.
 
+  La ligne de métier de l'accueil en relève, et **ne prend sa taille d'affiche
+  — `--step-2` — qu'à partir de `m`** (48 em / 768 px). Elle énumère onze
+  domaines séparés par des barres : à `--step-2`, cela tenait six lignes et
+  210 px sur un téléphone de 360 px, et repoussait le portrait hors de la
+  première vue. Tranché le 16/11/2026 par Arnaud — « le texte est trop gros en
+  mobile » (issue #72). Elle ne reprend donc en propre que sa largeur ; le
+  reste lui vient du chapeau, comme à toutes les autres pages.
+
 **Poids réel : 90 104 octets** (88 Ko). Ce n'est pas le poids annoncé lors du
 choix de la police (~30 Ko) : aucun `fonttools` n'est disponible sur la machine
 pour sous-ensembler le fichier. L'`unicode-range` déclaré restreint les codes
@@ -241,9 +249,8 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
 - **L'écart sous l'en-tête suit la fenêtre : 2,5 rem en mobile, 4 rem à
   partir de `m`** (48 em / 768 px). Quatre rem partout posaient 64 px entre le
   filet de l'en-tête et le titre d'une page, sur un téléphone dont la première
-  vue n'a que 660 px à répartir — et où la figure du portrait de l'accueil
-  déborde de 196 px. Tranché le 16/11/2026 (issue #72) ; la figure remonte de
-  24 px, et le débordement tombe à 172 px.
+  vue n'a que 640 px à répartir. Tranché le 16/11/2026 (issue #72) : 24 px
+  rendus à la page, sur toutes les rubriques.
 
   C'est le **second** écart à varier avec la fenêtre, et il ne passe pas par
   un token : la variante vit dans `app/layouts/default.vue`, avec le cadrage
@@ -251,10 +258,6 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   de page, `/projets`, `/a-propos` — que rien n'oblige à bouger avec celui-ci.
   Le token reste donc à 4 rem à toute largeur, et la règle du doublon mobile
   ci-dessus ne change pas.
-
-  Le reste du débordement n'est pas un problème d'espacement : la ligne de
-  métier tient 178 px sur six lignes à 400 px de large, et la raccourcir est
-  une décision de contenu, pas de mise en page.
 - Mobile first. Le mixin `respond-up()` de `app/styles/_breakpoints.scss` est le
   **seul** emploi de variables Sass pour une valeur de design : le CSS natif
   n'accepte pas de custom property dans une media query.
@@ -514,16 +517,29 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   site. Aucune ombre, aucun fond : la figure tient par son filet, comme tout
   le reste de la planche.
 
-  **Largeur fixe, 20 rem, dans les deux mises en page.** À partir de `l`
-  (64 em), la tête de page devient une grille de deux colonnes et la figure
-  occupe la seconde, sur la ligne du nom. En dessous, elle reste dans le flux,
-  entre la ligne de métier et le repère, bornée à la même largeur — une
-  figure pleine largeur sur une tablette ferait du portrait le sujet de la
-  page, à la place du nom.
+  **13 rem en mobile, 20 rem à partir de `m`** (48 em / 768 px). À partir de
+  `l` (64 em), la tête de page devient une grille de deux colonnes et la
+  figure occupe la seconde, sur la ligne du nom. En dessous, elle reste dans
+  le flux, sous la ligne de métier, bornée à cette largeur — une figure
+  pleine largeur sur une tablette ferait du portrait le sujet de la page, à
+  la place du nom.
+
+  Les 20 rem valaient à toute largeur jusqu'au 16/11/2026, et la figure
+  dépassait alors de 195 px la première vue d'un iPhone SE : le visiteur
+  voyait un visage coupé au menton par le bas de l'écran, ce qui se lit comme
+  un défaut et non comme un cadrage. Arnaud l'a relevé deux fois (issue #72).
+  Treize rem rendent la figure **entière** sur les cinq formats de téléphone
+  relevés, du 360 × 640 au 412 × 915, légende comprise ; à partir de 390 × 844
+  le bouton de CV entre aussi dans la première vue.
+
+  **Le rapport 4:5 ne bouge pas**, lui, et ce n'est pas un principe : le
+  visage occupe 520 px des 620 du fichier, donc aucun recadrage plus carré ne
+  le contient. C'est la largeur qui cède, et le portrait devient un encart
+  plutôt qu'un pavé.
 
   **Centrée en une colonne, calée à gauche en deux.** Sous `l`, la figure
-  est centrée dans la largeur du texte : bornée à 20 rem quand le texte court
-  sur toute la gouttière, calée à gauche elle creusait un vide à sa droite.
+  est centrée dans la largeur du texte : bornée quand le texte court sur
+  toute la gouttière, calée à gauche elle creusait un vide à sa droite.
   En deux colonnes, elle reprend le bord gauche de la sienne. La légende, elle,
   reste alignée sur le bord gauche de l'image dans les deux cas — un libellé
   du site ne se centre jamais.
@@ -696,18 +712,22 @@ latence —, trois chargements par format :
 
 | Format | FCP | LCP | Élément LCP |
 |---|---|---|---|
-| 400 × 660 | 544 ms | 1408 ms | le portrait (`img`), 81 000 px² |
-| 1440 × 900 | 548 ms | 1188 ms | `.home__tagline`, 127 065 px² |
+| 375 × 667 | 544 ms | 1404 ms | le portrait (`img`), 52 942 px² |
+| 400 × 660 | 544 ms | 1408 ms | le portrait (`img`), 52 942 px² |
+| 1440 × 900 | 540 ms | 1172 ms | `.home__tagline`, 127 065 px² |
 
 **En desktop, le LCP n'attend aucune ressource : il attend cette figure.**
-548 ms de FCP, plus les 140 ms de délai de la ligne de métier, plus les 480 ms
-de `--dur-slow`, font 1168 ms — à 20 ms du LCP mesuré. Chrome ne compte pas un
+540 ms de FCP, plus les 140 ms de délai de la ligne de métier, plus les 480 ms
+de `--dur-slow`, font 1160 ms — à 12 ms du LCP mesuré. Chrome ne compte pas un
 élément peint à `opacity: 0`, donc la durée de l'entrée entre en entier dans la
 métrique. La police, elle, n'arrive qu'à 1950 ms et ne peint aucun LCP :
 `font-display: swap` a déjà rendu le texte dans la fonte de repli.
 
 En mobile, l'image arrive à 1385 ms et l'entrée se termine à 1300 ms : c'est le
-réseau qui borne, de 85 ms. L'entrée n'y est donc pas le facteur limitant —
+réseau qui borne, de 85 ms. Le portrait reste l'élément LCP après son
+resserrage à 13 rem — 52 942 px² contre les cinq lignes de `--step-1` de la
+ligne de métier —, et le LCP ne bouge pas : la métrique suit l'octet, pas le
+pixel. L'entrée n'y est donc pas le facteur limitant —
 elle le redeviendrait dès que la police serait sous-ensemblée (issue #73), les
 88 Ko de fonte partageant le lien avec les 31 Ko de l'image.
 

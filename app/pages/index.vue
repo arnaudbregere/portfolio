@@ -95,13 +95,14 @@ const family = rest.join(' ')
 
            `loading="eager"` et `fetchpriority="high"` : **cette image est
            l'élément LCP de l'accueil en mobile**, et c'est mesuré, non
-           supposé. Relevé le 16/11/2026 sur la build de production, à
-           400 × 660, bridé au préréglage mobile de Lighthouse (4x processeur,
-           1,6 Mbit/s, 150 ms de latence), trois chargements : LCP à 1408 ms,
-           81 000 px² d'aire, et l'élément est l'`img`. La figure commence à
-           404 px du haut du document, donc son quart supérieur est dans la
-           première vue — c'est cette portion visible qui compte, et elle
-           dépasse la ligne de métier.
+           supposé. Relevé le 16/11/2026 sur la build de production, bridé au
+           préréglage mobile de Lighthouse (4x processeur, 1,6 Mbit/s, 150 ms
+           de latence), trois chargements par format : LCP à 1404 ms à
+           375 × 667 et 1408 ms à 400 × 660, l'élément étant l'`img`, pour
+           52 942 px² d'aire — plus que la ligne de métier, qui tient cinq
+           lignes de `--step-1` en mobile. La figure est entière dans la
+           première vue depuis ce même jour, donc elle compte pour sa surface
+           entière.
 
            L'issue #72 demandait de retirer `fetchpriority`, en croyant que
            le LCP était la ligne de métier et que la priorité haute prenait
@@ -423,10 +424,21 @@ const family = rest.join(' ')
 .home__head {
   /* La largeur de la figure, déclarée sur la grille et non sur la figure :
      c'est la grille qui en a besoin pour sa seconde colonne, et une custom
-     property posée sur l'enfant ne remonte pas au parent. */
-  --portrait-width: 20rem;
+     property posée sur l'enfant ne remonte pas au parent.
+
+     Treize rem en mobile, vingt à partir de `m`. Le rapport 4:5 est conservé
+     partout : le visage occupe 520 px des 620 du fichier, donc aucun recadrage
+     plus carré ne le contient. C'est donc la largeur qui cède, et le portrait
+     devient un encart plutôt qu'un pavé. */
+  --portrait-width: 13rem;
 
   display: grid;
+}
+
+.home__head {
+  @include bp.respond-up(m) {
+    --portrait-width: 20rem;
+  }
 }
 
 .home__head > * {
@@ -450,7 +462,7 @@ const family = rest.join(' ')
      laissait un creux à droite d'elle seule. Décision d'Arnaud du
      16/11/2026. La légende reste calée sur le bord gauche de l'image, comme
      tous les libellés du site. */
-  margin: var(--space-l) auto 0;
+  margin: var(--space-m) auto 0;
   max-width: var(--portrait-width);
 }
 
@@ -489,11 +501,24 @@ const family = rest.join(' ')
   }
 }
 
+/* La ligne de métier est le chapô de la page : `h1 + p` de `_base.scss` lui
+   donne déjà son écart, sa couleur et `--step-1`. Elle ne prend sa taille
+   d'affiche qu'à partir de `m` (48 em / 768 px).
+
+   Onze domaines séparés par des barres : à `--step-2`, cela tenait six lignes
+   et 210 px sur un téléphone de 360 px, et repoussait le portrait hors de la
+   première vue. Le cran du dessous en rend cinq. Décision d'Arnaud du
+   16/11/2026 — « le texte est trop gros en mobile » (issue #72).
+
+   Seule la largeur reste posée ici : le chapô n'en borne pas. */
 .home__tagline {
   max-width: var(--measure);
-  margin-top: var(--space-m);
-  color: var(--color-fg-muted);
-  font-size: var(--step-2);
+}
+
+.home__tagline {
+  @include bp.respond-up(m) {
+    font-size: var(--step-2);
+  }
 }
 
 .home__download {
