@@ -89,21 +89,12 @@ const family = rest.join(' ')
       </h1>
       <p class="home__tagline">{{ profile.tagline }}</p>
 
-      <!-- La figure du portrait. Rectangle à filet et légende de libellé :
-           `DESIGN.md` § 5 réserve l'arrondi à la taxonomie, et rien du site
-           n'est enfermé dans une carte.
-
-           `loading="eager"` et `fetchpriority="high"` : c'est l'image la plus
-           grande de la première vue, donc le LCP de l'accueil. La laisser
-           paresseuse la ferait charger après la découverte du document.
-
-           Les dimensions sont celles du fichier et viennent du contenu : la
-           boîte est réservée avant le chargement, donc rien ne se décale.
-
-           `sizes="320px"` et non une largeur de fenêtre : la figure est
-           bornée à `--portrait-width` dans les deux mises en page, mobile
-           comprise. Une taille en `vw` ferait servir un fichier de la largeur
-           d'une tablette pour une image qui n'en occupe jamais plus de 320. -->
+      <!-- La forme est en § 5 de `DESIGN.md`, la priorité de chargement dans
+           `.claude/rules/frontend.md` § « La priorité de chargement se
+           mesure » : cette image est l'élément LCP en mobile, relevé à
+           l'appui. Les dimensions viennent du contenu, donc la boîte est
+           réservée avant le chargement. `sizes="320px"` et non une largeur de
+           fenêtre : la figure est bornée à `--portrait-width` partout. -->
       <figure class="home__portrait">
         <NuxtImg
           :src="profile.portrait.src"
@@ -401,10 +392,17 @@ const family = rest.join(' ')
 .home__head {
   /* La largeur de la figure, déclarée sur la grille et non sur la figure :
      c'est la grille qui en a besoin pour sa seconde colonne, et une custom
-     property posée sur l'enfant ne remonte pas au parent. */
-  --portrait-width: 20rem;
+     property posée sur l'enfant ne remonte pas au parent. Les deux largeurs
+     et le 4:5 conservé sont en § 5 de `DESIGN.md`. */
+  --portrait-width: 13rem;
 
   display: grid;
+}
+
+.home__head {
+  @include bp.respond-up(m) {
+    --portrait-width: 20rem;
+  }
 }
 
 .home__head > * {
@@ -428,7 +426,7 @@ const family = rest.join(' ')
      laissait un creux à droite d'elle seule. Décision d'Arnaud du
      16/11/2026. La légende reste calée sur le bord gauche de l'image, comme
      tous les libellés du site. */
-  margin: var(--space-l) auto 0;
+  margin: var(--space-m) auto 0;
   max-width: var(--portrait-width);
 }
 
@@ -467,11 +465,17 @@ const family = rest.join(' ')
   }
 }
 
+/* Le chapô `h1 + p` de `_base.scss` donne l'écart, la couleur et `--step-1` ;
+   seule la largeur reste posée ici. La taille d'affiche n'arrive qu'à partir
+   de `m` (`DESIGN.md` § 3). */
 .home__tagline {
   max-width: var(--measure);
-  margin-top: var(--space-m);
-  color: var(--color-fg-muted);
-  font-size: var(--step-2);
+}
+
+.home__tagline {
+  @include bp.respond-up(m) {
+    font-size: var(--step-2);
+  }
 }
 
 .home__download {

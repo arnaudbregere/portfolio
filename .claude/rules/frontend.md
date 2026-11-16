@@ -20,6 +20,55 @@
   — `description`, `title`, Open Graph, JSON-LD — dans le même commit. Le
   tableau de ce qu'il faut relire est dans `.claude/rules/content.md`.
 
+## La priorité de chargement se mesure, elle ne se suppose pas
+
+**`fetchpriority="high"` se pose sur l'élément LCP, et sur aucun autre.** Un
+second élément en priorité haute ne gagne rien et prend la place du premier.
+L'élément LCP, lui, **se relève** : il change avec le format, avec le contenu
+de la page, et une mesure vieille de quelques jours suffit à faire retirer un
+attribut juste de bonne foi.
+
+Ce qui s'est passé des deux côtés le 16/11/2026, sur l'accueil (issue #72) :
+
+- l'attribut est d'abord posé sur le portrait **en le croyant** LCP, sans
+  mesure. Il l'était par hasard ;
+- l'issue demande ensuite de le retirer, sur un relevé périmé qui donnait la
+  ligne de métier pour LCP dans les deux formats, et sur l'idée que la priorité
+  haute prenait la bande passante de la police. Les deux moitiés étaient
+  fausses.
+
+Le relevé qui tranche, sur la build de production, bridé au préréglage mobile
+de Lighthouse — 4x processeur, 1,6 Mbit/s, 150 ms de latence, trois
+chargements par format :
+
+| Format | LCP | Élément |
+|---|---|---|
+| 375 × 667 | 1404 ms | le portrait (`img`), 52 942 px² |
+| 400 × 660 | 1408 ms | le portrait (`img`), 52 942 px² |
+| 1440 × 900 | 1172 ms | `.home__tagline`, 127 065 px² |
+
+Trois enseignements, qui valent au-delà de cette page :
+
+1. **Un élément sous la ligne de flottaison peut être le LCP** s'il la
+   chevauche : seule sa portion visible compte, et elle peut dépasser un
+   paragraphe entier.
+2. **Une police ne peint pas le LCP d'un texte.** `font-display: swap` rend le
+   texte dans la fonte de repli bien avant. Ici elle arrive à 1950 ms, soit
+   565 ms **après** l'image.
+3. **Une entrée de page en `opacity` entre en entier dans le LCP.** Chrome ne
+   compte pas un élément peint à `opacity: 0`. En desktop, le LCP n'attend
+   aucune ressource : il attend la fin de la cascade. `DESIGN.md` § 7 porte le
+   calcul.
+
+Le retrait a été mesuré avant d'être écarté : 1408 ms contre 1412, image
+servie à 1383 ms contre 1385. **Aucun effet** — deux ressources ne font pas
+une file d'attente à réordonner. L'attribut reste pour ce qu'il déclare, pas
+pour ce qu'il gagne.
+
+`tests/unit/index-page.spec.ts` le tient désormais, et
+`e2e/tests/accueil-premiere-vue.spec.ts` tient la promesse voisine : le
+portrait entier dans la première vue d'un téléphone.
+
 ## Rendu serveur — rien ne dérive de ce que le serveur ignore
 
 **Aucun texte ni attribut rendu au serveur ne dérive d'un état que le serveur

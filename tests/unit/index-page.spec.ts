@@ -173,6 +173,22 @@ describe('page Accueil', () => {
   })
 
   /**
+   * Le portrait est l'élément LCP de l'accueil en mobile, et porte les deux
+   * attributs que cela impose. Le relevé et la règle sont dans
+   * `.claude/rules/frontend.md` § « La priorité de chargement se mesure ».
+   *
+   * L'attribut se vérifie ici plutôt qu'en relecture : une mesure périmée
+   * suffit à le faire retirer de bonne foi, et l'issue #72 le demandait.
+   */
+  it('garde le portrait en chargement immédiat et en priorité haute', async () => {
+    const page = await mountSuspended(IndexPage)
+    const image = page.get('figure.home__portrait img')
+
+    expect(image.attributes('loading')).toBe('eager')
+    expect(image.attributes('fetchpriority')).toBe('high')
+  })
+
+  /**
    * L'alternative décrit l'image, la légende nomme le sujet. Les deux se
    * lisent à la suite dans un lecteur d'écran : si l'alternative redisait le
    * nom, il serait annoncé deux fois pour une seule image.
