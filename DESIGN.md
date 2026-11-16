@@ -607,6 +607,41 @@ quand le thème courant est clair. Un groupe de deux boutons `aria-pressed` a é
 écarté : avant le premier clic la préférence vaut `system`, et un
 `aria-pressed="true"` affirmerait un choix que le visiteur n'a pas fait.
 
+### La page d'erreur
+
+Née le 16/11/2026 (issue #71). Avant elle, le chemin inconnu rendait l'objet
+JSON par défaut de Nitro, en pleine page.
+
+Elle n'invente aucune forme : un libellé — « Erreur 404 », dans la graisse et
+l'interlettrage des `dt` de l'accueil et des légendes de figure —, un titre,
+une phrase, et une sortie. Pas de chiffre géant, pas d'illustration : le site
+n'a ni l'un ni l'autre ailleurs, et une page d'erreur n'est pas l'endroit où
+en introduire.
+
+**La seconde moitié du titre porte l'encre**, comme le prénom du titre de
+l'accueil porte celle de la marque : « Cette page *n'existe pas* ». Décision
+d'Arnaud du 16/11/2026, pour que la page rappelle l'accueil plutôt que de
+ressembler à une page d'erreur de serveur. La coupure est visuelle — le nom
+accessible du titre reste la phrase entière.
+
+C'est `--color-ink` et non `--color-logo-ink`, le rose fixe du prénom. Les
+deux se confondent en thème sombre, `#ff5c72` de part et d'autre ; le papier
+clair les sépare, et seul `--color-ink` y tient ses 4,5:1. L'écart du prénom
+est assumé, chiffré et **nominatif** — l'étendre à une seconde page ferait de
+l'exception une règle.
+
+**Une seule sortie, et c'est l'accueil**, en contrôle à filet. Les quatre
+rubriques y étaient listées jusqu'au 16/11/2026 : l'en-tête et le pied de
+page les portent déjà, des deux côtés de cette page, et les redonner au
+milieu les disait trois fois. Elle garde en effet l'en-tête et le pied, donc
+la bascule de thème et le menu : un visiteur arrivé nulle part reste dans le
+site.
+
+**Le texte ne reprend rien de l'erreur reçue** : ni son message, ni le chemin
+demandé. `.claude/rules/backend.md` l'impose aux réponses du serveur, et la
+raison vaut ici — `statusMessage` vient de Nitro et porte le chemin tel qu'il
+a été reçu.
+
 ## 7. Mouvement
 
 `--dur-fast` 120 ms, `--dur-base` 240 ms, `--dur-slow` 480 ms,
