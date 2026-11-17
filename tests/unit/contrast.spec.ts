@@ -137,6 +137,24 @@ describe('seuils WCAG des couples de tokens', () => {
       role: 'texte sur la marque',
     },
     {
+      fg: '--color-priority-high',
+      bg: '--color-bg',
+      min: 4.5,
+      role: 'priorité élevée',
+    },
+    {
+      fg: '--color-priority-medium',
+      bg: '--color-bg',
+      min: 4.5,
+      role: 'priorité moyenne',
+    },
+    {
+      fg: '--color-priority-low',
+      bg: '--color-bg',
+      min: 4.5,
+      role: 'priorité faible',
+    },
+    {
       fg: '--color-line-strong',
       bg: '--color-bg',
       min: 3,

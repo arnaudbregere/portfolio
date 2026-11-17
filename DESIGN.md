@@ -57,6 +57,13 @@ Deux thèmes, bascule persistée par `@nuxtjs/color-mode` sous la clé
 L'encre carmin est la seule couleur de la palette. Elle ne se dépense que sur ce
 qui est sous examen et sur l'action principale unique.
 
+**Une exception, et une seule, depuis le 17/11/2026** : les trois rangs de
+priorité de la démo de liste de tâches, en rouge, orange et vert. Décision
+d'Arnaud. Ils ne paraissent que dans cette démo, le mot reste écrit à côté de
+la couleur, et leurs six ratios sont voisins pour qu'aucun rang ne crie plus
+fort qu'un autre — le § 5 porte le raisonnement. Hors de cette démo, la règle
+ci-dessus est inchangée.
+
 | Token | Rôle | Clair | Sombre |
 |---|---|---|---|
 | `--color-bg` | Fond, papier chaud | `#f7f4ef` | `#121110` |
@@ -67,6 +74,9 @@ qui est sous examen et sur l'action principale unique.
 | `--color-line-strong` | Bordure de contrôle | `#8c857a` | `#7a7369` |
 | `--color-ink` | Encre d'annotation | `#b3122b` | `#ff5c72` |
 | `--color-ink-fg` | Texte sur encre | `#ffffff` | `#121110` |
+| `--color-priority-high` | Priorité élevée | `#b3122b` | `#ff5c72` |
+| `--color-priority-medium` | Priorité moyenne | `#8a4a00` | `#dd7d18` |
+| `--color-priority-low` | Priorité faible | `#14662e` | `#3aa862` |
 | `--color-logo-ink` | Marque : lettre `a`, prénom, survols | `#ff5c72` | `#ff5c72` |
 | `--color-logo-ink-fg` | Texte sur la marque | `#121110` | `#121110` |
 | `--color-focus` | Indicateur de focus | `var(--color-fg)` | `var(--color-fg)` |
@@ -641,12 +651,13 @@ un rouge et un vert de priorité demanderaient deux tokens, leurs ratios dans
 les deux thèmes, leur couple dans `tests/unit/contrast.spec.ts`, et diraient
 par la couleur seule ce que le mot dit déjà (WCAG 1.4.1).
 
-  **Précisé le soir même**, après le retour d'Arnaud sur la démo jouable : les
-  trois priorités se distinguent bien par la couleur, mais par trois encres
-  **déjà** dans la palette, sans qu'un token naisse. La sous-section « Les
-  quatre retours d'Arnaud du 17/11/2026 » porte les trois tokens et leurs
-  ratios. Ce qui reste refusé est inchangé : un rouge et un vert inventés pour
-  l'occasion.
+  **Renversé le soir même, par Arnaud, et en deux temps.** D'abord trois
+  encres déjà dans la palette, puis — la demande était bien celle-là — trois
+  couleurs franches : rouge, orange, vert. Ce paragraphe est donc caduc, et
+  reste écrit pour ce qu'il montre : le coût annoncé (deux tokens, quatre
+  valeurs, trois couples de test) était juste, et il a été payé en entier. La
+  sous-section « Les retours d'Arnaud du 17/11/2026 » porte les tokens, les
+  six ratios et ce qui tient WCAG 1.4.1.
 
 **Une tâche faite se lit sans couleur** : la case cochée, et le libellé barré.
 Le texte barré seul ne suffirait pas — la case porte l'état, le trait le
@@ -729,40 +740,63 @@ dort, et une démo qui prétend montrer deux adaptateurs tout en servant
 toujours le même mentirait sur la seule chose qu'elle est là pour prouver. Une
 sonde de santé décide, le refus se lit.
 
-#### Les quatre retours d'Arnaud du 17/11/2026, sur la démo jouable
+#### Les retours d'Arnaud du 17/11/2026, sur la démo jouable
 
 La démo a été regardée à l'écran le jour même de sa livraison, en thème sombre
-et sur un grand écran. Quatre retours, tranchés ici avant d'être écrits.
+et sur un grand écran, en deux passes. Les retours des deux passes sont
+tranchés ici avant d'être écrits, la seconde corrigeant la première sur la
+couleur et sur la largeur.
 
-**Le bloc s'élargit au-delà de la mesure du texte à partir de `m`** :
-`min(100cqi, 50rem)` au lieu de `34rem`. La mesure de 68 ch borne de la prose,
-et une ligne de tâche n'en est pas : elle porte une case, un titre court, une
-étiquette et une croix — quatre objets qu'une colonne étroite tasse. Le motif
-est celui de la pellicule de captures, déjà posé plus haut : `.o-project` est un
-conteneur de requête, et `100cqi` mesure le gabarit sans compter la barre de
-défilement, que `100vw` compterait. Le plafond de 50 rem n'est pas décoratif :
-au-delà, le titre et son étiquette s'écartent d'un vide que rien ne remplit.
-800 px est la largeur où la ligne reste une ligne.
+**Le bloc prend toute la largeur du gabarit à partir de `m`** : `100cqi` au
+lieu de `34rem`. La mesure de 68 ch borne de la prose, et une ligne de tâche
+n'en est pas : elle porte une case, un titre court, une étiquette et deux
+commandes — quatre objets qu'une colonne étroite tasse. Le motif est celui de
+la pellicule de captures, déjà posé plus haut : `.o-project` est un conteneur
+de requête, et `100cqi` mesure le gabarit sans compter la barre de défilement,
+que `100vw` compterait.
 
-**Les trois priorités portent trois encres — et aucune n'est nouvelle.** La
-décision du matin même refusait toute couleur de priorité, au motif que deux
-tokens, leurs ratios dans les deux thèmes et leur couple dans
-`tests/unit/contrast.spec.ts` seraient à payer pour dire ce que le mot dit
-déjà. Le refus visait la bonne dépense, mais il manquait la troisième voie : la
-palette porte **déjà** trois encres hiérarchisées, et les trois priorités s'y
-rangent sans qu'un token naisse.
+Un plafond de 50 rem a été essayé le même jour, et **écarté par Arnaud** : la
+démo est la pièce à voir de cette fiche, et un bloc borné au milieu d'un
+gabarit de 1408 px se lit comme une vignette. Le prix est connu et accepté —
+sur un très grand écran, le titre et son étiquette s'écartent. Il est payé par
+ce que la démo gagne à occuper la place qu'on lui accorde.
 
-| Priorité | Token | Clair | Sombre |
-|---|---|---|---|
-| Élevée | `--color-ink` | 6,30:1 | 6,31:1 |
-| Moyenne | `--color-fg` | 17,04:1 | 16,44:1 |
-| Faible | `--color-fg-muted` | 5,26:1 | 6,36:1 |
+**Les trois priorités portent trois couleurs franches : rouge, orange, vert.**
+Décision d'Arnaud, prise en connaissance de ce qu'elle coûte, après qu'une
+première réponse eut proposé trois encres déjà présentes — carmin, encre
+pleine, encre atténuée. Elle ne se lisait pas comme trois rangs, elle se lisait
+comme un dégradé de gris avec un accent. La demande était bien celle-là :
+**trois couleurs, pas trois intensités**. C'est donc la troisième famille de
+couleurs du site, après l'encre et la marque, et elle est bornée à un seul
+emploi.
 
-Les trois couples sont verrouillés par `tests/unit/contrast.spec.ts` depuis le
-03/11/2026 : il n'y a rien à y ajouter, et c'est le sens de la décision. L'ordre
-n'est pas arbitraire — l'encre carmin ne se dépense que sur ce qui est sous
-examen (§ 2), et une tâche élevée est exactement cela. WCAG 1.4.1 est tenu sans
-effort : le mot reste écrit, la couleur ne fait que le doubler.
+| Priorité | Token | Clair | Sombre | Clair | Sombre |
+|---|---|---|---|---|---|
+| Élevée | `--color-priority-high` | `#b3122b` | `#ff5c72` | 6,30:1 | 6,31:1 |
+| Moyenne | `--color-priority-medium` | `#8a4a00` | `#dd7d18` | 6,26:1 | 6,31:1 |
+| Faible | `--color-priority-low` | `#14662e` | `#3aa862` | 6,45:1 | 6,25:1 |
+
+Trois choix tiennent dans ce tableau, et aucun n'est décoratif :
+
+- **Le rouge est l'encre du thème**, à la valeur près, et non un second rouge.
+  La palette en porte déjà un ; en inventer un autre aurait mis deux rouges
+  voisins sur la même page. Le token reste distinct de `--color-ink` parce que
+  les deux ne disent pas la même chose — l'un est la marque sous examen,
+  l'autre un rang de tâche — et parce que `tests/unit/contrast.spec.ts` ne sait
+  verrouiller qu'une valeur écrite, pas un renvoi.
+- **Les six ratios sont voisins**, de 6,25 à 6,45. Un vert à 10:1 à côté d'un
+  rouge à 6,3 se serait lu comme plus important, alors qu'il marque le rang le
+  plus faible : à l'œil, le contraste est une graisse. Les valeurs ont donc été
+  choisies à ratio égal, pas à teinte plaisante.
+- **La couleur ne porte jamais seule le sens.** Le mot est écrit dans
+  l'étiquette — « Élevée », « Moyenne », « Faible » —, et c'est ce qui tient
+  WCAG 1.4.1. Un rouge et un vert opposés sont exactement le couple que huit
+  pour cent des hommes ne distinguent pas ; sans le mot, la démo aurait perdu
+  un visiteur sur douze.
+
+Les trois couples rejoignent la liste **close** de
+`tests/unit/contrast.spec.ts` dans le même commit que les tokens, comme
+`.claude/rules/frontend.md` l'exige de toute couleur ajoutée.
 
 **L'atome `TagList` reçoit `--tag-ink`**, et rien d'autre. Une propriété
 personnalisée posée par le parent, de repli `--color-ink` : les trois surfaces

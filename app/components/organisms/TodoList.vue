@@ -436,16 +436,15 @@ const saveEdit = async (todo: Todo) => {
   border: var(--rule-strong);
 }
 
-/* Le bloc déborde la mesure du texte à partir de `m`. Une ligne de tâche
-   n'est pas de la prose : elle porte une case, un titre court, une étiquette
-   et deux commandes, que 68 ch tassent. Même motif que la pellicule de
-   captures — `100cqi` mesure le gabarit (`.o-project` est le conteneur de
-   requête) là où `100vw` compterait la barre de défilement. Le plafond de
-   50 rem n'est pas décoratif : au-delà, le titre et son étiquette s'écartent
-   d'un vide que rien ne remplit. `DESIGN.md` § 5, retours du 17/11/2026. */
+/* Le bloc prend **toute** la largeur du gabarit à partir de `m`. Une ligne de
+   tâche n'est pas de la prose : la mesure de 68 ch la tasserait, et le
+   plafond de 50 rem essayé plus tôt le même jour a été écarté par Arnaud.
+   Même motif que la pellicule de captures — `100cqi` mesure le gabarit
+   (`.o-project` est le conteneur de requête) là où `100vw` compterait la
+   barre de défilement. `DESIGN.md` § 5, retours du 17/11/2026. */
 .o-todo {
   @include bp.respond-up(m) {
-    width: min(100cqi, 50rem);
+    width: 100cqi;
   }
 }
 
@@ -603,21 +602,21 @@ const saveEdit = async (todo: Todo) => {
   color: var(--color-ink);
 }
 
-/* Les trois encres de priorité. Aucune n'est nouvelle : `--color-ink` tient
-   6,30:1 en clair et 6,31:1 en sombre, `--color-fg` 17,04 et 16,44,
-   `--color-fg-muted` 5,26 et 6,36 — les trois couples sont déjà verrouillés
-   par `tests/unit/contrast.spec.ts`. L'encre carmin ne se dépense que sur ce
-   qui est sous examen (§ 2) : la priorité élevée l'est. */
+/* Rouge, orange, vert — les trois tokens de priorité du § 2, et le seul
+   endroit du site qui les emploie. Le mot reste écrit dans l'étiquette : la
+   couleur le double, elle ne le porte jamais seule (WCAG 1.4.1), ce qui vaut
+   aussi pour les huit pour cent d'hommes qui confondent le rouge et le vert.
+   Les six ratios sont verrouillés par `tests/unit/contrast.spec.ts`. */
 .o-todo__priority--high {
-  --tag-ink: var(--color-ink);
+  --tag-ink: var(--color-priority-high);
 }
 
 .o-todo__priority--medium {
-  --tag-ink: var(--color-fg);
+  --tag-ink: var(--color-priority-medium);
 }
 
 .o-todo__priority--low {
-  --tag-ink: var(--color-fg-muted);
+  --tag-ink: var(--color-priority-low);
 }
 
 /* Le mode d'édition occupe la ligne entière : il remplace le contenu de la
