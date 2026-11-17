@@ -1,0 +1,79 @@
+# Contrat — service HTTP
+
+**Feature**: liste de tâches — démo jouable et CRUD
+**Paquet**: `api/`
+
+Toutes les routes sont cloisonnées par l'identifiant opaque de liste (D4). Il
+vient du client, et le service ne lui donne aucun sens.
+
+## Routes
+
+| Méthode | Chemin | Rend |
+|---|---|---|
+| `GET` | `/api/sante` | l'état du service |
+| `GET` | `/api/listes/:listeId/taches` | les tâches, triées |
+| `POST` | `/api/listes/:listeId/taches` | la tâche créée, `201` |
+| `GET` | `/api/listes/:listeId/taches/:id` | une tâche |
+| `PUT` | `/api/listes/:listeId/taches/:id` | la tâche modifiée |
+| `DELETE` | `/api/listes/:listeId/taches/:id` | `204`, sans corps |
+
+Aucune autre route. Toute méthode non prévue sur un chemin connu rend `405`.
+
+## Corps acceptés
+
+`POST` : `title` requis, `priority` facultative. Tout autre champ est
+**ignoré**, jamais recopié — `id`, `createdAt`, `updatedAt` et `done` sont du
+ressort du domaine (FR-012).
+
+`PUT` : `title`, `priority` et `done`, tous facultatifs, au moins un présent.
+Mêmes champs ignorés.
+
+## Codes d'erreur
+
+| Code | Cas | Corps |
+|---|---|---|
+| `400` | refus de garde | le code de refus, et rien d'autre |
+| `404` | liste ou tâche absente | message générique |
+| `405` | méthode non prévue | message générique |
+| `429` | débit dépassé | message générique |
+| `500` | toute autre panne | message générique |
+
+**Un corps d'erreur ne porte jamais de détail d'infrastructure** — ni chemin,
+ni pile d'appels, ni nom de machine, ni version. C'est FR-019, et c'est la
+règle de `.claude/rules/backend.md` pour les réponses du site, appliquée ici.
+Le détail va au journal du serveur.
+
+## Liste close des champs servis
+
+Une tâche servie porte exactement les six champs de `data-model.md` :
+`id`, `title`, `done`, `priority`, `createdAt`, `updatedAt`.
+
+Un test énumère ces clés et échoue si une septième paraît. `backend.md`
+l'impose pour `/api/health` et la raison vaut ici : un champ ajouté par
+mégarde — chemin, version, variable d'environnement — doit échouer avant
+d'atteindre la production.
+
+## `/api/sante`
+
+Sert la sonde de `contracts/persistance.md`. Rend `200` et un corps minimal
+quand le service est debout. Ne porte **ni** identité de build, **ni** compte
+de listes : la route est publique et sans cloisonnement.
+
+## Limitation de débit
+
+Par identifiant de liste, en mémoire. Le seuil et la fenêtre sont écrits dans
+le code, pas devinés par l'appelant : dépasser rend `429`.
+
+Elle est due dès la première mise en ligne publique, pas après —
+`PRODUCT.md` § « Données personnelles ».
+
+## Purge
+
+Une liste sans accès depuis 24 h est effacée. Conséquence directe de l'état en
+mémoire (D3), et non un mécanisme ajouté par-dessus.
+
+## Origine autorisée
+
+Le service répond aux requêtes du site, et à lui seul. L'origine vient de la
+configuration, jamais d'une valeur écrite en dur, et le site doit de son côté
+nommer celle du service dans `connect-src` (D7).
