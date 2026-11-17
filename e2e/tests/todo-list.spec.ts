@@ -258,6 +258,85 @@ test.describe('Démo de liste de tâches', () => {
   })
 
   /**
+   * **Cocher une tâche peut la faire sortir de la vue filtrée.** La ligne est
+   * démontée sous le doigt, et sans reprise le focus retombe sur `<body>` :
+   * l'anneau disparaît, un lecteur d'écran perd sa place (WCAG 2.4.3).
+   *
+   * Défaut relevé par l'audit du 17/11/2026, qu'aucun test ne voyait — la
+   * suppression était traitée, ce geste-ci non, alors qu'il est plus courant.
+   */
+  test('garde le focus quand une tâche cochée quitte la vue filtrée', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    await page.getByRole('radio', { name: 'À faire' }).focus()
+    await page.keyboard.press('Space')
+
+    await expect(page.getByRole('checkbox')).toHaveCount(2)
+
+    await page.getByRole('checkbox', { name: 'Relire le cadrage du projet' }).focus()
+    await page.keyboard.press('Space')
+
+    await expect(page.getByRole('checkbox')).toHaveCount(1)
+
+    // La ligne qui prend la place reçoit le focus — jamais `<body>`.
+    await expect(page.getByRole('checkbox', { name: 'Préparer l’entretien' })).toBeFocused()
+  })
+
+  /** La dernière tâche de la vue cochée : le champ d'ajout reprend la main. */
+  test('rend le focus au champ quand la vue filtrée se vide', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    await page.getByRole('radio', { name: 'Faites' }).focus()
+    await page.keyboard.press('Space')
+
+    await page.getByRole('checkbox', { name: 'Mettre à jour le CV' }).focus()
+    await page.keyboard.press('Space')
+
+    await expect(page.getByRole('checkbox')).toHaveCount(0)
+    await expect(page.getByLabel('Ajouter une tâche')).toBeFocused()
+  })
+
+  /**
+   * Un refus d'édition ne survit pas à la fermeture du mode : le message
+   * désignerait un champ disparu, et `aria-invalid` accuserait le champ
+   * d'ajout, vide et jamais soumis (WCAG 4.1.2). Audit du 17/11/2026.
+   */
+  test('efface le refus quand l’édition est annulée', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    await page.getByRole('button', { name: 'Modifier « Préparer l’entretien »' }).press('Enter')
+    await page.getByLabel('Titre').fill('   ')
+    await page.keyboard.press('Enter')
+
+    await expect(page.getByText('Le titre est vide.')).toBeVisible()
+
+    await page.keyboard.press('Escape')
+
+    await expect(page.getByText('Le titre est vide.')).toHaveCount(0)
+    await expect(page.getByLabel('Ajouter une tâche')).not.toHaveAttribute('aria-invalid', 'true')
+  })
+
+  /** Un refus ne survit pas davantage à un changement de filtre. */
+  test('efface le refus quand le filtre change', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    await page.getByLabel('Ajouter une tâche').fill('   ')
+    await page.keyboard.press('Enter')
+
+    await expect(page.getByText('Le titre est vide.')).toBeVisible()
+
+    await page.getByRole('radio', { name: 'Faites' }).focus()
+    await page.keyboard.press('Space')
+
+    await expect(page.getByText('Le titre est vide.')).toHaveCount(0)
+    await expect(page.getByLabel('Ajouter une tâche')).not.toHaveAttribute('aria-invalid', 'true')
+  })
+
+  /**
    * Le sélecteur de source, service éteint.
    *
    * La suite tourne contre la build de production servie par `webServer` :

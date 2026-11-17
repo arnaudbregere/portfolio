@@ -186,6 +186,33 @@ const submit = async () => {
 }
 
 /**
+ * Cocher une tâche peut la faire **sortir de la vue filtrée**.
+ *
+ * La ligne est alors démontée sous le doigt, et le focus retombe sur
+ * `<body>` : l'anneau disparaît et un lecteur d'écran perd sa place
+ * (WCAG 2.4.3). C'est le même défaut que la suppression traite déjà, sur un
+ * geste plus courant — relevé par l'audit du 17/11/2026, qu'aucun test ne
+ * voyait.
+ *
+ * Le focus va à la ligne qui prend la place, sinon à la précédente, sinon au
+ * champ d'ajout : toujours un élément vivant.
+ */
+const onToggle = async (todo: Todo) => {
+  const rang = visible.value.findIndex(({ id }) => id === todo.id)
+
+  await toggle(todo)
+  await nextTick()
+
+  if (visible.value.some(({ id }) => id === todo.id)) return
+
+  const voisine = visible.value[rang] ?? visible.value[rang - 1]
+
+  if (!voisine) return addField.value?.focus()
+
+  root.value?.querySelector<HTMLInputElement>(`[data-case="${voisine.id}"]`)?.focus()
+}
+
+/**
  * Après une suppression, le focus se pose sur « Annuler ».
  *
  * C'est l'action suivante la plus probable, et c'est un élément vivant : la
@@ -212,6 +239,7 @@ const changerSource = async (choix: Source) => {
   /* Un mode d'édition ouvert porte les valeurs d'une tâche de l'autre source :
      il se ferme sans enregistrer. */
   editing.value = null
+  error.value = ''
   source.value = choix
 
   await load()
@@ -271,6 +299,11 @@ const cancelEdit = async () => {
 
   if (!id) return
 
+  /* Le refus portait sur le champ d'édition qui disparaît : le laisser
+     afficherait un message sans objet, et poserait `aria-invalid` sur le
+     champ d'ajout, vide et jamais soumis. Relevé par l'audit du
+     17/11/2026. */
+  error.value = ''
   editing.value = null
 
   await nextTick()
@@ -456,8 +489,9 @@ const saveEdit = async (todo: Todo) => {
           <label class="o-todo__check">
             <input
               :checked="todo.done"
+              :data-case="todo.id"
               type="checkbox"
-              @change="toggle(todo)"
+              @change="onToggle(todo)"
             >
             <span :class="['o-todo__title', todo.done && 'o-todo__title--done']">
               {{ todo.title }}
@@ -523,8 +557,11 @@ const saveEdit = async (todo: Todo) => {
         </button>
       </p>
 
+      <!-- Le nom accessible dit ce qui est remis à zéro : « Réinitialiser »
+           seul laisse croire à un filtre. L'action est destructive et sans
+           rattrapage — audit du 17/11/2026. -->
       <button type="button" class="o-todo__reset" @click="onReset">
-        Réinitialiser
+        Réinitialiser<span class="visually-hidden"> la démo, et perdre les tâches saisies</span>
       </button>
     </div>
 

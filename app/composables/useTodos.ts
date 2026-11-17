@@ -181,7 +181,20 @@ export const useTodos = (source: TodoStore | (() => TodoStore)) => {
     }
   }
 
+  /**
+   * Changer de filtre **efface le refus en cours**, et lui seul.
+   *
+   * Un message « Le titre est vide. » qui survit à un changement de vue
+   * désigne une saisie qu'on ne regarde plus, et laisse `aria-invalid` sur un
+   * champ que personne n'a soumis — relevé par l'audit du 17/11/2026.
+   *
+   * Le rattrapage de suppression, lui, **reste** : filtrer n'est pas une
+   * action sur la liste, et `DESIGN.md` § 5 veut que « Annuler » tienne
+   * jusqu'à l'action suivante. C'est pourquoi `clearTransient()` n'est pas
+   * appelé ici — il emporterait les deux.
+   */
   const setFilter = (next: TodoFilter) => {
+    error.value = ''
     filter.value = next
   }
 

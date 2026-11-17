@@ -206,8 +206,8 @@ arrêté, l'option est refusée avec son motif.
 - [x] T086 Mesurer la tenue à cent tâches (SC-008) et consigner le relevé avec sa date
 - [ ] T087 **À la main d'Arnaud** : déployer `api/` sur son hébergeur et renseigner l'origine de production
 - [x] T088 Écrire `.claude/rules/api.md` **et** l'ajouter à la liste close `documentsVivants` de `tests/unit/docs-links.spec.ts`, dans le même commit
-- [ ] T089 Lancer l'agent `a11y-seo-auditor` sur la nouvelle page avant la PR
-- [ ] T090 Dérouler la check-list du skill `new-project` de bout en bout
+- [x] T089 Lancer l'agent `a11y-seo-auditor` sur la nouvelle page avant la PR
+- [x] T090 Dérouler la check-list du skill `new-project` de bout en bout
 
 ---
 
