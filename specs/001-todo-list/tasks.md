@@ -178,17 +178,17 @@ arrêté, l'option est refusée avec son motif.
 - [x] T065 [US3] Écrire `app/adapters/http.ts` contre le port de T009, l'identifiant opaque de liste tiré côté client et gardé dans le stockage
 - [x] T066 [P] [US3] Passer la suite de scénarios de T014 à l'adaptateur HTTP dans `tests/unit/todo-port.spec.ts`, service simulé — c'est la vérification de FR-020
 - [x] T067 [US3] Implémenter `disponible()` dans `app/adapters/http.ts` par `GET /api/sante` ; il rend `false` et **ne lève jamais**
-- [ ] T068 [US3] Ajouter le sélecteur de source dans `TodoList.vue`, **en tête du bloc**, en `<input type="radio">` réels d'un `<fieldset>` nommé, rendus en rectangles à filet
-- [ ] T069 [US3] Désactiver l'option « API » quand `disponible()` rend `false`, et **écrire la raison en clair**. Aucun repli silencieux, dans aucun cas
-- [ ] T070 [US3] Fermer sans enregistrer un mode d'édition ouvert au moment d'un changement de source
-- [ ] T071 [US3] Annoncer le changement de source dans la région `aria-live` existante
-- [ ] T072 [US3] Rendre l'attente visible et neutraliser les commandes concernées pendant une opération distante
-- [ ] T073 [US3] En cas d'échec d'une opération distante, annoncer, et revenir à l'état confirmé par le service
-- [ ] T074 [US3] Déclarer l'origine du service dans `runtimeConfig.public` de `nuxt.config.ts` — jamais une URL absolue en dur
-- [ ] T075 [US3] Ajouter cette origine à `connect-src` dans `server/utils/security-headers.ts`, **avec la justification écrite dans le fichier**
-- [ ] T076 [US3] Mettre à jour les listes closes de `tests/unit/security-headers.spec.ts` : sans cela la suite rouge, et c'est le garde-fou qui fonctionne
-- [ ] T077 [US3] Écrire dans `server/utils/security-headers.ts` pourquoi la tolérance `'unsafe-inline'` tient malgré une entrée utilisateur — texte interpolé, pas de `v-html`, pas de renvoi serveur — et à quelle condition elle tombe
-- [ ] T078 [P] [US3] Étendre `e2e/tests/todo-list.spec.ts` : option « API » désactivée et motif lisible quand le service ne répond pas
+- [x] T068 [US3] Ajouter le sélecteur de source dans `TodoList.vue`, **en tête du bloc**, en `<input type="radio">` réels d'un `<fieldset>` nommé, rendus en rectangles à filet
+- [x] T069 [US3] Désactiver l'option « API » quand `disponible()` rend `false`, et **écrire la raison en clair**. Aucun repli silencieux, dans aucun cas
+- [x] T070 [US3] Fermer sans enregistrer un mode d'édition ouvert au moment d'un changement de source
+- [x] T071 [US3] Annoncer le changement de source dans la région `aria-live` existante
+- [x] T072 [US3] Rendre l'attente visible et neutraliser les commandes concernées pendant une opération distante
+- [x] T073 [US3] En cas d'échec d'une opération distante, annoncer, et revenir à l'état confirmé par le service
+- [x] T074 [US3] Déclarer l'origine du service dans `runtimeConfig.public` de `nuxt.config.ts` — jamais une URL absolue en dur
+- [x] T075 [US3] Ajouter cette origine à `connect-src` dans `server/utils/security-headers.ts`, **avec la justification écrite dans le fichier**
+- [x] T076 [US3] Mettre à jour les listes closes de `tests/unit/security-headers.spec.ts` : sans cela la suite rouge, et c'est le garde-fou qui fonctionne
+- [x] T077 [US3] Écrire dans `server/utils/security-headers.ts` pourquoi la tolérance `'unsafe-inline'` tient malgré une entrée utilisateur — texte interpolé, pas de `v-html`, pas de renvoi serveur — et à quelle condition elle tombe
+- [x] T078 [P] [US3] Étendre `e2e/tests/todo-list.spec.ts` : option « API » désactivée et motif lisible quand le service ne répond pas
 
 **Vérification** : les quatre commandes du paquet principal, plus `typecheck` et `test` d'`api/` et d'`e2e/`.
 

@@ -258,6 +258,29 @@ test.describe('Démo de liste de tâches', () => {
   })
 
   /**
+   * Le sélecteur de source, service éteint.
+   *
+   * La suite tourne contre la build de production servie par `webServer` :
+   * rien n'écoute sur l'origine du service, et c'est exactement le cas que ce
+   * test veut. Jamais de repli silencieux — l'option est refusée, et la raison
+   * se lit (FR-016).
+   */
+  test('désactive l’option « API » quand le service ne répond pas, motif à l’appui', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    const api = page.getByRole('radio', { name: 'API' })
+    const navigateur = page.getByRole('radio', { name: 'Navigateur' })
+
+    await expect(api).toBeDisabled()
+    await expect(navigateur).toBeChecked()
+    await expect(page.getByText('Le service ne répond pas')).toBeVisible()
+
+    // La démo reste entière : une source indisponible ne coupe rien.
+    await expect(page.getByRole('checkbox')).toHaveCount(3)
+  })
+
+  /**
    * La fiche doit rester lisible sans exécution de JavaScript (FR-027) : le
    * texte du projet est prérendu, et seule la démo attend le montage.
    */

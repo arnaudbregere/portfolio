@@ -5,6 +5,7 @@ import { priorityLabel } from '~~/shared/todo/domain'
 import { TITLE_MAX } from '~~/shared/todo/validation'
 import type { TodoStore } from '~/adapters/todo-store'
 import { createBrowserStore } from '~/adapters/browser-store'
+import { createHttpStore } from '~/adapters/http'
 import { useTodos } from '~/composables/useTodos'
 
 /**
@@ -31,7 +32,34 @@ const props = defineProps<{ store?: TodoStore }>()
  * rien retenir. Le port ne change pas de forme pour autant — c'est tout
  * l'intérêt de l'avoir.
  */
-const store = props.store ?? createBrowserStore(import.meta.client ? window.localStorage : null)
+const stockage = () => (import.meta.client ? window.localStorage : null)
+
+const navigateur = props.store ?? createBrowserStore(stockage())
+
+/**
+ * La seconde source, créée même quand le service dort : son existence ne coûte
+ * rien, et `disponible()` tranchera. L'origine vient de `runtimeConfig`,
+ * jamais d'une URL écrite en dur — le développement, une préversion et la
+ * production n'ont pas la même.
+ */
+const { apiOrigin } = useRuntimeConfig().public
+
+/* La prop n'injecte que la source **navigateur** : une seule source simulée
+   des deux côtés ne prouverait rien, et un test qui croirait vérifier la
+   bascule la raterait. L'adaptateur HTTP est donc toujours le vrai, et c'est
+   sa sonde qui tranche — elle rend `false` sans lever quand rien n'écoute. */
+const distante = createHttpStore({ origin: apiOrigin, storage: stockage() })
+
+/** La source du moment. Le port est le même, c'est tout l'objet de la démo. */
+type Source = 'navigateur' | 'api'
+
+const source = ref<Source>('navigateur')
+const apiJoignable = ref(false)
+const apiSondee = ref(false)
+
+/* Nommée `courante` et non `store` : `store` est déjà le nom de la prop, et
+   Vue refuse qu'une variable du `setup` porte le nom d'une prop. */
+const courante = () => (source.value === 'api' ? distante : navigateur)
 
 /**
  * Déstructuré, et non gardé en objet : un `ref()` posé autour du composable
@@ -39,6 +67,11 @@ const store = props.store ?? createBrowserStore(import.meta.client ? window.loca
  * il attend des références. Mesuré le 17/11/2026, vingt erreurs de
  * `npm run typecheck` à la clé.
  */
+const sources: readonly { value: Source; label: string }[] = [
+  { value: 'navigateur', label: 'Navigateur' },
+  { value: 'api', label: 'API' },
+]
+
 const {
   todos: items,
   visible,
@@ -55,7 +88,7 @@ const {
   undo,
   reset,
   setFilter,
-} = useTodos(store)
+} = useTodos(courante)
 
 const draft = ref('')
 const ready = ref(false)
@@ -97,10 +130,27 @@ const filters: readonly { value: TodoFilter; label: string }[] = [
 onMounted(async () => {
   await load()
   ready.value = true
+
+  /* La sonde ne bloque pas l'arrivée : la démo est jouable avant qu'elle
+     réponde, et l'instance gratuite met parfois trente secondes à se
+     réveiller. `disponible()` ne lève jamais — FR-016. */
+  apiJoignable.value = await distante.available()
+  apiSondee.value = true
 })
 
 /** Ce que la source dit d'elle-même : rien, ou une phrase à afficher. */
-const sourceNotice = computed(() => store.status().notice)
+const sourceNotice = computed(() => courante().status().notice)
+
+/**
+ * Pourquoi l'API est hors d'atteinte, en clair — jamais de repli silencieux.
+ * Une démo qui prétend montrer deux adaptateurs tout en servant toujours le
+ * même mentirait sur la seule chose qu'elle est là pour prouver.
+ */
+const apiMotif = computed(() => {
+  if (!apiSondee.value) return 'Vérification du service…'
+
+  return apiJoignable.value ? '' : 'Le service ne répond pas : la démo reste jouable hors ligne.'
+})
 
 /**
  * Le message annoncé au lecteur d'écran — **et le refus n'y passe pas**.
@@ -140,6 +190,26 @@ const onRemove = async (todo: Todo) => {
   await removeTodo(todo)
   await nextTick()
   undoButton.value?.focus()
+}
+
+/**
+ * Changer de source relit la liste, et rien d'autre ne bouge : ni le filtre,
+ * ni le focus, ni le composable. C'est la démonstration elle-même — une
+ * logique, deux adaptateurs.
+ */
+const changerSource = async (choix: Source) => {
+  if (choix === source.value) return
+
+  /* Un mode d'édition ouvert porte les valeurs d'une tâche de l'autre source :
+     il se ferme sans enregistrer. */
+  editing.value = null
+  source.value = choix
+
+  await load()
+
+  notice.value = choix === 'api'
+    ? 'Source : l’API. Les tâches viennent du service.'
+    : 'Source : le navigateur. Les tâches restent sur cet appareil.'
 }
 
 /** Après une annulation, le champ reprend la main : la liste est entière. */
@@ -221,6 +291,38 @@ const saveEdit = async (todo: Todo) => {
 
 <template>
   <div ref="root" class="o-todo">
+    <!-- Le sélecteur de source ouvre le bloc : il commande tout ce qui suit,
+         et placé en dessous il se lirait après coup. `DESIGN.md` § 5.
+
+         Deux niveaux visuels, et c'est voulu : la source est un contrôle —
+         rectangles à filet —, les filtres sont un tri — du texte. Six
+         rectangles identiques ne diraient pas lequel change le système. -->
+    <fieldset class="o-todo__sources">
+      <legend class="o-todo__sources-legend">Source des données</legend>
+
+      <label
+        v-for="option in sources"
+        :key="option.value"
+        class="o-todo__source"
+        :class="{ 'o-todo__source--off': option.value === 'api' && !apiJoignable }"
+      >
+        <input
+          :checked="source === option.value"
+          class="visually-hidden"
+          type="radio"
+          name="todo-source"
+          :value="option.value"
+          :disabled="option.value === 'api' && !apiJoignable"
+          @change="changerSource(option.value)"
+        >
+        <span class="o-todo__source-label">{{ option.label }}</span>
+      </label>
+
+      <!-- Le motif est écrit, jamais tu. Une option grisée sans raison est une
+           panne que le visiteur attribue à son navigateur. -->
+      <p v-if="apiMotif" class="o-todo__source-reason">{{ apiMotif }}</p>
+    </fieldset>
+
     <!-- Un vrai formulaire, pour que la touche Entrée valide. Rien n'est
          soumis : `form-action 'none'` de la politique de sécurité reste
          tenu. -->
@@ -446,6 +548,80 @@ const saveEdit = async (todo: Todo) => {
   @include bp.respond-up(m) {
     width: 100cqi;
   }
+}
+
+/* La source est un contrôle : rectangles à filet, comme `Button`. Les filtres,
+   eux, restent du texte — `DESIGN.md` § 5. */
+.o-todo__sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs) var(--space-s);
+  align-items: center;
+  margin: 0;
+  padding: var(--space-2xs) var(--space-s);
+  border: 0;
+  border-bottom: var(--rule-strong);
+}
+
+.o-todo__sources-legend {
+  padding: 0;
+  color: var(--color-fg-muted);
+  font-size: var(--step--1);
+}
+
+.o-todo__source {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-min-height);
+  cursor: pointer;
+}
+
+.o-todo__source-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--control-min-width);
+  min-height: var(--control-min-height);
+  padding: 0 var(--space-xs);
+  border: var(--rule-strong);
+  color: var(--color-fg);
+  font-family: var(--font-display);
+  font-size: var(--size-label);
+  font-weight: var(--label-weight);
+  font-stretch: var(--label-stretch);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+/* L'actif passe à l'encre, fond compris : c'est le seul contrôle du bloc qui
+   change le système, et il doit se voir comme tel. */
+.o-todo__source input:checked + .o-todo__source-label {
+  border-color: var(--color-ink);
+  background-color: var(--color-ink);
+  color: var(--color-ink-fg);
+}
+
+.o-todo__source input:focus-visible + .o-todo__source-label {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Désactivée, l'option reste lisible : elle dit ce qui existe, et le motif
+   écrit à côté dit pourquoi elle ne s'atteint pas. */
+.o-todo__source--off {
+  cursor: not-allowed;
+}
+
+.o-todo__source--off .o-todo__source-label {
+  border-style: dashed;
+  color: var(--color-fg-muted);
+}
+
+.o-todo__source-reason {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--color-fg-muted);
+  font-size: var(--step--1);
 }
 
 .o-todo__add {

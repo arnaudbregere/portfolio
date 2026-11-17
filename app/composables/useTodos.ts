@@ -21,7 +21,15 @@ import type { TodoStore } from '~/adapters/todo-store'
 /** Une suppression qu'on peut encore défaire. */
 type Undoable = { todo: Todo; message: string }
 
-export const useTodos = (store: TodoStore) => {
+/**
+ * La source est reçue en **fonction** et non en valeur : le sélecteur en
+ * change à chaud, et un port capturé une fois pour toutes obligerait à
+ * remonter le composable — donc à perdre le filtre, le focus et le message en
+ * cours. Chaque opération demande la source du moment.
+ */
+export const useTodos = (source: TodoStore | (() => TodoStore)) => {
+  const store = (): TodoStore => (typeof source === 'function' ? source() : source)
+
   const todos = ref<Todo[]>([])
   const filter = ref<TodoFilter>('all')
   const error = ref('')
@@ -46,7 +54,7 @@ export const useTodos = (store: TodoStore) => {
   }
 
   const refresh = async () => {
-    todos.value = await store.list()
+    todos.value = await store().list()
   }
 
   const load = async () => {
@@ -97,7 +105,7 @@ export const useTodos = (store: TodoStore) => {
     clearTransient()
 
     return run(
-      () => store.create({ title, priority }),
+      () => store().create({ title, priority }),
       async () => {
         await refresh()
         notice.value = 'Tâche ajoutée.'
@@ -109,7 +117,7 @@ export const useTodos = (store: TodoStore) => {
     clearTransient()
 
     return run(
-      () => store.update(id, changes),
+      () => store().update(id, changes),
       async () => {
         await refresh()
         notice.value = 'Tâche modifiée.'
@@ -123,7 +131,7 @@ export const useTodos = (store: TodoStore) => {
     clearTransient()
 
     return run(
-      () => store.remove(todo.id),
+      () => store().remove(todo.id),
       (rest) => {
         todos.value = rest
         undoable.value = { todo, message: `« ${todo.title} » a été supprimée.` }
@@ -147,7 +155,7 @@ export const useTodos = (store: TodoStore) => {
     undoable.value = null
 
     return run(
-      () => store.restore(pending.todo),
+      () => store().restore(pending.todo),
       (rest) => {
         todos.value = rest
         notice.value = 'Suppression annulée.'
@@ -161,10 +169,10 @@ export const useTodos = (store: TodoStore) => {
     busy.value = true
 
     try {
-      const current = await store.list()
+      const current = await store().list()
 
-      for (const todo of current) await store.remove(todo.id)
-      for (const todo of exampleTodos) await store.restore(todo)
+      for (const todo of current) await store().remove(todo.id)
+      for (const todo of exampleTodos) await store().restore(todo)
 
       await refresh()
       notice.value = 'Démo réinitialisée.'
