@@ -48,7 +48,9 @@ const { apiOrigin } = useRuntimeConfig().public
    des deux côtés ne prouverait rien, et un test qui croirait vérifier la
    bascule la raterait. L'adaptateur HTTP est donc toujours le vrai, et c'est
    sa sonde qui tranche — elle rend `false` sans lever quand rien n'écoute. */
-const distante = createHttpStore({ origin: apiOrigin, storage: stockage() })
+const distante = apiOrigin
+  ? createHttpStore({ origin: apiOrigin, storage: stockage() })
+  : null
 
 /** La source du moment. Le port est le même, c'est tout l'objet de la démo. */
 type Source = 'navigateur' | 'api'
@@ -59,7 +61,7 @@ const apiSondee = ref(false)
 
 /* Nommée `courante` et non `store` : `store` est déjà le nom de la prop, et
    Vue refuse qu'une variable du `setup` porte le nom d'une prop. */
-const courante = () => (source.value === 'api' ? distante : navigateur)
+const courante = () => (source.value === 'api' && distante ? distante : navigateur)
 
 /**
  * Déstructuré, et non gardé en objet : un `ref()` posé autour du composable
@@ -131,10 +133,11 @@ onMounted(async () => {
   await load()
   ready.value = true
 
-  /* La sonde ne bloque pas l'arrivée : la démo est jouable avant qu'elle
-     réponde, et l'instance gratuite met parfois trente secondes à se
-     réveiller. `disponible()` ne lève jamais — FR-016. */
-  apiJoignable.value = await distante.available()
+  /* Sans origine configurée, rien à sonder : pas de `fetch`, donc pas
+     d'erreur CORS dans la console du visiteur. Avec origine, la sonde ne
+     bloque pas l'arrivée — l'instance gratuite met parfois trente secondes à
+     se réveiller — et `disponible()` ne lève jamais (FR-016). */
+  apiJoignable.value = distante ? await distante.available() : false
   apiSondee.value = true
 })
 
@@ -183,6 +186,25 @@ const submit = async () => {
   if (added) draft.value = ''
 
   addField.value?.focus()
+}
+
+/**
+ * Changer de filtre change le contenu de la liste, sans que rien ne le dise.
+ *
+ * L'état coché du bouton radio est annoncé, le **résultat** ne l'était pas :
+ * un lecteur d'écran entendait « Faites, sélectionné » sans savoir combien de
+ * tâches restaient à l'écran (WCAG 4.1.3). Relevé par l'audit du 17/11/2026.
+ */
+const onFilter = async (choix: TodoFilter) => {
+  setFilter(choix)
+
+  await nextTick()
+
+  const compte = visible.value.length
+
+  notice.value = `${filters.find(({ value }) => value === choix)!.label} : ${compte} ${
+    compte > 1 ? 'tâches' : 'tâche'
+  }.`
 }
 
 /**
@@ -399,7 +421,12 @@ const saveEdit = async (todo: Todo) => {
       <Button type="submit">Ajouter</Button>
     </form>
 
-    <p v-if="error" id="todo-error" class="o-todo__error" role="alert">
+    <!-- Le refus paraît **là où est le champ fautif**. Pour une édition
+         ouverte sur une ligne basse, un message en tête de bloc tombe hors du
+         champ de vision alors que le focus revient dans la ligne. Un seul
+         paragraphe existe à la fois : `role="alert"` reste unique, et l'`id`
+         que les champs désignent aussi. Audit du 17/11/2026. -->
+    <p v-if="error && !editing" id="todo-error" class="o-todo__error" role="alert">
       {{ error }}
     </p>
 
@@ -414,13 +441,16 @@ const saveEdit = async (todo: Todo) => {
             type="radio"
             name="todo-filter"
             :value="option.value"
-            @change="setFilter(option.value)"
+            @change="onFilter(option.value)"
           >
           <span class="o-todo__filter-label">{{ option.label }}</span>
         </label>
       </fieldset>
 
-      <p class="o-todo__count">
+      <!-- Avant le montage, la liste n'est pas vide : elle n'est pas encore
+           lue. Un « 0 tâche, 0 à faire » prérendu serait faux, et c'est ce
+           qu'un moteur de recherche indexerait. Audit du 17/11/2026. -->
+      <p v-if="ready" class="o-todo__count">
         {{ items.length }}
         {{ items.length > 1 ? 'tâches' : 'tâche' }},
         {{ remaining }} à faire
@@ -471,6 +501,10 @@ const saveEdit = async (todo: Todo) => {
             </span>
           </div>
 
+          <p v-if="error" id="todo-error" class="o-todo__error o-todo__error--inline" role="alert">
+            {{ error }}
+          </p>
+
           <Button type="submit">Enregistrer</Button>
 
           <!-- Le nom accessible dit ce qui est annulé : « Annuler » seul
@@ -487,9 +521,14 @@ const saveEdit = async (todo: Todo) => {
                l'état, le clavier et l'annonce. La cible de 44px est portée par
                le libellé, pas par le carré. -->
           <label class="o-todo__check">
+            <!-- La priorité décrit la tâche : sans ce rattachement, elle
+                 n'est atteignable qu'en mode lecture, au prix d'un « liste,
+                 1 élément » par ligne. La forme de l'étiquette ne bouge pas,
+                 `DESIGN.md` § 5 l'a arbitrée. -->
             <input
               :checked="todo.done"
               :data-case="todo.id"
+              :aria-describedby="`todo-priority-${todo.id}`"
               type="checkbox"
               @change="onToggle(todo)"
             >
@@ -502,6 +541,7 @@ const saveEdit = async (todo: Todo) => {
                palette, posées par `--tag-ink`. Le mot reste écrit : la couleur
                le double, elle ne le remplace pas (WCAG 1.4.1). -->
           <TagList
+            :id="`todo-priority-${todo.id}`"
             :class="['o-todo__priority', `o-todo__priority--${todo.priority}`]"
             :items="[priorityLabel[todo.priority]]"
             label="Priorité"
@@ -533,7 +573,13 @@ const saveEdit = async (todo: Todo) => {
          lue. Le document prérendu ne doit donc pas annoncer « plus rien à
          faire » — ce serait faux, et c'est ce qu'un moteur de recherche
          lirait. -->
-    <p v-else-if="!ready" class="o-todo__empty">Chargement de la démo…</p>
+    <p v-else-if="!ready" class="o-todo__empty">
+      Chargement de la démo…
+      <noscript>
+        Cette démo a besoin de JavaScript pour s’exécuter. Le reste de la fiche
+        — le problème, la solution et le résultat — se lit sans lui.
+      </noscript>
+    </p>
 
     <!-- Deux absences, deux phrases : « rien pour ce filtre » n'est pas
          « rien du tout », et un visiteur qui a filtré doit savoir laquelle
@@ -695,6 +741,15 @@ const saveEdit = async (todo: Todo) => {
   font-size: var(--step--1);
 }
 
+/* Dans la ligne ouverte, le refus prend toute la largeur sous les deux champs
+   plutôt que de les pousser : il n'a ni filet ni gouttière à reprendre, le
+   formulaire les porte déjà. */
+.o-todo__error--inline {
+  flex-basis: 100%;
+  padding: 0;
+  border-bottom: 0;
+}
+
 .o-todo__bar {
   display: flex;
   flex-wrap: wrap;
@@ -773,6 +828,54 @@ const saveEdit = async (todo: Todo) => {
   align-items: center;
   min-height: var(--control-min-height);
   cursor: pointer;
+}
+
+/* **La case est redessinée**, comme `DESIGN.md` § 5 l'avait décidé — et comme
+   le code ne le faisait pas jusqu'au 17/11/2026, relevé par l'audit : elle
+   était celle du système, simplement teintée par `accent-color`. Un filet et
+   un carré de 20 px, donc la même famille que les autres contrôles, dans les
+   deux thèmes et quel que soit le navigateur.
+
+   La coche est tracée en CSS et non en image : deux traits, un pivot, aucune
+   ressource à charger. `forced-colors` rend la main au système — un thème à
+   contraste forcé sait mieux que nous. */
+.o-todo__check input[type='checkbox'] {
+  flex: 0 0 auto;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin: 0;
+  border: var(--rule-strong);
+  background-color: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+
+.o-todo__check input[type='checkbox']:checked {
+  border-color: var(--color-ink);
+  background-color: var(--color-ink);
+}
+
+.o-todo__check input[type='checkbox']:checked::after {
+  display: block;
+  inline-size: 0.3125rem;
+  block-size: 0.625rem;
+  margin: 0.125rem auto 0;
+  border: 2px solid var(--color-ink-fg);
+  border-block-start: 0;
+  border-inline-start: 0;
+  content: '';
+  rotate: 45deg;
+}
+
+.o-todo__check input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .o-todo__check input[type='checkbox'] {
+    appearance: auto;
+  }
 }
 
 /* Une tâche faite se lit sans couleur : la case cochée porte l'état, le trait

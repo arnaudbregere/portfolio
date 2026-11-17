@@ -143,7 +143,7 @@ export const constantSecurityHeaders = {
  * `useRuntimeConfig()` à interroger. `NUXT_PUBLIC_API_ORIGIN` surcharge les
  * deux côtés d'un seul geste.
  */
-const apiOrigin = process.env.NUXT_PUBLIC_API_ORIGIN ?? 'http://localhost:4330'
+const apiOrigin = process.env.NUXT_PUBLIC_API_ORIGIN ?? ''
 
 export const contentSecurityPolicy = [
   "default-src 'self'",
@@ -151,7 +151,9 @@ export const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self'",
   "font-src 'self'",
-  `connect-src 'self' ${apiOrigin}`,
+  /* Sans origine configurée, la directive reste fermée : une valeur de repli
+     publierait `localhost` dans la politique d'un site de production. */
+  apiOrigin ? `connect-src 'self' ${apiOrigin}` : "connect-src 'self'",
   "base-uri 'none'",
   "object-src 'none'",
   "form-action 'none'",

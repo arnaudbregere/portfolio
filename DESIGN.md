@@ -671,8 +671,17 @@ ne porte aucune information : il n'y a rien à numéroter.
 celle d'une page qui arrive, pas d'une liste qui se réécrit à chaque
 caractère. Une tâche ajoutée ou retirée paraît et disparaît, sans transition.
 
-**Une suppression s'annule.** Un message et un bouton « Annuler », dans la
-même région `aria-live` qui annonce les changements. Une démo dont une action
+**Une suppression s'annule.** Un message et un bouton « Annuler », et
+l'annonce passe par la région `aria-live` du bloc.
+
+**Précision du 17/11/2026**, l'audit ayant relevé l'ambiguïté : le message
+visible et l'annonce ne sont pas le même nœud. La barre de rattrapage porte le
+texte et le bouton ; la région polie, masquée visuellement, porte l'annonce.
+C'est voulu, et ce n'est pas la duplication écartée pour le refus — celle-ci
+mettait **deux fois la même phrase dans l'arbre d'accessibilité au même
+instant**, au point qu'un test de bout en bout refusait de choisir. Ici, la
+région annonce une fois au moment de l'action, et la barre reste atteignable à
+la navigation. Une démo dont une action
 ne se rattrape pas est une démo qu'un visiteur n'ose pas essayer — et le
 visiteur visé est un recruteur qui donne deux minutes à la page.
 
@@ -731,7 +740,12 @@ police ni le thème.
 **La page s'ouvre sur trois tâches d'exemple**, dont une faite, et les trois
 priorités visibles. Un bouton « Réinitialiser » y ramène. L'état vide existe,
 mais il n'est plus la première vue : il s'atteint après suppression, et le
-champ y garde le focus. Décision d'Arnaud — une démo qui paraît vide à
+champ y garde le focus **quand on y arrive par autre chose qu'une
+suppression**. Précisé le 17/11/2026, l'audit ayant relevé la contradiction :
+après une suppression, le focus va sur « Annuler », y compris pour la dernière
+tâche. La ligne qui portait le focus vient de disparaître, et le rattrapage est
+l'action suivante la plus probable — FR-024 l'emporte, et c'est lui qui est
+implémenté. Décision d'Arnaud — une démo qui paraît vide à
 l'arrivée ne se joue pas.
 
 **Quand l'API ne répond pas, le sélecteur ne paraît pas du tout.** Révisé le

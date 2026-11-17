@@ -99,7 +99,7 @@ refusée avec son motif.
 - **Titre vide ou fait d'espaces** : refusé, avec un message rattaché au champ. Le focus reste dans le champ.
 - **Titre plus long que la limite** : refusé, le message indique la limite et la longueur atteinte.
 - **Titre en doublon** : accepté. Deux tâches peuvent porter le même libellé — une liste de tâches n'est pas un index.
-- **Liste vide après suppression de tout** : la page affiche une invitation à saisir, et le champ garde le focus.
+- **Liste vide après suppression de tout** : la page affiche une invitation à saisir. Le focus va sur « Annuler » — FR-024 l'emporte, la ligne qui le portait vient de disparaître et le rattrapage est l'action suivante la plus probable. Corrigé le 17/11/2026 : cette arête disait « le champ garde le focus », ce que le code ne fait pas et ne doit pas faire.
 - **Filtre actif qui ne laisse rien** : l'absence est annoncée pour ce filtre-là, et se distingue d'une liste réellement vide.
 - **Stockage du navigateur indisponible** (navigation privée, stockage bloqué) : la page reste jouable pour la session, et dit que rien ne sera retenu.
 - **Stockage du navigateur illisible ou corrompu** : la page repart des trois tâches d'exemple plutôt que d'échouer, et le dit.

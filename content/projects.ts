@@ -200,7 +200,15 @@ export const projects: readonly Project[] = [
       'Web Storage API',
       'Vercel',
     ],
-    links: [{ label: 'Démo jouable', url: 'https://arnaud-bregere.fr/projets/todo-list' }],
+    /* Pas de lien « Démo jouable » : elle est dans cette page, et un lien vers
+       la page qu'on lit recharge tout et perd l'état de la démo — relevé par
+       l'audit du 17/11/2026. Le code, lui, est ailleurs. */
+    links: [
+      {
+        label: 'Code source',
+        url: 'https://github.com/arnaudbregere/portfolio/tree/main/app/components/organisms/TodoList.vue',
+      },
+    ],
     /* Composée par `node scripts/og-card.js --out todo-list --figure 04 …` :
        la fiche n'a pas de capture, la démo se joue dans la page. */
     ogImage: '/og/todo-list.png',

@@ -156,14 +156,22 @@ describe('politique de sécurité du contenu', () => {
    */
   it('n’ouvre qu’une seconde origine, sur `connect-src` et nulle part ailleurs', () => {
     const connect = found.get('connect-src') ?? []
+    const origine = process.env.NUXT_PUBLIC_API_ORIGIN ?? ''
 
-    expect(connect).toHaveLength(2)
     expect(connect[0]).toBe("'self'")
-    expect(connect[1]).toBe(process.env.NUXT_PUBLIC_API_ORIGIN ?? 'http://localhost:4330')
 
-    // Un schéma seul autoriserait tout le web en clair.
-    expect(connect[1]).not.toBe('https:')
-    expect(connect[1]).not.toBe('http:')
+    if (!origine) {
+      // Sans service configuré, la directive reste fermée. Une valeur de repli
+      // publierait `localhost` dans la politique d'un site de production.
+      expect(connect).toHaveLength(1)
+    } else {
+      expect(connect).toHaveLength(2)
+      expect(connect[1]).toBe(origine)
+
+      // Un schéma seul autoriserait tout le web en clair.
+      expect(connect[1]).not.toBe('https:')
+      expect(connect[1]).not.toBe('http:')
+    }
 
     // Aucune autre directive ne porte d'origine.
     for (const [directive, valeurs] of found) {

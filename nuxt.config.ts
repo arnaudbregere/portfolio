@@ -120,11 +120,16 @@ export default defineNuxtConfig({
        * `connect-src` de `server/utils/security-headers.ts` doit nommer
        * exactement celle-ci. Surchargeable par `NUXT_PUBLIC_API_ORIGIN`.
        *
-       * Le repli local n'est pas un défaut de configuration : sans service
-       * déployé, l'option « API » se désactive avec son motif écrit, et la
-       * démo reste jouable sur le stockage du navigateur.
+       * **Vide par défaut, et c'est volontaire.** Une valeur `localhost` de
+       * repli partirait en production : la politique de sécurité publierait
+       * `http://localhost:4330`, et la console de chaque visiteur porterait une
+       * erreur CORS rouge à chaque chargement — relevé par l'audit du
+       * 17/11/2026. Sans origine, la démo ne sonde rien, n'affiche pas le
+       * sélecteur, et reste jouable sur le stockage du navigateur.
+       *
+       * En développement : `NUXT_PUBLIC_API_ORIGIN=http://localhost:4330`.
        */
-      apiOrigin: 'http://localhost:4330',
+      apiOrigin: '',
     },
   },
 
