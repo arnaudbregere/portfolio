@@ -148,30 +148,30 @@ arrêté, l'option est refusée avec son motif.
 
 ### Ouverture : lever le seul risque du plan
 
-- [ ] T047 Écrire une pointe de dix lignes chargeant Express 5 depuis un `.ts` exécuté par `node`, et la lancer. Si l'interopérabilité du module CommonJS échoue, poser `"type": "commonjs"` dans `api/package.json` ou passer par `createRequire`, et **consigner le résultat dans `specs/001-todo-list/research.md` D2**
+- [x] T047 Écrire une pointe de dix lignes chargeant Express 5 depuis un `.ts` exécuté par `node`, et la lancer. Si l'interopérabilité du module CommonJS échoue, poser `"type": "commonjs"` dans `api/package.json` ou passer par `createRequire`, et **consigner le résultat dans `specs/001-todo-list/research.md` D2**
 
 ### Le paquet `api/`
 
-- [ ] T048 [US3] Créer `api/package.json` : `express` en dépendance, `vitest` et `typescript` en devDependencies, scripts `start`, `typecheck` et `test`. **Aucune dépendance croisée** avec le paquet principal
-- [ ] T049 [US3] Créer `api/tsconfig.json` en mode strict, avec `erasableSyntaxOnly` — l'`enum` échoue alors à `npm run typecheck`, pas au premier lancement
-- [ ] T050 [US3] Écrire `api/src/services/listes.ts` : une `Map` en mémoire, semée des exemples de `shared/todo/exemples.ts`, chaque liste portant une date de dernier accès **jamais servie au client**
-- [ ] T051 [US3] Purger dans `api/src/services/listes.ts` toute liste sans accès depuis 24 h
-- [ ] T052 [US3] Écrire `api/src/middlewares/debit.ts` : limitation par identifiant de liste, en mémoire, rendant `429` au-delà du seuil
-- [ ] T053 [US3] Écrire `api/src/routes/taches.ts` : les cinq routes de `contracts/http.md`, cloisonnées par `/api/listes/:listeId/taches`. La couche ne porte aucune logique métier
-- [ ] T054 [US3] Ignorer dans `api/src/routes/taches.ts` tout champ du corps autre que `title`, `priority` et `done` — `id`, `createdAt` et `updatedAt` appartiennent au domaine
-- [ ] T055 [US3] Réappliquer les gardes de `shared/todo/validation.ts` côté service, même quand le client a déjà validé
-- [ ] T056 [US3] Ajouter `GET /api/sante` dans `api/src/routes/sante.ts` : `200` et un corps minimal, **ni identité de build, ni compte de listes**
-- [ ] T057 [US3] Traduire les refus en codes dans `api/src/routes/taches.ts` : `400` pour une garde, `404`, `405`, `429`, `500` — corps générique, détail au journal
-- [ ] T058 [US3] Écrire `api/src/server.ts`, point d'entrée lancé par `node api/src/server.ts`, origine autorisée lue dans la configuration et jamais écrite en dur
+- [x] T048 [US3] Créer `api/package.json` : `express` en dépendance, `vitest` et `typescript` en devDependencies, scripts `start`, `typecheck` et `test`. **Aucune dépendance croisée** avec le paquet principal
+- [x] T049 [US3] Créer `api/tsconfig.json` en mode strict, avec `erasableSyntaxOnly` — l'`enum` échoue alors à `npm run typecheck`, pas au premier lancement
+- [x] T050 [US3] Écrire `api/src/services/listes.ts` : une `Map` en mémoire, semée des exemples de `shared/todo/exemples.ts`, chaque liste portant une date de dernier accès **jamais servie au client**
+- [x] T051 [US3] Purger dans `api/src/services/listes.ts` toute liste sans accès depuis 24 h
+- [x] T052 [US3] Écrire `api/src/middlewares/debit.ts` : limitation par identifiant de liste, en mémoire, rendant `429` au-delà du seuil
+- [x] T053 [US3] Écrire `api/src/routes/taches.ts` : les cinq routes de `contracts/http.md`, cloisonnées par `/api/listes/:listeId/taches`. La couche ne porte aucune logique métier
+- [x] T054 [US3] Ignorer dans `api/src/routes/taches.ts` tout champ du corps autre que `title`, `priority` et `done` — `id`, `createdAt` et `updatedAt` appartiennent au domaine
+- [x] T055 [US3] Réappliquer les gardes de `shared/todo/validation.ts` côté service, même quand le client a déjà validé
+- [x] T056 [US3] Ajouter `GET /api/sante` dans `api/src/routes/sante.ts` : `200` et un corps minimal, **ni identité de build, ni compte de listes**
+- [x] T057 [US3] Traduire les refus en codes dans `api/src/routes/taches.ts` : `400` pour une garde, `404`, `405`, `429`, `500` — corps générique, détail au journal
+- [x] T058 [US3] Écrire `api/src/server.ts`, point d'entrée lancé par `node api/src/server.ts`, origine autorisée lue dans la configuration et jamais écrite en dur
 
 ### Tests du service
 
-- [ ] T059 [P] [US3] Pour chaque route, le cas nominal et le refus de garde, dans `api/tests/taches.spec.ts`
-- [ ] T060 [P] [US3] Les `404`, `405` et `429` dans `api/tests/taches.spec.ts`
-- [ ] T061 [P] [US3] **Liste close des six champs servis** dans `api/tests/contrat.spec.ts` : énumérer les clés rendues et échouer à la septième
-- [ ] T062 [P] [US3] Vérifier dans `api/tests/contrat.spec.ts` qu'aucun corps d'erreur ne porte de chemin, de pile d'appels, de nom de machine ni de version
-- [ ] T063 [P] [US3] Tester la purge à 24 h dans `api/tests/listes.spec.ts`, horloge injectée
-- [ ] T064 [US3] Ajouter un travail `api/` à la chaîne d'intégration : `typecheck` **et** `test` — ni Vitest ni Node ne vérifient les types
+- [x] T059 [P] [US3] Pour chaque route, le cas nominal et le refus de garde, dans `api/tests/taches.spec.ts`
+- [x] T060 [P] [US3] Les `404`, `405` et `429` dans `api/tests/taches.spec.ts`
+- [x] T061 [P] [US3] **Liste close des six champs servis** dans `api/tests/contrat.spec.ts` : énumérer les clés rendues et échouer à la septième
+- [x] T062 [P] [US3] Vérifier dans `api/tests/contrat.spec.ts` qu'aucun corps d'erreur ne porte de chemin, de pile d'appels, de nom de machine ni de version
+- [x] T063 [P] [US3] Tester la purge à 24 h dans `api/tests/listes.spec.ts`, horloge injectée
+- [x] T064 [US3] Ajouter un travail `api/` à la chaîne d'intégration : `typecheck` **et** `test` — ni Vitest ni Node ne vérifient les types
 
 ### L'adaptateur HTTP et le sélecteur
 

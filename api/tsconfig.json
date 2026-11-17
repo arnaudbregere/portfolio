@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+
+    /* Node 22 exécute ces fichiers en retirant les types, sans les compiler :
+       il refuse `enum`, `namespace` et les décorateurs au lancement. Cette
+       option fait tomber l'erreur à `npm run typecheck`, pas en production. */
+    "erasableSyntaxOnly": true,
+
+    /* Les imports portent leur extension `.ts` — c'est Node qui les résout,
+       pas un empaqueteur. */
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "../shared/**/*.ts"]
+}

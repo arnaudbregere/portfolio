@@ -57,12 +57,24 @@ $ node enum.ts                       → SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT
 `namespace`, pas de décorateur. `erasableSyntaxOnly` dans le `tsconfig` fait
 tomber l'erreur à `npm run typecheck` plutôt qu'au premier lancement.
 
-**Risque ouvert, à lever par une pointe de dix lignes en ouverture du lot 3** :
-Express 5 est un module CommonJS, chargé depuis un fichier `.ts` traité en
-module ECMAScript. L'interopérabilité par défaut doit fonctionner — elle n'a
-pas été vérifiée ici, faute d'avoir installé la dépendance. Si elle échoue, le
-remède est connu et local : `createRequire`, ou `"type": "commonjs"` dans le
-`package.json` d'`api/`.
+**Risque levé le 17/11/2026, par la pointe de T047.** Express 5 est un module
+CommonJS, chargé depuis un fichier `.ts` traité en module ECMAScript.
+L'interopérabilité par défaut fonctionne : ni `createRequire`, ni
+`"type": "commonjs"`.
+
+```
+$ node --version                     → v22.23.4
+$ node src/pointe.ts                 → pointe sur 4321
+$ curl -i http://127.0.0.1:4321/api/sante
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+```
+
+`express@5.3.0`, `api/package.json` en `"type": "module"`, et
+`import express from 'express'` écrit tel quel. Le serveur écoute, la route
+répond, le corps est du JSON. Le remède de repli n'a pas servi, et reste écrit
+ci-dessus au cas où une montée d'Express le rendrait nécessaire.
 
 ---
 

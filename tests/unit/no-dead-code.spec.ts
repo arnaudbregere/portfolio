@@ -36,6 +36,11 @@ const sources = [
   // Sans cette ligne, tout export de `shared/` serait déclaré mort dès son
   // premier commit — d'où son arrivée dans le même que le dossier.
   'shared/',
+  // Le service de la démo, paquet indépendant depuis le 17/11/2026 : sans
+  // cette ligne, un fichier d'`api/` que plus personne n'importe resterait au
+  // vert.
+  'api/src/',
+  'api/tests/',
 ]
 
 const extensions = ['.vue', '.ts', '.js', '.mjs', '.scss']
