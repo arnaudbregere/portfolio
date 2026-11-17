@@ -364,14 +364,21 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   onglet neuf. Un lien de même origine que le site n'en porte pas.
 - **Un seul bouton de libellé, et une seule taille.** « Menu », « Fermer » et
   la bascule de thème partagent l'atome `Button` : même hauteur
-  (`--control-min-height`), même largeur minimale (`--control-min-width`), même
-  filet, même typographie. Décision du 09/11/2026 (issue #34), prise sur trois
-  copies du même bloc de style qui avaient déjà divergé. La largeur minimale
-  tient « Menu » et « Fermer » à la même place, pour que la surcouche ne décale
-  pas le bouton qui l'a ouverte ; `white-space: nowrap` tient la hauteur, un
+  (`--control-min-height`), même filet, même typographie. Décision du
+  09/11/2026 (issue #34), prise sur trois copies du même bloc de style qui
+  avaient déjà divergé. La largeur minimale (`--control-min-width`) tient
+  « Menu » et « Fermer » à la même place, pour que la surcouche ne décale pas
+  le bouton qui l'a ouverte ; `white-space: nowrap` tient la hauteur, un
   libellé passé sur deux lignes grandissant le bouton et désalignant ses
-  voisins. Les trois n'ont pas la **même** largeur : « Thème sombre » est le
-  double de « Menu », et l'imposer à tous ferait déborder l'en-tête mobile.
+  voisins. Les deux n'ont pas la **même** largeur rendue, seulement le même
+  plancher.
+
+  **La bascule de thème en sort le 17/11/2026** : passée au pictogramme, elle
+  n'a plus de libellé à aligner sur quoi que ce soit, et la réserve ne ferait
+  qu'un rectangle étiré autour d'une icône de 20px. L'atome porte une prop
+  `icon` qui la retire et ramène le bouton à un carré de
+  `--control-min-height` — la hauteur, donc la cible tactile, ne bouge pas.
+  Le § 6 porte la décision et le relevé des largeurs.
 - **Une coordonnée joignable porte son pictogramme.** Décision d'Arnaud du
   09/11/2026 : le téléphone et l'e-mail en portent un sur `/contact` comme
   dans la liste « Me joindre » de `/a-propos`, par l'atome `Icon`. Le
@@ -634,6 +641,21 @@ Ce que la décision de P2 défendait, et ce qui lui est préféré :
 **La surcouche se ferme au franchissement du point de rupture.** Ouverte en
 mobile puis la fenêtre élargie, elle resterait sinon ouverte sans déclencheur
 pour la refermer.
+
+**La surcouche entre par l'opacité seule, ses rubriques seules montent d'un
+pas.** Décision du 17/11/2026, prise sur un décalage signalé à l'écran. Elle
+portait jusque-là `translate: 0 -0.5rem` à l'ouverture ; comme le `<dialog>`
+contient son propre en-tête, le bouton « Fermer » naissait **8px au-dessus**
+de la place du bouton « Menu » qui venait de l'ouvrir, et y descendait en
+240 ms. Au repos les deux tombent au pixel près — bords à x 269/270 et
+364/365, filet de l'en-tête à y 84, relevé sur deux captures de la même page —,
+mais l'œil voit la barre sauter à chaque ouverture.
+
+La figure du § 7, « monter d'un pas », n'est pas perdue : les quatre rubriques
+la portent déjà, l'une après l'autre, à 40 ms d'écart. Le pas du conteneur la
+doublait. `e2e/tests/menu-alignement.spec.ts` tient les deux moitiés de la
+promesse : la place au repos, et l'absence de glissement, échantillonnée image
+par image dans la page.
 
 **Chaque rubrique porte son rang dans la surcouche mobile**, de `01` à `04`,
 en chiffres tabulaires et au corps des libellés. C'est la figure numérotée du
