@@ -11,11 +11,25 @@
  *
  * Il ne déclare ni gestionnaire ni `aria-*` : `type="button"` est posé ici une
  * fois pour toutes, et tout le reste passe par les attributs hérités.
+ *
+ * ## `icon` : la largeur minimale tombe, le carré reste
+ *
+ * `--control-min-width` réserve la place du plus long libellé du site, pour
+ * que « Menu » et « Fermer » occupent la même case. Un bouton qui ne porte
+ * qu'un pictogramme n'a rien à aligner : la réserve ne ferait qu'un rectangle
+ * étiré autour d'une icône de 20px. La prop lui rend un carré de
+ * `--control-min-height`, soit la cible tactile de 44px que RGAA 4.1 exige.
+ *
+ * Une prop et non une classe posée par le parent : la règle du parent et celle
+ * de cet atome viseraient le même élément avec la même spécificité, et l'ordre
+ * d'injection trancherait — c'est pour cette raison que `SiteHeader` enveloppe
+ * déjà ses contrôles dans un `div`.
  */
+withDefaults(defineProps<{ icon?: boolean }>(), { icon: false })
 </script>
 
 <template>
-  <button type="button" class="a-button">
+  <button type="button" class="a-button" :class="{ 'a-button--icon': icon }">
     <slot />
   </button>
 </template>
@@ -48,6 +62,13 @@
   &:hover {
     background-color: var(--color-bg-subtle);
   }
+}
+
+/* Le carré : même hauteur qu'un bouton de libellé, donc même ligne dans la
+   barre, et l'intérieur se resserre autour du pictogramme. */
+.a-button--icon {
+  min-width: var(--control-min-height);
+  padding-inline: var(--space-2xs);
 }
 
 @media (prefers-reduced-motion: reduce) {

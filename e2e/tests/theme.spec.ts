@@ -44,6 +44,38 @@ test.describe('Bascule de thème', () => {
     expect(await appliedTheme(page)).toContain('dark')
   })
 
+  /**
+   * **Le bouton n'expose qu'un nom à la fois**, et c'est ce qui tient
+   * l'accessibilité depuis le passage au pictogramme (17/11/2026) : il n'a
+   * plus de libellé visible, et toujours pas d'`aria-label` — un attribut
+   * rendu au serveur resterait figé sur le mauvais thème (issues #6 et #56).
+   *
+   * Le nom vient donc du texte masqué visuellement par `.visually-hidden`,
+   * qui recourt à `clip-path` : l'élément reste rendu, donc dans l'arbre
+   * d'accessibilité, donc vocalisé. L'état qui ne convient pas porte
+   * `visibility: hidden`, qui l'en retire.
+   *
+   * Ce test rougirait si cette seconde moitié tombait — un `opacity: 0` à la
+   * place, par exemple : les deux textes se cumuleraient dans le nom, et plus
+   * aucun des deux libellés ne correspondrait.
+   */
+  test('n’expose qu’un nom à la fois, celui de l’action', async ({ page }) => {
+    await page.goto('/')
+    await hydrated(page)
+
+    const vers = (theme: 'clair' | 'sombre') =>
+      page.getByRole('button', { name: `Activer le thème ${theme}` })
+
+    await expect(vers('sombre')).toHaveCount(1)
+    await expect(vers('clair')).toHaveCount(0)
+
+    await vers('sombre').click()
+
+    await expect(page.locator('html')).toHaveClass(/dark/)
+    await expect(vers('clair')).toHaveCount(1)
+    await expect(vers('sombre')).toHaveCount(0)
+  })
+
   test('le thème sombre survit à un changement de page', async ({ page }) => {
     await page.goto('/')
     await hydrated(page)

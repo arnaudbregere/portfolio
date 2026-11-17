@@ -364,14 +364,21 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   onglet neuf. Un lien de même origine que le site n'en porte pas.
 - **Un seul bouton de libellé, et une seule taille.** « Menu », « Fermer » et
   la bascule de thème partagent l'atome `Button` : même hauteur
-  (`--control-min-height`), même largeur minimale (`--control-min-width`), même
-  filet, même typographie. Décision du 09/11/2026 (issue #34), prise sur trois
-  copies du même bloc de style qui avaient déjà divergé. La largeur minimale
-  tient « Menu » et « Fermer » à la même place, pour que la surcouche ne décale
-  pas le bouton qui l'a ouverte ; `white-space: nowrap` tient la hauteur, un
+  (`--control-min-height`), même filet, même typographie. Décision du
+  09/11/2026 (issue #34), prise sur trois copies du même bloc de style qui
+  avaient déjà divergé. La largeur minimale (`--control-min-width`) tient
+  « Menu » et « Fermer » à la même place, pour que la surcouche ne décale pas
+  le bouton qui l'a ouverte ; `white-space: nowrap` tient la hauteur, un
   libellé passé sur deux lignes grandissant le bouton et désalignant ses
-  voisins. Les trois n'ont pas la **même** largeur : « Thème sombre » est le
-  double de « Menu », et l'imposer à tous ferait déborder l'en-tête mobile.
+  voisins. Les deux n'ont pas la **même** largeur rendue, seulement le même
+  plancher.
+
+  **La bascule de thème en sort le 17/11/2026** : passée au pictogramme, elle
+  n'a plus de libellé à aligner sur quoi que ce soit, et la réserve ne ferait
+  qu'un rectangle étiré autour d'une icône de 20px. L'atome porte une prop
+  `icon` qui la retire et ramène le bouton à un carré de
+  `--control-min-height` — la hauteur, donc la cible tactile, ne bouge pas.
+  Le § 6 porte la décision et le relevé des largeurs.
 - **Une coordonnée joignable porte son pictogramme.** Décision d'Arnaud du
   09/11/2026 : le téléphone et l'e-mail en portent un sur `/contact` comme
   dans la liste « Me joindre » de `/a-propos`, par l'atome `Icon`. Le
@@ -635,6 +642,21 @@ Ce que la décision de P2 défendait, et ce qui lui est préféré :
 mobile puis la fenêtre élargie, elle resterait sinon ouverte sans déclencheur
 pour la refermer.
 
+**La surcouche entre par l'opacité seule, ses rubriques seules montent d'un
+pas.** Décision du 17/11/2026, prise sur un décalage signalé à l'écran. Elle
+portait jusque-là `translate: 0 -0.5rem` à l'ouverture ; comme le `<dialog>`
+contient son propre en-tête, le bouton « Fermer » naissait **8px au-dessus**
+de la place du bouton « Menu » qui venait de l'ouvrir, et y descendait en
+240 ms. Au repos les deux tombent au pixel près — bords à x 269/270 et
+364/365, filet de l'en-tête à y 84, relevé sur deux captures de la même page —,
+mais l'œil voit la barre sauter à chaque ouverture.
+
+La figure du § 7, « monter d'un pas », n'est pas perdue : les quatre rubriques
+la portent déjà, l'une après l'autre, à 40 ms d'écart. Le pas du conteneur la
+doublait. `e2e/tests/menu-alignement.spec.ts` tient les deux moitiés de la
+promesse : la place au repos, et l'absence de glissement, échantillonnée image
+par image dans la page.
+
 **Chaque rubrique porte son rang dans la surcouche mobile**, de `01` à `04`,
 en chiffres tabulaires et au corps des libellés. C'est la figure numérotée du
 contrat de direction : la hausse empruntée à la planche de brevet, qui reporte
@@ -681,17 +703,47 @@ Relevé dans Chrome à **393px** : signature 113px, bascule 126px, déclencheur
 76px, deux écarts de 16px et 32px de gouttières, soit **379px** — aucun
 débordement.
 
-**La bascule garde la même largeur dans les deux thèmes.** « Thème clair » est
-plus court que « Thème sombre » : sans réserve, le bouton rétrécit au clic et
-toute la barre se décale. Le libellé de l'autre thème est donc rendu dans la
-même case de grille, invisible et hors de l'arbre d'accessibilité. Pas de
-largeur minimale en dur, qui deviendrait fausse au premier changement de police
-ou de libellé.
+**La bascule est un pictogramme depuis le 17/11/2026**, décision d'Arnaud.
+Elle portait jusque-là son libellé en clair, « Thème sombre » ou « Thème
+clair ». Relevé dans Chrome avant le changement : **149px** en desktop, 126px à
+393px — et le filet fort de `Button` lui donnait plus de poids qu'aux quatre
+rubriques, qui sont du texte nu. Un visiteur qui lit une candidature vient voir
+ce que le site contient, pas changer de thème. Le carré rend **105px** à la
+barre en desktop et **82px** au déclencheur « Menu » en mobile, et remet la
+bascule au rang qui est le sien.
 
-**La bascule est un bouton unique, nommé par son action** — « Thème sombre »
-quand le thème courant est clair. Un groupe de deux boutons `aria-pressed` a été
-écarté : avant le premier clic la préférence vaut `system`, et un
-`aria-pressed="true"` affirmerait un choix que le visiteur n'a pas fait.
+**Elle garde la même largeur dans les deux thèmes**, et pour une raison plus
+simple qu'avant : c'est un carré de 44px, `--control-min-height` sur les deux
+dimensions. La largeur ne dépend plus d'aucun libellé, donc rien ne peut la
+faire varier au clic. La réserve de grille qui tenait la case du plus long des
+deux libellés disparaît avec eux.
+
+**Le pictogramme dit la destination, pas l'état courant** : un croissant de
+lune quand le thème est clair, un soleil quand il est sombre. C'est la règle du
+libellé qu'il remplace. Les deux icônes sont dans le document et le CSS révèle
+celle qui convient, depuis la classe que `@nuxtjs/color-mode` pose sur `<html>`
+avant le premier affichage — le HTML du serveur ne dépend donc pas du thème
+(`.claude/rules/frontend.md`).
+
+**Le nom accessible reste du texte, et ne change pas d'un mot** : « Activer le
+Thème sombre » et « Activer le Thème clair » sont rendus tous les deux, masqués
+visuellement, et celui qui ne convient pas sort de l'arbre d'accessibilité par
+`visibility: hidden`. Toujours pas d'`aria-label` : un attribut rendu au
+serveur reste figé sur le mauvais thème, Vue corrigeant les textes divergents
+mais pas les attributs (issues #6 et #56). WCAG 2.5.3 cesse en revanche de
+s'appliquer — le bouton n'a plus de libellé visible que son nom doive contenir.
+
+**La bascule reste un bouton unique, nommé par son action.** Un groupe de deux
+boutons `aria-pressed`, un par thème, a été écarté une seconde fois le
+17/11/2026 : avant le premier clic la préférence vaut `system`, et un
+`aria-pressed="true"` affirmerait un choix que le visiteur n'a pas fait. Deux
+cibles de 44px coûteraient d'ailleurs 96px, à peine moins que le libellé
+qu'elles remplaceraient.
+
+**Elle reste un rectangle à filet** : le § 5 réserve l'arrondi à la taxonomie,
+et un contrôle n'en est pas. Le pictogramme se mesure en `em` et prend l'encre
+du bouton — `Icon` se donne l'encre atténuée pour les lignes de coordonnées de
+`/contact`, trop pâle sur un contrôle cerné.
 
 ### La page d'erreur
 

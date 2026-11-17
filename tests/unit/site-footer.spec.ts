@@ -3,14 +3,16 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { siteNav } from '~~/content/nav'
 import SiteFooter from '~/components/organisms/SiteFooter.vue'
 import ThemeToggle from '~/components/molecules/ThemeToggle.vue'
+import Icon from '~/components/atoms/Icon.vue'
 
 describe('ThemeToggle', () => {
   /**
-   * Le nom du bouton est son **texte**, non un `aria-label` : un attribut
-   * rendu au serveur reste figé sur le mauvais thème, puisque Vue corrige les
-   * textes divergents mais pas les attributs (issue #6, puis #56). « Activer
-   * le » est masqué visuellement, « Thème sombre » ne l'est pas — le texte
-   * affiché est donc contenu dans le nom, ce que WCAG 2.5.3 demande.
+   * Le nom du bouton est du **texte**, non un `aria-label` : un attribut rendu
+   * au serveur reste figé sur le mauvais thème, puisque Vue corrige les textes
+   * divergents mais pas les attributs (issue #6, puis #56). Depuis le passage
+   * au pictogramme (17/11/2026), ce texte est masqué visuellement en entier —
+   * WCAG 2.5.3 ne s'applique plus, le bouton n'ayant plus de libellé visible
+   * que son nom devrait contenir.
    */
   it('se nomme par l’action, pas par l’état courant', async () => {
     const toggle = await mountSuspended(ThemeToggle)
@@ -19,28 +21,26 @@ describe('ThemeToggle', () => {
     expect(button.attributes('type')).toBe('button')
     expect(button.attributes('aria-label')).toBeUndefined()
 
-    for (const label of toggle.findAll('.m-theme-toggle__label')) {
-      expect(label.text()).toMatch(/^Activer le ?Thème (clair|sombre)$/)
+    for (const state of toggle.findAll('.m-theme-toggle__state')) {
+      expect(state.get('.visually-hidden').text()).toMatch(
+        /^Activer le Thème (clair|sombre)$/,
+      )
     }
   })
 
   /**
-   * **Le document porte les deux libellés, toujours les mêmes.** C'est tout
+   * **Le document porte les deux états, toujours les mêmes.** C'est tout
    * l'objet de l'issue #56 : le serveur ignore la préférence du visiteur, donc
    * un libellé choisi au rendu divergeait de celui qu'attendait le navigateur
    * en thème sombre. Ici le HTML ne dépend plus du thème, et le CSS révèle
    * celui qui convient depuis la classe de `<html>`.
-   *
-   * Conséquence utile : « Thème clair » est plus court que « Thème sombre »,
-   * et les deux occupant la même case de grille, le bouton ne rétrécit pas au
-   * clic — la barre de l'en-tête ne se décale plus.
    */
-  it('rend les deux libellés, quel que soit le thème', async () => {
+  it('rend les deux états, quel que soit le thème', async () => {
     const toggle = await mountSuspended(ThemeToggle)
     const colorMode = useColorMode()
 
     const rendered = () =>
-      toggle.findAll('.m-theme-toggle__label').map((label) => label.text())
+      toggle.findAll('.m-theme-toggle__state').map((state) => state.text())
 
     const before = rendered()
 
@@ -50,6 +50,42 @@ describe('ThemeToggle', () => {
     await nextTick()
 
     expect(rendered(), 'le balisage ne doit pas dépendre du thème').toEqual(before)
+  })
+
+  /**
+   * **Le pictogramme dit la destination, pas l'état courant** : la lune est
+   * dans l'état qui propose le sombre, le soleil dans celui qui propose le
+   * clair. Les deux inversés, le bouton annoncerait le thème qu'on quitte.
+   *
+   * Les icônes sont `aria-hidden` (atome `Icon`) : le sens reste porté par le
+   * texte masqué du même état, et jamais par le dessin seul.
+   */
+  it('montre la lune pour aller au sombre, le soleil pour aller au clair', async () => {
+    const toggle = await mountSuspended(ThemeToggle)
+
+    const icone = (modificateur: 'dark' | 'light') =>
+      toggle
+        .get(`.m-theme-toggle__state--to-${modificateur}`)
+        .getComponent(Icon)
+
+    expect(icone('dark').props('name')).toBe('moon')
+    expect(icone('light').props('name')).toBe('sun')
+
+    for (const svg of toggle.findAll('svg')) {
+      expect(svg.attributes('aria-hidden')).toBe('true')
+    }
+  })
+
+  /**
+   * Le bouton est carré : `--control-min-width` réserve la place du plus long
+   * libellé du site, et un pictogramme n'a rien à aligner. C'est ce que la
+   * prop `icon` de l'atome retire — sans elle, la bascule reprendrait les
+   * 149px que la décision du 17/11/2026 lui enlève (`DESIGN.md` § 6).
+   */
+  it('demande à l’atome un bouton d’icône, pas un bouton de libellé', async () => {
+    const toggle = await mountSuspended(ThemeToggle)
+
+    expect(toggle.get('button').classes()).toContain('a-button--icon')
   })
 
   it('bascule la préférence au clic', async () => {

@@ -34,6 +34,25 @@ describe('Icon', () => {
   })
 
   /**
+   * Le soleil et la lune servent la bascule de thème (17/11/2026). Le soleil
+   * est le seul pictogramme à porter un disque : ses huit rayons tiennent dans
+   * un tracé, le cercle n'en est pas un.
+   */
+  it('dessine un soleil à couronne et une lune d’un seul tracé', async () => {
+    const sun = await mountSuspended(Icon, { props: { name: 'sun' } })
+    const moon = await mountSuspended(Icon, { props: { name: 'moon' } })
+
+    expect(sun.find('circle').exists()).toBe(true)
+    expect(sun.findAll('path')).toHaveLength(1)
+
+    expect(moon.find('circle').exists()).toBe(false)
+    expect(moon.findAll('path')).toHaveLength(1)
+    expect(sun.findAll('path')[0]!.attributes('d')).not.toBe(
+      moon.findAll('path')[0]!.attributes('d'),
+    )
+  })
+
+  /**
    * Le libellé de la ligne porte le sens. Une icône annoncée par un lecteur
    * d'écran répéterait « Téléphone » deux fois.
    */

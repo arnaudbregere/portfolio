@@ -66,6 +66,21 @@ watch(() => route.fullPath, () => {
  * coup à la fermeture, avant d'avoir pu s'effacer.
  *
  * Le mouvement n'ajoute aucune information : le menu est lisible à l'arrêt.
+ *
+ * ## La surcouche n'entre plus d'un pas, ses rubriques seules montent
+ *
+ * Jusqu'au 17/11/2026, la surcouche entière portait `translate: 0 -0.5rem`
+ * à l'ouverture. Le `<dialog>` contient son propre en-tête, donc le bouton
+ * « Fermer » naissait **8px au-dessus** de la place du bouton « Menu » qui
+ * venait de l'ouvrir, et y descendait en 240 ms. Mesuré dans Chrome, `y` du
+ * bouton échantillonné image par image : `8, 8, 8, 16, 16, 16…`. Au repos
+ * les deux boutons tombent au pixel près — relevé sur deux captures de la
+ * même page, bords à x 269/270 et 364/365, filet à y 84 de part et d'autre —,
+ * mais l'œil voit la barre sauter.
+ *
+ * La figure n'est pas perdue : les rubriques montent déjà d'un pas, l'une
+ * après l'autre, par `nav-entry` plus bas. Le pas du conteneur la doublait.
+ * Il ne reste donc que l'opacité, qui ne déplace rien. `DESIGN.md` § 6.
  */
 .o-nav {
   width: 100%;
@@ -78,20 +93,16 @@ watch(() => route.fullPath, () => {
   background-color: var(--color-bg);
   color: var(--color-fg);
   opacity: 0;
-  translate: 0 -0.5rem;
   transition:
     opacity var(--dur-base) var(--ease-out),
-    translate var(--dur-base) var(--ease-out),
     display var(--dur-base) allow-discrete,
     overlay var(--dur-base) allow-discrete;
 
   &[open] {
     opacity: 1;
-    translate: 0 0;
 
     @starting-style {
       opacity: 0;
-      translate: 0 -0.5rem;
     }
   }
 
