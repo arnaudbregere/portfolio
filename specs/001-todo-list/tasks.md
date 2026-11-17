@@ -75,18 +75,18 @@ réinitialisation.
 
 ### Port et persistance
 
-- [ ] T009 [US1] Déclarer le port dans `app/adapters/port.ts` : `lister`, `creer`, `lire`, `modifier`, `supprimer`, toutes asynchrones, plus `disponible()` qui rend un booléen et **ne lève jamais** — voir `contracts/persistance.md`
-- [ ] T010 [US1] Écrire l'adaptateur navigateur dans `app/adapters/navigateur.ts` : une clé unique portant un numéro de version de format, toute lecture et toute écriture **enveloppées** — en navigation privée l'accès lève
-- [ ] T011 [US1] Dans `app/adapters/navigateur.ts`, écarter sans erreur un contenu illisible, d'une version inconnue, ou qui ne passe pas les gardes : la démo repart des trois tâches d'exemple
-- [ ] T012 [US1] Écrire les trois tâches d'exemple dans `shared/todo/exemples.ts` — une faite, les trois priorités couvertes — et les semer à la première visite comme à la réinitialisation
-- [ ] T013 [US1] Écrire `app/composables/useTodos.ts` : l'état de la démo, le filtre courant, la dernière suppression annulable. Il ne connaît **que** le port, jamais une implémentation
+- [x] T009 [US1] Déclarer le port dans `app/adapters/port.ts` : `lister`, `creer`, `lire`, `modifier`, `supprimer`, toutes asynchrones, plus `disponible()` qui rend un booléen et **ne lève jamais** — voir `contracts/persistance.md`
+- [x] T010 [US1] Écrire l'adaptateur navigateur dans `app/adapters/navigateur.ts` : une clé unique portant un numéro de version de format, toute lecture et toute écriture **enveloppées** — en navigation privée l'accès lève
+- [x] T011 [US1] Dans `app/adapters/navigateur.ts`, écarter sans erreur un contenu illisible, d'une version inconnue, ou qui ne passe pas les gardes : la démo repart des trois tâches d'exemple
+- [x] T012 [US1] Écrire les trois tâches d'exemple dans `shared/todo/exemples.ts` — une faite, les trois priorités couvertes — et les semer à la première visite comme à la réinitialisation
+- [x] T013 [US1] Écrire `app/composables/useTodos.ts` : l'état de la démo, le filtre courant, la dernière suppression annulable. Il ne connaît **que** le port, jamais une implémentation
 
 ### Tests du port
 
-- [ ] T014 [P] [US1] Écrire dans `tests/unit/todo-port.spec.ts` une suite de scénarios **passée à n'importe quelle implémentation du port**, dix opérations et un état final attendu — c'est elle qui vérifiera FR-020 en phase 5
-- [ ] T015 [P] [US1] Passer cette suite à l'adaptateur navigateur dans `tests/unit/todo-port.spec.ts`
-- [ ] T016 [P] [US1] Tester les trois échecs de stockage dans `tests/unit/todo-navigateur.spec.ts` : accès qui lève, contenu illisible, version de format inconnue
-- [ ] T017 [P] [US1] Tester `useTodos` dans `tests/unit/use-todos.spec.ts` : ajout, bascule, filtre, suppression, annulation, réinitialisation, contre un port simulé
+- [x] T014 [P] [US1] Écrire dans `tests/unit/todo-port.spec.ts` une suite de scénarios **passée à n'importe quelle implémentation du port**, dix opérations et un état final attendu — c'est elle qui vérifiera FR-020 en phase 5
+- [x] T015 [P] [US1] Passer cette suite à l'adaptateur navigateur dans `tests/unit/todo-port.spec.ts`
+- [x] T016 [P] [US1] Tester les trois échecs de stockage dans `tests/unit/todo-navigateur.spec.ts` : accès qui lève, contenu illisible, version de format inconnue
+- [x] T017 [P] [US1] Tester `useTodos` dans `tests/unit/use-todos.spec.ts` : ajout, bascule, filtre, suppression, annulation, réinitialisation, contre un port simulé
 
 ### Interface
 
