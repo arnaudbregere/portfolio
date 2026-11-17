@@ -734,8 +734,22 @@ mais il n'est plus la première vue : il s'atteint après suppression, et le
 champ y garde le focus. Décision d'Arnaud — une démo qui paraît vide à
 l'arrivée ne se joue pas.
 
-**Quand l'API ne répond pas, son option est désactivée, et la raison est
-écrite.** Jamais de repli silencieux sur le navigateur. L'instance gratuite
+**Quand l'API ne répond pas, le sélecteur ne paraît pas du tout.** Révisé le
+soir du 17/11/2026, par Arnaud, sur capture : l'option grisée et son motif
+étaient posés **avant** la démo, et l'instance gratuite dormant, c'était l'état
+par défaut. Un visiteur arrivait donc sur un message d'échec et lisait
+« quelque chose est cassé » avant d'avoir rien essayé.
+
+Ce n'est pas le repli silencieux que la première décision écartait : la source
+ne bascule jamais d'elle-même, et rien ne prétend venir du service quand il
+dort. On cesse seulement de proposer une porte fermée. Le jour où le service
+est déployé, le bloc revient de lui-même — la sonde en décide, aucune ligne ne
+change. Et ce que la démo prouve est dit ailleurs, par la fiche : « Solution »
+nomme les deux sources, « Résultat » chiffre les quinze tests qui valent pour
+les deux.
+
+La formulation initiale, écartée : « son option est désactivée, et la raison
+est écrite ». Jamais de repli silencieux sur le navigateur. L'instance gratuite
 dort, et une démo qui prétend montrer deux adaptateurs tout en servant
 toujours le même mentirait sur la seule chose qu'elle est là pour prouver. Une
 sonde de santé décide, le refus se lit.

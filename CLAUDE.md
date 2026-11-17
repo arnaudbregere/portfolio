@@ -19,13 +19,15 @@ portfolio/
 ├── app/          UI Nuxt — components (Atomic Design), pages, layouts, composables, styles, utils
 ├── content/      Contenu typé en TypeScript (projets, parcours) — source unique
 ├── server/       Routes Nitro — référencement et contrôle de santé, rien d'autre
+├── shared/       Domaine partagé par le site et l'API — typé, sans dépendance
 ├── tests/unit/   Vitest
-└── e2e/          Playwright (package npm indépendant, créé en P6)
+├── e2e/          Playwright (package npm indépendant, créé en P6)
+└── api/          CRUD de la démo de liste de tâches (package npm indépendant)
 ```
 
 Règles détaillées par domaine : @.claude/rules/frontend.md,
 @.claude/rules/design-system.md, @.claude/rules/content.md,
-@.claude/rules/backend.md et @.claude/rules/e2e.md.
+@.claude/rules/backend.md, @.claude/rules/e2e.md et @.claude/rules/api.md.
 
 ## Environnement
 

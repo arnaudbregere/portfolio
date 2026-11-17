@@ -39,6 +39,7 @@ const documentsVivants = [
   'DESIGN.md',
   'PRODUCT.md',
   'README.md',
+  '.claude/rules/api.md',
   '.claude/rules/backend.md',
   '.claude/rules/content.md',
   '.claude/rules/design-system.md',

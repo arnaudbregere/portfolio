@@ -146,11 +146,20 @@ const sourceNotice = computed(() => courante().status().notice)
  * Une démo qui prétend montrer deux adaptateurs tout en servant toujours le
  * même mentirait sur la seule chose qu'elle est là pour prouver.
  */
-const apiMotif = computed(() => {
-  if (!apiSondee.value) return 'Vérification du service…'
-
-  return apiJoignable.value ? '' : 'Le service ne répond pas : la démo reste jouable hors ligne.'
-})
+/**
+ * Le sélecteur ne paraît **que s'il y a un choix à faire**.
+ *
+ * Décision d'Arnaud du 17/11/2026, prise sur capture : service éteint, un
+ * visiteur arrivait sur une option grisée et un message d'échec posés avant
+ * la démo, et lisait « quelque chose est cassé ». L'instance gratuite dort,
+ * donc c'était l'état par défaut.
+ *
+ * Ce n'est pas un repli silencieux, et la décision du matin tient : on ne
+ * bascule jamais de source en douce. On cesse seulement de proposer une porte
+ * fermée. Le jour où le service est déployé, le bloc revient de lui-même —
+ * aucune ligne à changer.
+ */
+const sourceChoisissable = computed(() => apiSondee.value && apiJoignable.value)
 
 /**
  * Le message annoncé au lecteur d'écran — **et le refus n'y passe pas**.
@@ -297,14 +306,13 @@ const saveEdit = async (todo: Todo) => {
          Deux niveaux visuels, et c'est voulu : la source est un contrôle —
          rectangles à filet —, les filtres sont un tri — du texte. Six
          rectangles identiques ne diraient pas lequel change le système. -->
-    <fieldset class="o-todo__sources">
+    <fieldset v-if="sourceChoisissable" class="o-todo__sources">
       <legend class="o-todo__sources-legend">Source des données</legend>
 
       <label
         v-for="option in sources"
         :key="option.value"
         class="o-todo__source"
-        :class="{ 'o-todo__source--off': option.value === 'api' && !apiJoignable }"
       >
         <input
           :checked="source === option.value"
@@ -312,15 +320,10 @@ const saveEdit = async (todo: Todo) => {
           type="radio"
           name="todo-source"
           :value="option.value"
-          :disabled="option.value === 'api' && !apiJoignable"
           @change="changerSource(option.value)"
         >
         <span class="o-todo__source-label">{{ option.label }}</span>
       </label>
-
-      <!-- Le motif est écrit, jamais tu. Une option grisée sans raison est une
-           panne que le visiteur attribue à son navigateur. -->
-      <p v-if="apiMotif" class="o-todo__source-reason">{{ apiMotif }}</p>
     </fieldset>
 
     <!-- Un vrai formulaire, pour que la touche Entrée valide. Rien n'est
@@ -604,24 +607,6 @@ const saveEdit = async (todo: Todo) => {
 .o-todo__source input:focus-visible + .o-todo__source-label {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
-}
-
-/* Désactivée, l'option reste lisible : elle dit ce qui existe, et le motif
-   écrit à côté dit pourquoi elle ne s'atteint pas. */
-.o-todo__source--off {
-  cursor: not-allowed;
-}
-
-.o-todo__source--off .o-todo__source-label {
-  border-style: dashed;
-  color: var(--color-fg-muted);
-}
-
-.o-todo__source-reason {
-  flex-basis: 100%;
-  margin: 0;
-  color: var(--color-fg-muted);
-  font-size: var(--step--1);
 }
 
 .o-todo__add {

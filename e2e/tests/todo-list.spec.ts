@@ -262,22 +262,22 @@ test.describe('Démo de liste de tâches', () => {
    *
    * La suite tourne contre la build de production servie par `webServer` :
    * rien n'écoute sur l'origine du service, et c'est exactement le cas que ce
-   * test veut. Jamais de repli silencieux — l'option est refusée, et la raison
-   * se lit (FR-016).
+   * test veut — c'est aussi l'état par défaut en production, l'instance
+   * gratuite dormant. Le bloc disparaît alors en entier plutôt que de poser
+   * une porte fermée avant la démo. Ce n'est pas un repli silencieux : la
+   * source ne bascule jamais d'elle-même (FR-016).
    */
-  test('désactive l’option « API » quand le service ne répond pas, motif à l’appui', async ({ page }) => {
+  test('cache le sélecteur de source quand le service ne répond pas', async ({ page }) => {
     await page.goto(demo)
     await pret(page)
 
-    const api = page.getByRole('radio', { name: 'API' })
-    const navigateur = page.getByRole('radio', { name: 'Navigateur' })
-
-    await expect(api).toBeDisabled()
-    await expect(navigateur).toBeChecked()
-    await expect(page.getByText('Le service ne répond pas')).toBeVisible()
+    await expect(page.getByRole('radio', { name: 'API' })).toHaveCount(0)
+    await expect(page.getByRole('radio', { name: 'Navigateur' })).toHaveCount(0)
+    await expect(page.getByText('Source des données')).toHaveCount(0)
 
     // La démo reste entière : une source indisponible ne coupe rien.
     await expect(page.getByRole('checkbox')).toHaveCount(3)
+    await expect(page.getByRole('radio', { name: 'Toutes' })).toBeChecked()
   })
 
   /**

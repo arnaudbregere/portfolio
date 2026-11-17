@@ -187,7 +187,7 @@ export const projects: readonly Project[] = [
     solution:
       'La logique — créer, modifier, filtrer, trier, valider — est écrite en fonctions pures : rien de Vue, rien du réseau, rien du stockage. Elle se teste seule, sans navigateur. Le stockage passe par une interface unique, servie par deux implémentations : le stockage local du navigateur, et une API HTTP. Changer de source ne change aucune ligne de logique.',
     result:
-      '98 tests unitaires et 13 tests de bout en bout. Les cas limites sont traités un par un : titre vide, limite de 120 caractères, priorité inconnue, stockage inaccessible en navigation privée, quota atteint, données illisibles. 15 de ces tests valent pour les deux sources — ils décrivent ce que le stockage doit faire, pas comment il le fait. Tout le parcours se fait au clavier, et l’audit axe-core ne relève rien dans les deux thèmes.',
+      '117 tests unitaires, 14 de bout en bout et 29 pour le service. Les cas limites sont traités un par un : titre vide, limite de 120 caractères, priorité inconnue, stockage inaccessible en navigation privée, quota atteint, données illisibles. 30 de ces tests décrivent ce que le stockage doit faire, pas comment : la même suite est rejouée contre les deux sources, et elle a refusé deux divergences du service avant qu’elles atteignent la page. Cent tâches se trient, se filtrent et se décomptent cent fois en 7,35 ms. Tout le parcours se fait au clavier, et l’audit axe-core ne relève rien dans les deux thèmes.',
     stack: [
       'Vue 3',
       'Nuxt 4',
@@ -201,6 +201,9 @@ export const projects: readonly Project[] = [
       'Vercel',
     ],
     links: [{ label: 'Démo jouable', url: 'https://arnaud-bregere.fr/projets/todo-list' }],
+    /* Composée par `node scripts/og-card.js --out todo-list --figure 04 …` :
+       la fiche n'a pas de capture, la démo se joue dans la page. */
+    ogImage: '/og/todo-list.png',
     featured: false,
   },
 ]

@@ -115,9 +115,9 @@ describe('TodoList', () => {
 
   it('groupe les filtres dans un `fieldset` nommé, en champs radio réels', async () => {
     const page = await monter()
-    // Le second : le premier groupe est le sélecteur de source, qui ouvre le
-    // bloc depuis la phase 5.
-    const groupe = page.findAll('fieldset')[1]!
+    // Le seul, service éteint : le sélecteur de source ne paraît que s'il y a
+    // un choix à faire.
+    const groupe = page.findAll('fieldset')[0]!
     const radios = groupe.findAll('input[type="radio"]')
 
     expect(groupe.find('legend').text()).toBe('Filtrer les tâches')
@@ -322,38 +322,24 @@ describe('TodoList', () => {
   })
 
   /**
-   * Le sélecteur de source ouvre le bloc : il commande tout ce qui suit, et
-   * placé en dessous il se lirait après coup — `DESIGN.md` § 5.
+   * **Le sélecteur ne paraît que s'il y a un choix à faire.** Service éteint,
+   * un visiteur arrivait sur une option grisée et un message d'échec posés
+   * avant la démo — décision d'Arnaud du 17/11/2026, prise sur capture.
+   *
+   * Ce n'est pas un repli silencieux : on ne bascule pas de source en douce,
+   * on cesse de proposer une porte fermée. Ici `fetch` n'est pas simulé, donc
+   * la sonde échoue, donc le bloc est absent.
    */
-  it('ouvre le bloc par le sélecteur de source, en champs radio réels', async () => {
-    const page = await monter()
-    const groupe = page.findAll('fieldset')[0]!
-    const radios = groupe.findAll('input[type="radio"]')
-
-    expect(groupe.find('legend').text()).toBe('Source des données')
-    expect(radios).toHaveLength(2)
-    expect(radios.map((entree) => entree.element.name)).toEqual(['todo-source', 'todo-source'])
-    expect(radios[0]!.element.checked).toBe(true)
-  })
-
-  /**
-   * Jamais de repli silencieux : une option grisée sans raison est une panne
-   * que le visiteur attribue à son navigateur. Ici le service est injoignable
-   * — `fetch` n'est pas simulé —, donc l'option doit se désactiver et le dire.
-   */
-  it('désactive l’option « API » injoignable, et écrit le motif', async () => {
+  it('cache le sélecteur de source quand le service ne répond pas', async () => {
     const page = await monter()
 
-    // La sonde ne bloque pas l'arrivée : la démo est jouable avant qu'elle
-    // réponde, donc le test l'attend. `vi.waitFor` et non un nombre de tours
-    // de rendu : c'est un `fetch` qui échoue, et sa durée ne se compte pas en
-    // microtâches.
-    await vi.waitFor(() => expect(page.text()).toContain('Le service ne répond pas'))
+    // `vi.waitFor` et non un nombre de tours de rendu : c'est un `fetch` qui
+    // échoue, et sa durée ne se compte pas en microtâches.
+    await vi.waitFor(() => expect(page.findAll('input[name="todo-source"]')).toHaveLength(0))
 
-    const radios = page.findAll('fieldset')[0]!.findAll('input[type="radio"]')
-
-    expect(radios[1]!.element.disabled).toBe(true)
-    expect(page.text()).toContain('Le service ne répond pas')
+    // La démo reste entière : une source indisponible ne coupe rien.
+    expect(page.findAll('input[type="checkbox"]')).toHaveLength(3)
+    expect(page.text()).not.toContain('Source des données')
   })
 
   /**

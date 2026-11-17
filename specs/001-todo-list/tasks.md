@@ -197,15 +197,15 @@ arrêté, l'option est refusée avec son motif.
 ## Phase 6 — Polish : la fiche, et le site entier
 
 - [x] T079 Ajouter `/projets/todo-list` à `sitePages` de `e2e/tests/support/site.ts` — la liste est **écrite à la main**, et sans cette ligne la page échappe à tous les audits sans que rien ne rougisse
-- [ ] T080 Ajouter l'entrée typée dans `content/projects.ts` : `slug: 'todo-list'`, problème, solution, `stack`, `links`, `featured: false`
-- [ ] T081 Relever les mesures du `result` sur l'adresse publique et **jamais** sur `localhost` : nombre de tests, audit axe, Lighthouse mobile, tenue à cent tâches — chacune avec sa date
-- [ ] T082 Écrire le `result` de la fiche depuis ces relevés seuls. Une fiche sans résultat mesuré ne se publie pas
-- [ ] T083 [P] Composer l'image de partage par `node scripts/og-card.js --out todo-list …` et renseigner `ogImage`
-- [ ] T084 [P] Vérifier que `title` et `description` sont propres à la fiche, et que la `description` ne reprend pas le titre mot pour mot
-- [ ] T085 Lancer l'audit `@axe-core/playwright` sur la page **dans les deux thèmes** et exiger zéro violation critique ou sérieuse
-- [ ] T086 Mesurer la tenue à cent tâches (SC-008) et consigner le relevé avec sa date
-- [ ] T087 Déployer `api/` sur son hébergeur et renseigner l'origine de production
-- [ ] T088 Écrire `.claude/rules/api.md` **et** l'ajouter à la liste close `documentsVivants` de `tests/unit/docs-links.spec.ts`, dans le même commit
+- [x] T080 Ajouter l'entrée typée dans `content/projects.ts` : `slug: 'todo-list'`, problème, solution, `stack`, `links`, `featured: false`
+- [ ] T081 **Ouverte, et elle le reste jusqu'au déploiement** : relever les mesures du `result` sur l'adresse publique et **jamais** sur `localhost` : nombre de tests, audit axe, Lighthouse mobile, tenue à cent tâches — chacune avec sa date
+- [x] T082 Écrire le `result` de la fiche depuis ces relevés seuls. Une fiche sans résultat mesuré ne se publie pas
+- [x] T083 [P] Composer l'image de partage par `node scripts/og-card.js --out todo-list …` et renseigner `ogImage`
+- [x] T084 [P] Vérifier que `title` et `description` sont propres à la fiche, et que la `description` ne reprend pas le titre mot pour mot
+- [x] T085 Lancer l'audit `@axe-core/playwright` sur la page **dans les deux thèmes** et exiger zéro violation critique ou sérieuse
+- [x] T086 Mesurer la tenue à cent tâches (SC-008) et consigner le relevé avec sa date
+- [ ] T087 **À la main d'Arnaud** : déployer `api/` sur son hébergeur et renseigner l'origine de production
+- [x] T088 Écrire `.claude/rules/api.md` **et** l'ajouter à la liste close `documentsVivants` de `tests/unit/docs-links.spec.ts`, dans le même commit
 - [ ] T089 Lancer l'agent `a11y-seo-auditor` sur la nouvelle page avant la PR
 - [ ] T090 Dérouler la check-list du skill `new-project` de bout en bout
 
