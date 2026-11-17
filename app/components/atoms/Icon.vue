@@ -11,7 +11,7 @@
  */
 withDefaults(
   defineProps<{
-    name: 'phone' | 'mail' | 'chevron-left' | 'chevron-right' | 'sun' | 'moon'
+    name: 'phone' | 'mail' | 'chevron-left' | 'chevron-right' | 'chevron-down' | 'sun' | 'moon'
     /** Épaisseur du trait, en unités du `viewBox`. */
     stroke?: number
   }>(),
@@ -37,6 +37,12 @@ withDefaults(
     />
     <path v-else-if="name === 'chevron-left'" d="M12.5 3.8 6.3 10l6.2 6.2" />
     <path v-else-if="name === 'chevron-right'" d="M7.5 3.8 13.7 10l-6.2 6.2" />
+
+    <!-- Le chevron descendant est le latéral tourné d'un quart de tour : même
+         `viewBox`, même longueur de branche, même trait. Il ouvre le `<select>`
+         de la démo de liste de tâches, à la place de la flèche du système, qui
+         ne suit ni la police ni le thème. `DESIGN.md` § 5. -->
+    <path v-else-if="name === 'chevron-down'" d="M3.8 7.5 10 13.7l6.2-6.2" />
 
     <!-- Le soleil : un disque et huit rayons, tous de même longueur. Les
          diagonales tombent à `r / √2` du centre, sinon la couronne paraît

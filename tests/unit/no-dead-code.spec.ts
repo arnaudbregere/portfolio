@@ -24,7 +24,24 @@ import { describe, expect, it } from 'vitest'
 const root = resolve(__dirname, '../..')
 
 /** Les dossiers où un nom peut être cité : tout ce que ce dépôt écrit. */
-const sources = ['app/', 'content/', 'server/', 'scripts/', 'tests/', 'e2e/tests/']
+const sources = [
+  'app/',
+  'content/',
+  'server/',
+  'scripts/',
+  'tests/',
+  'e2e/tests/',
+  // Le domaine de la liste de tâches, lu par `app/` comme par `api/` et
+  // n'appartenant à aucun des deux (`specs/001-todo-list/research.md` D1).
+  // Sans cette ligne, tout export de `shared/` serait déclaré mort dès son
+  // premier commit — d'où son arrivée dans le même que le dossier.
+  'shared/',
+  // Le service de la démo, paquet indépendant depuis le 17/11/2026 : sans
+  // cette ligne, un fichier d'`api/` que plus personne n'importe resterait au
+  // vert.
+  'api/src/',
+  'api/tests/',
+]
 
 const extensions = ['.vue', '.ts', '.js', '.mjs', '.scss']
 

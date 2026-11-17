@@ -55,11 +55,19 @@ defineProps<Props>()
    demande 4,5:1, et `--color-ink` tient 6,30:1 en clair comme 6,31:1 en
    sombre. Le filet suit la même encre, donc il tient aussi les 3:1 de
    WCAG 1.4.11 — et il n'en a pas besoin, le libellé portant seul le sens. */
+/* `--tag-ink` est le seul réglage que l'atome accepte de l'extérieur, et il
+   est facultatif : sans lui, l'étiquette reste à l'encre, comme les trois
+   surfaces qui l'emploient depuis le 13/11/2026. La démo de liste de tâches
+   s'en sert pour ranger ses trois priorités sur trois encres **déjà** dans la
+   palette — `DESIGN.md` § 5. Une prop de « ton » aurait inventé une taxonomie
+   de tons que le site n'a pas ; une propriété personnalisée n'invente rien,
+   elle laisse le parent nommer le token qu'il veut voir. */
 .a-tag-list__item {
   padding: var(--space-3xs) var(--space-2xs);
   border: var(--rule-ink);
+  border-color: var(--tag-ink, var(--color-ink));
   border-radius: var(--radius-s);
-  color: var(--color-ink);
+  color: var(--tag-ink, var(--color-ink));
   font-size: var(--step--1);
 }
 </style>

@@ -1,0 +1,30 @@
+{
+  /* `shared/` n'appartient à aucun des deux paquets : le site le lit par
+     l'alias `~~`, le service par un chemin relatif. Sans ce fichier, un outil
+     qui remonte à la recherche du tsconfig le plus proche atteint celui de la
+     racine, dont les `references` pointent vers `.nuxt/` — un dossier que Nuxt
+     génère, et qu'un travail d'intégration qui ne lance jamais Nuxt n'a pas.
+
+     C'est ce qui a fait rougir le travail `API` de la PR #90 le 17/11/2026 :
+     `[TSCONFIG_ERROR] Failed to load tsconfig '../.nuxt/tsconfig.app.json'`,
+     sur `shared/todo/types.ts`, alors que les trois suites passaient en local
+     — où `.nuxt/` existait.
+
+     Il ne décrit que la façon de lire ces fichiers. Les deux paquets gardent
+     chacun le leur, et c'est `npm run typecheck` de chaque côté qui juge. */
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+
+    /* Node 22 exécute ces fichiers en retirant les types, sans les compiler :
+       `enum`, `namespace` et les décorateurs échouent au lancement. */
+    "erasableSyntaxOnly": true
+  },
+  "include": ["**/*.ts"]
+}

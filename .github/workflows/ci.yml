@@ -50,6 +50,26 @@ jobs:
       - uses: ./.github/actions/deps
       - run: npm run build
 
+  # Le paquet `api/` est indépendant comme `e2e/` : il installe les siennes.
+  # `typecheck` **et** `test`, car ni Vitest ni Node ne vérifient les types —
+  # Vitest transforme par esbuild, et Node 22 se contente de les retirer.
+  api:
+    name: API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/deps
+        with:
+          working-directory: api
+
+      - name: Typecheck du service
+        run: npm run typecheck
+        working-directory: api
+
+      - name: Tests du service
+        run: npm test
+        working-directory: api
+
   e2e:
     name: Tests e2e
     runs-on: ubuntu-latest

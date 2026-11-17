@@ -129,10 +129,9 @@ describe('politique de sécurité du contenu', () => {
    * `https?://` ne voit pas une origine écrite sans schéma.
    */
   it('ne charge aucune ressource d’un autre domaine', () => {
-    expect(contentSecurityPolicy).not.toMatch(/https?:\/\//)
     expect(contentSecurityPolicy).not.toContain('*')
 
-    for (const directive of ['img-src', 'font-src', 'connect-src']) {
+    for (const directive of ['img-src', 'font-src']) {
       expect(found.get(directive), directive).toEqual(["'self'"])
     }
 
@@ -140,6 +139,47 @@ describe('politique de sécurité du contenu', () => {
     // est justifiée dans l'utilitaire, et vérifiée nommément plus bas.
     for (const directive of ['script-src', 'style-src']) {
       expect(found.get(directive), directive).toEqual(["'self'", "'unsafe-inline'"])
+    }
+  })
+
+  /**
+   * **`connect-src` porte une seconde origine depuis le 17/11/2026**, et une
+   * seule : le service de la démo de liste de tâches, que la page appelle en
+   * `fetch`. L'interdiction n'est pas retirée, elle est déplacée — le test
+   * exige désormais exactement deux valeurs, `'self'` et l'origine lue dans
+   * l'environnement, et aucune autre directive ne peut en porter une.
+   *
+   * Une troisième origine, un joker, un schéma seul (`https:`) ou la même
+   * tolérance posée sur `img-src` font donc toujours rougir la suite. Le
+   * remède reste celui de `.claude/rules/backend.md` : justifier le changement
+   * dans l'utilitaire, jamais relâcher le test.
+   */
+  it('n’ouvre qu’une seconde origine, sur `connect-src` et nulle part ailleurs', () => {
+    const connect = found.get('connect-src') ?? []
+    const origine = process.env.NUXT_PUBLIC_API_ORIGIN ?? ''
+
+    expect(connect[0]).toBe("'self'")
+
+    if (!origine) {
+      // Sans service configuré, la directive reste fermée. Une valeur de repli
+      // publierait `localhost` dans la politique d'un site de production.
+      expect(connect).toHaveLength(1)
+    } else {
+      expect(connect).toHaveLength(2)
+      expect(connect[1]).toBe(origine)
+
+      // Un schéma seul autoriserait tout le web en clair.
+      expect(connect[1]).not.toBe('https:')
+      expect(connect[1]).not.toBe('http:')
+    }
+
+    // Aucune autre directive ne porte d'origine.
+    for (const [directive, valeurs] of found) {
+      if (directive === 'connect-src') continue
+
+      for (const valeur of valeurs) {
+        expect(valeur, directive).not.toMatch(/https?:\/\//)
+      }
     }
   })
 

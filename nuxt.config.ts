@@ -110,6 +110,26 @@ export default defineNuxtConfig({
     // lien `www.` du site pour un lien sortant.
     public: {
       siteUrl: 'https://arnaud-bregere.fr',
+
+      /**
+       * Origine du service CRUD de la démo de liste de tâches, seconde source
+       * du port de persistance.
+       *
+       * **Jamais une URL écrite en dur ailleurs** : le développement, une
+       * préversion Vercel et la production n'ont pas la même, et le
+       * `connect-src` de `server/utils/security-headers.ts` doit nommer
+       * exactement celle-ci. Surchargeable par `NUXT_PUBLIC_API_ORIGIN`.
+       *
+       * **Vide par défaut, et c'est volontaire.** Une valeur `localhost` de
+       * repli partirait en production : la politique de sécurité publierait
+       * `http://localhost:4330`, et la console de chaque visiteur porterait une
+       * erreur CORS rouge à chaque chargement — relevé par l'audit du
+       * 17/11/2026. Sans origine, la démo ne sonde rien, n'affiche pas le
+       * sélecteur, et reste jouable sur le stockage du navigateur.
+       *
+       * En développement : `NUXT_PUBLIC_API_ORIGIN=http://localhost:4330`.
+       */
+      apiOrigin: '',
     },
   },
 

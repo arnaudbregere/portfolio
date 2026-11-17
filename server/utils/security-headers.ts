@@ -100,14 +100,60 @@ export const constantSecurityHeaders = {
  * `style-src` garde la même tolérance pour une autre raison : le rendu
  * serveur place le CSS des composants dans des `<style>` en ligne, et Vue
  * écrit des attributs `style`. Un jeton ne couvre pas les attributs.
+ *
+ * ### La tolérance tient malgré l'arrivée d'une saisie, le 17/11/2026
+ *
+ * La démo de liste de tâches amène au site ce qu'il n'avait jamais eu : un
+ * champ où un visiteur tape. La condition écrite plus haut — « une entrée
+ * utilisateur » — semble donc tombée, et elle ne l'est pas. Ce qui rendait le
+ * jeton nécessaire est qu'une entrée **atteigne le document en tant que
+ * balisage**. Ici, trois choses l'en empêchent, et chacune est vérifiée :
+ *
+ * - le titre saisi est **interpolé** par Vue, `{{ todo.title }}`, donc échappé
+ *   et posé en texte. Aucun `v-html` n'existe dans le dépôt, et les règles
+ *   l'interdisent ;
+ * - rien de cette saisie **ne revient du serveur** : la page est prérendue, et
+ *   la démo s'exécute après le montage ;
+ * - le service d'`api/` ne rend **que du JSON**, jamais de HTML, et ce JSON
+ *   est lu par `fetch` puis interpolé comme le reste.
+ *
+ * Un jeton ne fermerait donc toujours aucune porte percée. La condition
+ * reformulée, et opposable : `'unsafe-inline'` tombe le jour où une saisie
+ * atteint le document en tant que balisage — `v-html`, rendu serveur d'une
+ * valeur reçue, ou gabarit construit par concaténation.
+ *
+ * ## Pourquoi `connect-src` nomme une seconde origine
+ *
+ * La démo appelle le service d'`api/` en `fetch`. `'self'` seul ferait
+ * échouer chaque requête, et le sélecteur de source désactiverait l'API sans
+ * autre motif que le navigateur refusant la connexion — une panne que
+ * personne ne saurait lire.
+ *
+ * L'origine vient de `runtimeConfig.public.apiOrigin` de `nuxt.config.ts`,
+ * jamais d'une URL écrite deux fois : une politique qui nommerait une autre
+ * adresse que celle appelée serait verte au test et muette au bon moment.
+ * `connect-src` reste par ailleurs fermé — aucune autre origine, aucun joker,
+ * aucun schéma.
  */
+/**
+ * L'origine du service de la démo, lue une fois.
+ *
+ * Elle est lue ici plutôt que reçue en paramètre parce que `routeRules` pose
+ * ces en-têtes au build : il n'y a pas de requête à ce moment-là, donc pas de
+ * `useRuntimeConfig()` à interroger. `NUXT_PUBLIC_API_ORIGIN` surcharge les
+ * deux côtés d'un seul geste.
+ */
+const apiOrigin = process.env.NUXT_PUBLIC_API_ORIGIN ?? ''
+
 export const contentSecurityPolicy = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self'",
   "font-src 'self'",
-  "connect-src 'self'",
+  /* Sans origine configurée, la directive reste fermée : une valeur de repli
+     publierait `localhost` dans la politique d'un site de production. */
+  apiOrigin ? `connect-src 'self' ${apiOrigin}` : "connect-src 'self'",
   "base-uri 'none'",
   "object-src 'none'",
   "form-action 'none'",

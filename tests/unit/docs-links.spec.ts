@@ -39,6 +39,7 @@ const documentsVivants = [
   'DESIGN.md',
   'PRODUCT.md',
   'README.md',
+  '.claude/rules/api.md',
   '.claude/rules/backend.md',
   '.claude/rules/content.md',
   '.claude/rules/design-system.md',
@@ -73,6 +74,12 @@ const horsPerimetre = [
   '.claude/skills/speckit-',
   '.claude/agents/impeccable-',
   '.specify/',
+  // Les spécifications de spec-kit décrivent un état **à venir** : un plan
+  // cite `shared/todo/types.ts` avant que le fichier existe, et c'est sa
+  // raison d'être. Exiger qu'un chemin cité existe y serait faux par
+  // construction — le document deviendrait vert le jour où il n'apprend plus
+  // rien. Ajouté le 17/11/2026 avec `specs/001-todo-list/`.
+  'specs/',
 ]
 
 /**

@@ -34,7 +34,22 @@ test.describe('En-têtes de sécurité', () => {
 
       expect(policy).toContain("default-src 'self'")
       expect(policy).toContain("frame-ancestors 'none'")
-      expect(policy).not.toMatch(/https?:\/\//)
+
+      /* Depuis le 17/11/2026, **une** origine tierce est autorisée, et sur la
+         seule directive `connect-src` : le service de la démo de liste de
+         tâches, que la page appelle en `fetch`. L'interdiction n'est pas
+         retirée, elle est déplacée — toute autre directive qui porterait une
+         origine fait rougir la suite, et `tests/unit/security-headers.spec.ts`
+         tient la valeur exacte. */
+      const directives = policy!.split(';').map((directive) => directive.trim())
+
+      for (const directive of directives) {
+        if (directive.startsWith('connect-src ')) continue
+
+        expect(directive, directive).not.toMatch(/https?:\/\//)
+      }
+
+      expect(directives.filter((directive) => directive.startsWith('connect-src '))).toHaveLength(1)
     })
   }
 

@@ -19,6 +19,18 @@
   --color-ink: #b3122b;
   --color-ink-fg: #ffffff;
 
+  /* Les trois rangs de priorité de la démo de liste de tâches, et la seule
+     famille de couleurs du site hors encre et marque. Décision d'Arnaud du
+     17/11/2026, prise sur la mesure : rouge, orange, vert, chacun à son
+     étiquette. Les trois tiennent 4,5:1 sur leur fond dans les deux thèmes,
+     et leurs ratios sont voisins — 6,26 à 6,45 ici — pour qu'aucun rang ne
+     crie plus fort qu'un autre à l'œil. La couleur ne porte jamais seule le
+     sens : le mot reste écrit dans l'étiquette (WCAG 1.4.1).
+     `tests/unit/contrast.spec.ts` verrouille les trois couples. */
+  --color-priority-high: #b3122b;
+  --color-priority-medium: #8a4a00;
+  --color-priority-low: #14662e;
+
   /* Couleur de marque du monogramme : la même dans les deux thèmes. Une
      marque ne change pas de couleur avec le fond, et WCAG exempte les
      logotypes de son plancher de contraste — `DESIGN.md` § 5. À ne pas
@@ -123,6 +135,9 @@
   --color-line-strong: #7a7369;
   --color-ink: #ff5c72;
   --color-ink-fg: #121110;
+  --color-priority-high: #ff5c72;
+  --color-priority-medium: #dd7d18;
+  --color-priority-low: #3aa862;
   --color-logo-ink: #ff5c72;
   --color-logo-ink-fg: #121110;
 }

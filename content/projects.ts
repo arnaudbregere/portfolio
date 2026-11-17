@@ -177,4 +177,41 @@ export const projects: readonly Project[] = [
     links: [{ label: 'Démo jouable', url: 'https://arnaud-bregere.fr/projets/calculatrice' }],
     featured: false,
   },
+  {
+    slug: 'todo-list',
+    title: 'Todo List',
+    year: '2026',
+    role: 'Conception et développement, seul',
+    problem:
+      'Une liste de tâches, l’exercice le plus recopié du web, et presque toujours le même : un tableau en mémoire, une case à cocher, aucune règle écrite deux fois.',
+    solution:
+      'La logique — créer, modifier, filtrer, trier, valider — est écrite en fonctions pures : rien de Vue, rien du réseau, rien du stockage. Elle se teste seule, sans navigateur. Le stockage passe par une interface unique, servie par deux implémentations : le stockage local du navigateur, et une API HTTP. Changer de source ne change aucune ligne de logique.',
+    result:
+      '117 tests unitaires, 18 de bout en bout et 29 pour le service. Les cas limites sont traités un par un : titre vide, limite de 120 caractères, priorité inconnue, stockage inaccessible en navigation privée, quota atteint, données illisibles. 30 de ces tests décrivent ce que le stockage doit faire, pas comment : la même suite est rejouée contre les deux sources, et elle a refusé deux divergences du service avant qu’elles atteignent la page. Cent tâches se trient, se filtrent et se décomptent cent fois en 7,35 ms. Un audit d’accessibilité indépendant a trouvé deux pertes de focus et un état ARIA faux qu’aucun test ne voyait : les quatre tests qui les tiennent ont été écrits avec le correctif. Tout le parcours se fait au clavier, et l’audit axe-core ne relève rien dans les deux thèmes.',
+    stack: [
+      'Vue 3',
+      'Nuxt 4',
+      'TypeScript',
+      'Node 22',
+      'Vitest',
+      'Playwright',
+      'axe-core',
+      'SCSS',
+      'Web Storage API',
+      'Vercel',
+    ],
+    /* Pas de lien « Démo jouable » : elle est dans cette page, et un lien vers
+       la page qu'on lit recharge tout et perd l'état de la démo — relevé par
+       l'audit du 17/11/2026. Le code, lui, est ailleurs. */
+    links: [
+      {
+        label: 'Code source',
+        url: 'https://github.com/arnaudbregere/portfolio/tree/main/app/components/organisms/TodoList.vue',
+      },
+    ],
+    /* Composée par `node scripts/og-card.js --out todo-list --figure 04 …` :
+       la fiche n'a pas de capture, la démo se joue dans la page. */
+    ogImage: '/og/todo-list.png',
+    featured: false,
+  },
 ]

@@ -57,6 +57,13 @@ Deux thèmes, bascule persistée par `@nuxtjs/color-mode` sous la clé
 L'encre carmin est la seule couleur de la palette. Elle ne se dépense que sur ce
 qui est sous examen et sur l'action principale unique.
 
+**Une exception, et une seule, depuis le 17/11/2026** : les trois rangs de
+priorité de la démo de liste de tâches, en rouge, orange et vert. Décision
+d'Arnaud. Ils ne paraissent que dans cette démo, le mot reste écrit à côté de
+la couleur, et leurs six ratios sont voisins pour qu'aucun rang ne crie plus
+fort qu'un autre — le § 5 porte le raisonnement. Hors de cette démo, la règle
+ci-dessus est inchangée.
+
 | Token | Rôle | Clair | Sombre |
 |---|---|---|---|
 | `--color-bg` | Fond, papier chaud | `#f7f4ef` | `#121110` |
@@ -67,6 +74,9 @@ qui est sous examen et sur l'action principale unique.
 | `--color-line-strong` | Bordure de contrôle | `#8c857a` | `#7a7369` |
 | `--color-ink` | Encre d'annotation | `#b3122b` | `#ff5c72` |
 | `--color-ink-fg` | Texte sur encre | `#ffffff` | `#121110` |
+| `--color-priority-high` | Priorité élevée | `#b3122b` | `#ff5c72` |
+| `--color-priority-medium` | Priorité moyenne | `#8a4a00` | `#dd7d18` |
+| `--color-priority-low` | Priorité faible | `#14662e` | `#3aa862` |
 | `--color-logo-ink` | Marque : lettre `a`, prénom, survols | `#ff5c72` | `#ff5c72` |
 | `--color-logo-ink-fg` | Texte sur la marque | `#121110` | `#121110` |
 | `--color-focus` | Indicateur de focus | `var(--color-fg)` | `var(--color-fg)` |
@@ -641,6 +651,14 @@ un rouge et un vert de priorité demanderaient deux tokens, leurs ratios dans
 les deux thèmes, leur couple dans `tests/unit/contrast.spec.ts`, et diraient
 par la couleur seule ce que le mot dit déjà (WCAG 1.4.1).
 
+  **Renversé le soir même, par Arnaud, et en deux temps.** D'abord trois
+  encres déjà dans la palette, puis — la demande était bien celle-là — trois
+  couleurs franches : rouge, orange, vert. Ce paragraphe est donc caduc, et
+  reste écrit pour ce qu'il montre : le coût annoncé (deux tokens, quatre
+  valeurs, trois couples de test) était juste, et il a été payé en entier. La
+  sous-section « Les retours d'Arnaud du 17/11/2026 » porte les tokens, les
+  six ratios et ce qui tient WCAG 1.4.1.
+
 **Une tâche faite se lit sans couleur** : la case cochée, et le libellé barré.
 Le texte barré seul ne suffirait pas — la case porte l'état, le trait le
 double.
@@ -653,8 +671,17 @@ ne porte aucune information : il n'y a rien à numéroter.
 celle d'une page qui arrive, pas d'une liste qui se réécrit à chaque
 caractère. Une tâche ajoutée ou retirée paraît et disparaît, sans transition.
 
-**Une suppression s'annule.** Un message et un bouton « Annuler », dans la
-même région `aria-live` qui annonce les changements. Une démo dont une action
+**Une suppression s'annule.** Un message et un bouton « Annuler », et
+l'annonce passe par la région `aria-live` du bloc.
+
+**Précision du 17/11/2026**, l'audit ayant relevé l'ambiguïté : le message
+visible et l'annonce ne sont pas le même nœud. La barre de rattrapage porte le
+texte et le bouton ; la région polie, masquée visuellement, porte l'annonce.
+C'est voulu, et ce n'est pas la duplication écartée pour le refus — celle-ci
+mettait **deux fois la même phrase dans l'arbre d'accessibilité au même
+instant**, au point qu'un test de bout en bout refusait de choisir. Ici, la
+région annonce une fois au moment de l'action, et la barre reste atteignable à
+la navigation. Une démo dont une action
 ne se rattrape pas est une démo qu'un visiteur n'ose pas essayer — et le
 visiteur visé est un recruteur qui donne deux minutes à la page.
 
@@ -713,14 +740,119 @@ police ni le thème.
 **La page s'ouvre sur trois tâches d'exemple**, dont une faite, et les trois
 priorités visibles. Un bouton « Réinitialiser » y ramène. L'état vide existe,
 mais il n'est plus la première vue : il s'atteint après suppression, et le
-champ y garde le focus. Décision d'Arnaud — une démo qui paraît vide à
+champ y garde le focus **quand on y arrive par autre chose qu'une
+suppression**. Précisé le 17/11/2026, l'audit ayant relevé la contradiction :
+après une suppression, le focus va sur « Annuler », y compris pour la dernière
+tâche. La ligne qui portait le focus vient de disparaître, et le rattrapage est
+l'action suivante la plus probable — FR-024 l'emporte, et c'est lui qui est
+implémenté. Décision d'Arnaud — une démo qui paraît vide à
 l'arrivée ne se joue pas.
 
-**Quand l'API ne répond pas, son option est désactivée, et la raison est
-écrite.** Jamais de repli silencieux sur le navigateur. L'instance gratuite
+**Quand l'API ne répond pas, le sélecteur ne paraît pas du tout.** Révisé le
+soir du 17/11/2026, par Arnaud, sur capture : l'option grisée et son motif
+étaient posés **avant** la démo, et l'instance gratuite dormant, c'était l'état
+par défaut. Un visiteur arrivait donc sur un message d'échec et lisait
+« quelque chose est cassé » avant d'avoir rien essayé.
+
+Ce n'est pas le repli silencieux que la première décision écartait : la source
+ne bascule jamais d'elle-même, et rien ne prétend venir du service quand il
+dort. On cesse seulement de proposer une porte fermée. Le jour où le service
+est déployé, le bloc revient de lui-même — la sonde en décide, aucune ligne ne
+change. Et ce que la démo prouve est dit ailleurs, par la fiche : « Solution »
+nomme les deux sources, « Résultat » chiffre les quinze tests qui valent pour
+les deux.
+
+La formulation initiale, écartée : « son option est désactivée, et la raison
+est écrite ». Jamais de repli silencieux sur le navigateur. L'instance gratuite
 dort, et une démo qui prétend montrer deux adaptateurs tout en servant
 toujours le même mentirait sur la seule chose qu'elle est là pour prouver. Une
 sonde de santé décide, le refus se lit.
+
+#### Les retours d'Arnaud du 17/11/2026, sur la démo jouable
+
+La démo a été regardée à l'écran le jour même de sa livraison, en thème sombre
+et sur un grand écran, en deux passes. Les retours des deux passes sont
+tranchés ici avant d'être écrits, la seconde corrigeant la première sur la
+couleur et sur la largeur.
+
+**Le bloc prend toute la largeur du gabarit à partir de `m`** : `100cqi` au
+lieu de `34rem`. La mesure de 68 ch borne de la prose, et une ligne de tâche
+n'en est pas : elle porte une case, un titre court, une étiquette et deux
+commandes — quatre objets qu'une colonne étroite tasse. Le motif est celui de
+la pellicule de captures, déjà posé plus haut : `.o-project` est un conteneur
+de requête, et `100cqi` mesure le gabarit sans compter la barre de défilement,
+que `100vw` compterait.
+
+Un plafond de 50 rem a été essayé le même jour, et **écarté par Arnaud** : la
+démo est la pièce à voir de cette fiche, et un bloc borné au milieu d'un
+gabarit de 1408 px se lit comme une vignette. Le prix est connu et accepté —
+sur un très grand écran, le titre et son étiquette s'écartent. Il est payé par
+ce que la démo gagne à occuper la place qu'on lui accorde.
+
+**Les trois priorités portent trois couleurs franches : rouge, orange, vert.**
+Décision d'Arnaud, prise en connaissance de ce qu'elle coûte, après qu'une
+première réponse eut proposé trois encres déjà présentes — carmin, encre
+pleine, encre atténuée. Elle ne se lisait pas comme trois rangs, elle se lisait
+comme un dégradé de gris avec un accent. La demande était bien celle-là :
+**trois couleurs, pas trois intensités**. C'est donc la troisième famille de
+couleurs du site, après l'encre et la marque, et elle est bornée à un seul
+emploi.
+
+| Priorité | Token | Clair | Sombre | Clair | Sombre |
+|---|---|---|---|---|---|
+| Élevée | `--color-priority-high` | `#b3122b` | `#ff5c72` | 6,30:1 | 6,31:1 |
+| Moyenne | `--color-priority-medium` | `#8a4a00` | `#dd7d18` | 6,26:1 | 6,31:1 |
+| Faible | `--color-priority-low` | `#14662e` | `#3aa862` | 6,45:1 | 6,25:1 |
+
+Trois choix tiennent dans ce tableau, et aucun n'est décoratif :
+
+- **Le rouge est l'encre du thème**, à la valeur près, et non un second rouge.
+  La palette en porte déjà un ; en inventer un autre aurait mis deux rouges
+  voisins sur la même page. Le token reste distinct de `--color-ink` parce que
+  les deux ne disent pas la même chose — l'un est la marque sous examen,
+  l'autre un rang de tâche — et parce que `tests/unit/contrast.spec.ts` ne sait
+  verrouiller qu'une valeur écrite, pas un renvoi.
+- **Les six ratios sont voisins**, de 6,25 à 6,45. Un vert à 10:1 à côté d'un
+  rouge à 6,3 se serait lu comme plus important, alors qu'il marque le rang le
+  plus faible : à l'œil, le contraste est une graisse. Les valeurs ont donc été
+  choisies à ratio égal, pas à teinte plaisante.
+- **La couleur ne porte jamais seule le sens.** Le mot est écrit dans
+  l'étiquette — « Élevée », « Moyenne », « Faible » —, et c'est ce qui tient
+  WCAG 1.4.1. Un rouge et un vert opposés sont exactement le couple que huit
+  pour cent des hommes ne distinguent pas ; sans le mot, la démo aurait perdu
+  un visiteur sur douze.
+
+Les trois couples rejoignent la liste **close** de
+`tests/unit/contrast.spec.ts` dans le même commit que les tokens, comme
+`.claude/rules/frontend.md` l'exige de toute couleur ajoutée.
+
+**L'atome `TagList` reçoit `--tag-ink`**, et rien d'autre. Une propriété
+personnalisée posée par le parent, de repli `--color-ink` : les trois surfaces
+qui l'emploient déjà ne changent pas d'un pixel, et aucune prop de « ton » ne
+vient inventer une taxonomie de tons que le site n'a pas. L'atome reste en
+rendu de lecture, comme la décision du 13/11/2026 le lui réservait.
+
+**La priorité se choisit à la création**, et pas seulement en édition. Le
+cadrage du matin ne donnait au formulaire d'ajout qu'un champ de titre : une
+tâche naissait donc toujours « moyenne », et la seule façon d'en changer était
+d'ouvrir le mode d'édition d'une tâche qu'on vient d'écrire. C'est un détour
+pour un choix que le visiteur fait au moment où il tape. Le `<select>` est le
+même qu'en édition, posé à côté du champ : un contrôle, une forme, deux
+emplois.
+
+**Le bouton qui ferme le mode s'appelle « Annuler la modification »** dans
+l'arbre d'accessibilité, et « Annuler » à l'écran — le complément est masqué
+visuellement. Le rattrapage de suppression porte déjà « Annuler », et deux
+boutons du même nom dans la même page sont deux boutons qu'un lecteur d'écran
+ne distingue pas.
+
+**La forme du `<select>`** se fixe ici, puisqu'il s'écrit maintenant : rectangle
+à filet `--rule-strong`, `--control-min-height`, tokens de texte de `Button`,
+`appearance: none`, et le chevron de l'atome `Icon`. Le chevron descendant
+rejoint les deux chevrons latéraux déjà écrits — même `viewBox`, même trait,
+même famille. La flèche du système est écartée pour la raison déjà donnée : elle
+ne suit ni la police ni le thème. Le chevron est `aria-hidden` et ne reçoit
+aucun clic : c'est le `<select>` natif qui ouvre sa liste, et lui seul.
 
 ## 6. Navigation
 
