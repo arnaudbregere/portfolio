@@ -59,8 +59,8 @@ describe('adaptateur navigateur — stockage indisponible', () => {
     const store = createBrowserStore(throwingStorage(true))
 
     expect(await store.list()).toHaveLength(3)
-    expect(store.state().status.usable).toBe(false)
-    expect(store.state().status.reason).toContain('ne sera pas retenue')
+    expect(store.status().persistent).toBe(false)
+    expect(store.status().notice).toContain('ne sera pas retenue')
 
     const created = await store.create({ title: 'Acheter du pain' })
 
@@ -73,7 +73,7 @@ describe('adaptateur navigateur — stockage indisponible', () => {
 
     expect((await store.create({ title: 'Acheter du pain' })).ok).toBe(true)
     expect(await store.list()).toHaveLength(4)
-    expect(store.state().status.usable).toBe(false)
+    expect(store.status().persistent).toBe(false)
   })
 
   /** Aucun stockage du tout — rendu serveur, ou navigateur très ancien. */
@@ -81,7 +81,7 @@ describe('adaptateur navigateur — stockage indisponible', () => {
     const store = createBrowserStore(null)
 
     expect(await store.list()).toHaveLength(3)
-    expect(store.state().status.usable).toBe(false)
+    expect(store.status().persistent).toBe(false)
   })
 
   it('répond `true` à la sonde malgré un stockage muet', async () => {
@@ -121,7 +121,7 @@ describe('adaptateur navigateur — contenu écarté', () => {
     const store = createBrowserStore(memoryStorage(brut))
 
     expect(await store.list()).toHaveLength(3)
-    expect(store.state().discarded).toBe(true)
+    expect(store.status().notice).toContain('illisibles')
   })
 
   it('réécrit un contenu sain après avoir écarté l’ancien', async () => {
@@ -142,7 +142,7 @@ describe('adaptateur navigateur — contenu écarté', () => {
     const store = createBrowserStore(storage)
 
     expect(await store.list()).toHaveLength(1)
-    expect(store.state().discarded).toBe(false)
+    expect(store.status().notice).toBe('')
   })
 
   it('retrouve l’état laissé par une visite précédente', async () => {

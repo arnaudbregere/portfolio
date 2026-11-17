@@ -90,30 +90,30 @@ réinitialisation.
 
 ### Interface
 
-- [ ] T018 [US1] Écrire l'organisme `app/components/organisms/TodoList.vue` sur le modèle de `Calculator.vue` : il consomme `useTodos` et ne porte aucune logique métier
-- [ ] T019 [US1] Créer la page `app/pages/projets/todo-list.vue` sur le modèle de `app/pages/projets/calculatrice.vue` — `useSeoMeta` par `pageSeoMeta`, `useProjectJsonLd`, et `<TodoList />` dans le slot de `ProjectDetail`
-- [ ] T020 [US1] Formulaire d'ajout avec `@submit.prevent` dans `TodoList.vue` : la touche Entrée doit valider, et `form-action 'none'` rester tenu puisque rien n'est soumis
-- [ ] T021 [US1] Rendre chaque tâche en `<li>` d'une `<ul>`, avec un vrai `<input type="checkbox">` et son `<label>` lié ; la cible de 44 px est portée par le libellé, pas par le carré
-- [ ] T022 [US1] Rendre la priorité en lecture par l'atome `TagList` existant, sans aucun token de couleur nouveau
-- [ ] T023 [US1] Rendre une tâche faite lisible **sans couleur** : case cochée **et** libellé barré
-- [ ] T024 [US1] Filtres en `<input type="radio">` réels dans un `<fieldset>` nommé, rendus en texte avec l'actif à l'encre — `DESIGN.md` § 5
-- [ ] T025 [US1] Afficher en permanence le nombre de tâches et le nombre restantes dans `TodoList.vue`
-- [ ] T026 [US1] Suppression avec message et bouton « Annuler », **sans minuteur** : le message disparaît à l'action suivante
-- [ ] T027 [US1] L'annulation restaure l'`id`, le `createdAt` et l'`updatedAt` d'origine — elle défait, elle ne recrée pas
-- [ ] T028 [US1] Une seule région `aria-live="polite"` dans `TodoList.vue`, annonçant ajout, suppression, annulation et nombre restant
-- [ ] T029 [US1] Après suppression, poser le focus sur un élément vivant et prévisible, jamais sur le document
-- [ ] T030 [US1] État vide après suppression de tout : une invitation à saisir, et le focus gardé dans le champ
-- [ ] T031 [US1] Distinguer « aucune tâche pour ce filtre » de « aucune tâche du tout », dans `TodoList.vue`
-- [ ] T032 [US1] Message de refus rattaché au champ par `aria-describedby`, pour titre vide et titre trop long
-- [ ] T033 [US1] Dire au visiteur que rien ne sera retenu quand le stockage est indisponible, sans l'empêcher de jouer
-- [ ] T034 [US1] Bouton « Réinitialiser » ramenant aux trois tâches d'exemple
-- [ ] T035 [US1] Style `scoped` n'employant que des tokens, classes BEM préfixées par niveau, aucune marge extérieure posée par le composant
+- [x] T018 [US1] Écrire l'organisme `app/components/organisms/TodoList.vue` sur le modèle de `Calculator.vue` : il consomme `useTodos` et ne porte aucune logique métier
+- [x] T019 [US1] Créer la page `app/pages/projets/todo-list.vue` sur le modèle de `app/pages/projets/calculatrice.vue` — `useSeoMeta` par `pageSeoMeta`, `useProjectJsonLd`, et `<TodoList />` dans le slot de `ProjectDetail`
+- [x] T020 [US1] Formulaire d'ajout avec `@submit.prevent` dans `TodoList.vue` : la touche Entrée doit valider, et `form-action 'none'` rester tenu puisque rien n'est soumis
+- [x] T021 [US1] Rendre chaque tâche en `<li>` d'une `<ul>`, avec un vrai `<input type="checkbox">` et son `<label>` lié ; la cible de 44 px est portée par le libellé, pas par le carré
+- [x] T022 [US1] Rendre la priorité en lecture par l'atome `TagList` existant, sans aucun token de couleur nouveau
+- [x] T023 [US1] Rendre une tâche faite lisible **sans couleur** : case cochée **et** libellé barré
+- [x] T024 [US1] Filtres en `<input type="radio">` réels dans un `<fieldset>` nommé, rendus en texte avec l'actif à l'encre — `DESIGN.md` § 5
+- [x] T025 [US1] Afficher en permanence le nombre de tâches et le nombre restantes dans `TodoList.vue`
+- [x] T026 [US1] Suppression avec message et bouton « Annuler », **sans minuteur** : le message disparaît à l'action suivante
+- [x] T027 [US1] L'annulation restaure l'`id`, le `createdAt` et l'`updatedAt` d'origine — elle défait, elle ne recrée pas
+- [x] T028 [US1] Une seule région `aria-live="polite"` dans `TodoList.vue`, annonçant ajout, suppression, annulation et nombre restant
+- [x] T029 [US1] Après suppression, poser le focus sur un élément vivant et prévisible, jamais sur le document
+- [x] T030 [US1] État vide après suppression de tout : une invitation à saisir, et le focus gardé dans le champ
+- [x] T031 [US1] Distinguer « aucune tâche pour ce filtre » de « aucune tâche du tout », dans `TodoList.vue`
+- [x] T032 [US1] Message de refus rattaché au champ par `aria-describedby`, pour titre vide et titre trop long
+- [x] T033 [US1] Dire au visiteur que rien ne sera retenu quand le stockage est indisponible, sans l'empêcher de jouer
+- [x] T034 [US1] Bouton « Réinitialiser » ramenant aux trois tâches d'exemple
+- [x] T035 [US1] Style `scoped` n'employant que des tokens, classes BEM préfixées par niveau, aucune marge extérieure posée par le composant
 
 ### Tests d'interface
 
-- [ ] T036 [P] [US1] Tester le rendu, les rôles et les noms accessibles dans `tests/unit/todo-list.spec.ts`, en interrogeant le DOM par rôle et non par classe
-- [ ] T037 [P] [US1] Tester que le balisage **ne dépend pas du thème** dans `tests/unit/todo-list.spec.ts`, sur le modèle de `tests/unit/site-footer.spec.ts`
-- [ ] T038 [P] [US1] Écrire `e2e/tests/todo-list.spec.ts` : les six gestes **au clavier seul**, du début à la fin
+- [x] T036 [P] [US1] Tester le rendu, les rôles et les noms accessibles dans `tests/unit/todo-list.spec.ts`, en interrogeant le DOM par rôle et non par classe
+- [x] T037 [P] [US1] Tester que le balisage **ne dépend pas du thème** dans `tests/unit/todo-list.spec.ts`, sur le modèle de `tests/unit/site-footer.spec.ts`
+- [x] T038 [P] [US1] Écrire `e2e/tests/todo-list.spec.ts` : les six gestes **au clavier seul**, du début à la fin
 
 **Vérification** : `npm run lint && npm run typecheck && npm test && npm run build`, puis `npm run dev` sur une instance neuve, console relue dans les deux thèmes — aucune divergence d'hydratation.
 

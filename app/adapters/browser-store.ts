@@ -40,20 +40,6 @@ export const STORAGE_VERSION = 1
 
 type Stored = { version: number; todos: Todo[] }
 
-/**
- * Ce que l'adaptateur sait de son stockage.
- *
- * Trois états, et non deux : le stockage répond ; il lève — navigation
- * privée, stockage bloqué par la configuration — ; il répond mais ne portait
- * rien de lisible. Le troisième n'est pas une panne, c'est une première
- * visite.
- */
-export type BrowserStoreState = {
-  status: TodoStoreStatus
-  /** Vrai quand un contenu a été écarté, pour que l'interface puisse le dire. */
-  discarded: boolean
-}
-
 const isTodo = (value: unknown): value is Todo => {
   if (typeof value !== 'object' || value === null) return false
 
@@ -78,16 +64,18 @@ const isTodo = (value: unknown): value is Todo => {
  * qui rend n'importe quoi. En production, l'appelant lui donne
  * `window.localStorage`.
  */
-export const createBrowserStore = (
-  storage: Storage | null,
-): TodoStore & { state: () => BrowserStoreState } => {
-  const state: BrowserStoreState = {
-    status: { usable: true, reason: '' },
-    discarded: false,
-  }
+export const createBrowserStore = (storage: Storage | null): TodoStore => {
+  /**
+   * Trois situations, et non deux : le stockage retient ; il lève —
+   * navigation privée, stockage bloqué, quota atteint — ; il répond mais ne
+   * portait rien de lisible. La troisième n'est pas une panne, et la source
+   * reste persistante.
+   */
+  const status: TodoStoreStatus = { persistent: true, notice: '' }
 
-  const unusable = (reason: string) => {
-    state.status = { usable: false, reason }
+  const unusable = (notice: string) => {
+    status.persistent = false
+    status.notice = notice
   }
 
   /** Mémoire de repli : sans stockage, la session reste jouable. */
@@ -95,7 +83,7 @@ export const createBrowserStore = (
   let loaded = false
 
   const persist = () => {
-    if (!storage || !state.status.usable) return
+    if (!storage || !status.persistent) return
 
     try {
       const payload: Stored = { version: STORAGE_VERSION, todos: memory }
@@ -152,7 +140,11 @@ export const createBrowserStore = (
       // Contenu illisible, version inconnue, tâche mal formée : on repart des
       // exemples plutôt que d'échouer, et l'interface le dit. Une démo qui
       // refuse de s'ouvrir vaut moins qu'une démo qui recommence.
-      state.discarded = true
+      if (status.persistent) {
+        status.notice =
+          'Les tâches enregistrées étaient illisibles : la démo est repartie de son exemple.'
+      }
+
       memory = sortTodos(exampleTodos)
       persist()
     }
@@ -166,7 +158,7 @@ export const createBrowserStore = (
   }
 
   return {
-    state: () => state,
+    status: () => status,
 
     available: async () => {
       load()

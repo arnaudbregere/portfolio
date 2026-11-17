@@ -55,11 +55,27 @@ export type TodoStore = {
    * il ne bascule jamais la source (FR-016).
    */
   available: () => Promise<boolean>
+
+  /**
+   * Ce que la source sait dire d'elle-même, à tout moment.
+   *
+   * Distinct d'`available()` : une source peut servir **sans rien retenir** —
+   * c'est le cas du stockage en navigation privée. Confondre les deux
+   * désactiverait la seule source hors réseau de la démo
+   * (`contracts/persistance.md`).
+   */
+  status: () => TodoStoreStatus
 }
 
-/** Ce qu'une source sait dire d'elle-même quand elle refuse de servir. */
+/** Ce qu'une source sait dire d'elle-même. */
 export type TodoStoreStatus = {
-  usable: boolean
-  /** Phrase affichable, vide quand la source répond. */
-  reason: string
+  /** La source retiendra ce qui est saisi. */
+  persistent: boolean
+  /**
+   * Phrase à afficher au visiteur, vide quand il n'y a rien à dire.
+   *
+   * Elle vit ici et non dans un gabarit : `.claude/rules/content.md` veut
+   * qu'un texte destiné à l'écran soit une propriété nommée.
+   */
+  notice: string
 }

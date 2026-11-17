@@ -175,6 +175,7 @@ describe('useTodos', () => {
       remove: async () => refuse('tache-introuvable'),
       restore: async () => refuse('tache-introuvable'),
       available: async () => false,
+      status: () => ({ persistent: true, notice: '' }),
     }
 
     const todos = useTodos(enPanne)
@@ -195,6 +196,7 @@ describe('useTodos', () => {
       remove: async () => refuse('tache-introuvable'),
       restore: async () => refuse('tache-introuvable'),
       available: async () => true,
+      status: () => ({ persistent: true, notice: '' }),
     }
 
     await useTodos(port).load()
