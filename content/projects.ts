@@ -183,11 +183,11 @@ export const projects: readonly Project[] = [
     year: '2026',
     role: 'Conception et développement, seul',
     problem:
-      'Une liste de tâches est l’exercice le plus recopié du web, et presque toujours le même : un tableau en mémoire, une case à cocher, aucune règle écrite deux fois au même endroit.',
+      'Une liste de tâches, l’exercice le plus recopié du web, et presque toujours le même : un tableau en mémoire, une case à cocher, aucune règle écrite deux fois.',
     solution:
       'Un domaine pur, sans dépendance, qui ne connaît ni rendu ni réseau ni stockage, et que deux adaptateurs de persistance servent — le stockage du navigateur, et un CRUD HTTP. Le composable qui tient l’état ne connaît que le port : changer de source ne change aucune ligne de la logique.',
     result:
-      '78 tests unitaires couvrent le domaine, le port et ses adaptateurs, cas limites compris : titre vide, titre fait d’espaces, limite de 120 caractères éprouvée à un caractère près, priorité inconnue, identifiant absent, stockage indisponible en navigation privée, quota d’écriture atteint et contenu enregistré illisible. Les 15 scénarios du port sont écrits pour le contrat et non pour une implémentation : chaque source de données les rejoue, ce qui rend vérifiable — et non simplement affirmé — qu’elles produisent le même résultat.',
+      '98 tests unitaires couvrent le domaine, le port et ses adaptateurs, cas limites compris : titre vide, titre fait d’espaces, limite de 120 caractères éprouvée à un caractère près, priorité inconnue, identifiant absent, stockage indisponible en navigation privée, quota d’écriture atteint et contenu enregistré illisible. Les 15 scénarios du port sont écrits pour le contrat et non pour une implémentation : chaque source de données les rejoue, ce qui rend vérifiable — et non simplement affirmé — qu’elles produisent le même résultat.',
     stack: ['Vue 3', 'Nuxt 4', 'TypeScript', 'Vitest', 'SCSS'],
     links: [{ label: 'Démo jouable', url: 'https://arnaud-bregere.fr/projets/todo-list' }],
     featured: false,

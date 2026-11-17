@@ -29,6 +29,24 @@ const storage = (): Storage => {
   }
 }
 
+/**
+ * Les commandes de ligne se trouvent par leur **nom accessible**, et non par
+ * leur classe : `.claude/rules/frontend.md`. Le nom est le texte masqué
+ * visuellement, le pictogramme étant `aria-hidden`.
+ */
+const commandes = (page: Awaited<ReturnType<typeof monter>>, prefixe: string) =>
+  page.findAll('button').filter((bouton) => bouton.text().startsWith(prefixe))
+
+/**
+ * Rend la main après un aller-retour par le port. `nextTick` ne suffit pas :
+ * les opérations du port sont des promesses, et la file des microtâches ne se
+ * vide pas sur un seul tour de rendu.
+ */
+const porte = async () => {
+  await new Promise((resolu) => setTimeout(resolu, 0))
+  await nextTick()
+}
+
 const monter = async () => {
   const page = await mountSuspended(TodoList, {
     props: { store: createBrowserStore(storage()) },
@@ -66,9 +84,20 @@ describe('TodoList', () => {
 
   it('nomme chaque bouton de suppression par la tâche qu’il supprime', async () => {
     const page = await monter()
-    const boutons = page.findAll('.o-todo__remove')
 
-    expect(boutons[0]!.text()).toContain('Supprimer « Relire le cadrage du projet »')
+    expect(commandes(page, 'Supprimer')).toHaveLength(3)
+    expect(commandes(page, 'Supprimer')[0]!.text()).toContain(
+      'Supprimer « Relire le cadrage du projet »',
+    )
+  })
+
+  it('nomme chaque bouton d’édition par la tâche qu’il ouvre', async () => {
+    const page = await monter()
+
+    expect(commandes(page, 'Modifier')).toHaveLength(3)
+    expect(commandes(page, 'Modifier')[0]!.text()).toContain(
+      'Modifier « Relire le cadrage du projet »',
+    )
   })
 
   /**
@@ -78,7 +107,7 @@ describe('TodoList', () => {
    */
   it('cache la croix à l’arbre d’accessibilité', async () => {
     const page = await monter()
-    const croix = page.find('.o-todo__remove [aria-hidden="true"]')
+    const croix = commandes(page, 'Supprimer')[0]!.find('[aria-hidden="true"]')
 
     expect(croix.exists()).toBe(true)
     expect(croix.text()).toBe('✕')
@@ -156,13 +185,138 @@ describe('TodoList', () => {
     await toutes.setValue(true)
     await nextTick()
 
-    for (const bouton of page.findAll('.o-todo__remove')) {
+    for (const bouton of commandes(page, 'Supprimer')) {
       await bouton.trigger('click')
       await nextTick()
     }
 
     expect(page.text()).toContain('Plus rien à faire')
     expect(page.text()).not.toContain('ne correspond à ce filtre')
+  })
+
+  /**
+   * Les trois priorités se distinguent par la couleur **et** par le mot. Le
+   * test tient le token posé, pas le pixel rendu : c'est
+   * `tests/unit/contrast.spec.ts` qui garde les trois ratios, et le mot écrit
+   * dans l'étiquette qui tient WCAG 1.4.1.
+   */
+  it('range les trois priorités sur trois encres, et garde le mot', async () => {
+    const page = await monter()
+    const etiquettes = page.findAll('.o-todo__priority')
+
+    expect(etiquettes.map((etiquette) => etiquette.text())).toEqual([
+      'Élevée',
+      'Moyenne',
+      'Faible',
+    ])
+
+    expect(etiquettes[0]!.classes()).toContain('o-todo__priority--high')
+    expect(etiquettes[1]!.classes()).toContain('o-todo__priority--medium')
+    expect(etiquettes[2]!.classes()).toContain('o-todo__priority--low')
+  })
+
+  /**
+   * Sans ce champ, une tâche naît toujours « moyenne » et il faut rouvrir la
+   * ligne pour la corriger — c'est le retour d'Arnaud du 17/11/2026.
+   */
+  it('choisit la priorité dès la création', async () => {
+    const page = await monter()
+
+    expect(page.find('label[for="todo-priority"]').text()).toBe('Priorité')
+
+    await page.find('#todo-title').setValue('Acheter du pain')
+    await page.find('#todo-priority').setValue('high')
+    await page.find('form').trigger('submit')
+    await porte()
+
+    expect(page.findAll('.o-todo__priority')[0]!.text()).toBe('Élevée')
+  })
+
+  it('n’ouvre qu’un seul mode d’édition à la fois', async () => {
+    const page = await monter()
+
+    await commandes(page, 'Modifier')[0]!.trigger('click')
+    await nextTick()
+
+    expect(page.findAll('.o-todo__edit')).toHaveLength(1)
+
+    await commandes(page, 'Modifier')[0]!.trigger('click')
+    await nextTick()
+
+    expect(page.findAll('.o-todo__edit')).toHaveLength(1)
+  })
+
+  it('ouvre le mode d’édition sur les valeurs de la tâche', async () => {
+    const page = await monter()
+
+    await commandes(page, 'Modifier')[1]!.trigger('click')
+    await nextTick()
+
+    const champ = page.find('.o-todo__edit input[type="text"]')
+    const choix = page.find('.o-todo__edit select')
+
+    expect((champ.element as HTMLInputElement).value).toBe('Préparer l’entretien')
+    expect((choix.element as HTMLSelectElement).value).toBe('medium')
+  })
+
+  it('enregistre le titre et la priorité, puis referme la ligne', async () => {
+    const page = await monter()
+
+    await commandes(page, 'Modifier')[1]!.trigger('click')
+    await nextTick()
+
+    await page.find('.o-todo__edit input[type="text"]').setValue('Préparer la soutenance')
+    await page.find('.o-todo__edit select').setValue('high')
+    await page.find('.o-todo__edit').trigger('submit')
+    await porte()
+
+    expect(page.findAll('.o-todo__edit')).toHaveLength(0)
+    expect(page.text()).toContain('Préparer la soutenance')
+    expect(page.findAll('.o-todo__priority')[1]!.classes()).toContain('o-todo__priority--high')
+  })
+
+  /** Un refus laisse le mode ouvert : la saisie fautive reste corrigeable. */
+  it('garde le mode ouvert quand le titre est refusé', async () => {
+    const page = await monter()
+
+    await commandes(page, 'Modifier')[0]!.trigger('click')
+    await nextTick()
+
+    await page.find('.o-todo__edit input[type="text"]').setValue('   ')
+    await page.find('.o-todo__edit').trigger('submit')
+    await porte()
+
+    expect(page.find('#todo-error').text()).toBe('Le titre est vide.')
+    expect(page.findAll('.o-todo__edit')).toHaveLength(1)
+  })
+
+  it('ferme le mode d’édition sur Échap, sans rien enregistrer', async () => {
+    const page = await monter()
+
+    await commandes(page, 'Modifier')[0]!.trigger('click')
+    await nextTick()
+
+    await page.find('.o-todo__edit input[type="text"]').setValue('Autre chose')
+    await page.find('.o-todo__edit').trigger('keydown.esc')
+    await nextTick()
+
+    expect(page.findAll('.o-todo__edit')).toHaveLength(0)
+    expect(page.text()).toContain('Relire le cadrage du projet')
+    expect(page.text()).not.toContain('Autre chose')
+  })
+
+  /**
+   * Deux boutons du même nom dans la même page sont deux boutons qu'un
+   * lecteur d'écran ne distingue pas : le rattrapage de suppression porte
+   * déjà « Annuler ».
+   */
+  it('distingue « Annuler » du rattrapage de « Annuler la modification »', async () => {
+    const page = await monter()
+
+    await commandes(page, 'Modifier')[0]!.trigger('click')
+    await nextTick()
+
+    expect(commandes(page, 'Annuler')[0]!.text()).toBe('Annuler la modification')
   })
 
   /**

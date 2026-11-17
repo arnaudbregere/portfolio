@@ -15,6 +15,14 @@ import { settle } from './support/site'
 
 const demo = '/projets/todo-list'
 
+/**
+ * Les étiquettes de priorité, et elles seules. `getByText('Élevée')`
+ * attraperait aussi l'`<option>` du `<select>`, toujours dans le document —
+ * mesuré le 17/11/2026, trois éléments là où deux tâches portent l'encre.
+ */
+const etiquettes = (page: import('@playwright/test').Page, valeur: string) =>
+  page.getByRole('list', { name: 'Priorité' }).filter({ hasText: valeur })
+
 /** La démo n'est pilotable qu'après le montage : le port est lu dans `onMounted`. */
 const pret = async (page: import('@playwright/test').Page) => {
   await expect(page.getByRole('checkbox', { name: 'Relire le cadrage du projet' })).toBeVisible()
@@ -159,6 +167,94 @@ test.describe('Démo de liste de tâches', () => {
 
     await expect(page.getByRole('checkbox')).toHaveCount(3)
     await expect(page.getByRole('checkbox', { name: 'Acheter du pain' })).toHaveCount(0)
+  })
+
+  /**
+   * Le parcours d'édition, au clavier seul (FR-016 à FR-019). Ce qui compte
+   * autant que l'enregistrement : le focus revient sur le bouton qui a ouvert
+   * le mode, et non sur `<body>` — la ligne a été démontée entre-temps.
+   */
+  test('modifie titre et priorité, puis rend le focus au bouton d’édition', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    const ouvrir = page.getByRole('button', { name: 'Modifier « Préparer l’entretien »' })
+
+    await ouvrir.press('Enter')
+
+    const titre = page.getByLabel('Titre')
+
+    await expect(titre).toBeFocused()
+
+    await titre.fill('Préparer la soutenance')
+
+    // La priorité se choisit au clavier : `ArrowDown` descend d'un cran dans
+    // la liste fermée, de « Moyenne » à « Élevée ». Aucun clic, donc aucun
+    // test de survol sous l'en-tête collant.
+    const priorite = page.getByRole('combobox', { name: 'Priorité' }).last()
+
+    await priorite.focus()
+    await page.keyboard.press('ArrowDown')
+
+    await expect(priorite).toHaveValue('high')
+
+    // `Entrée` enregistre depuis le champ de titre : c'est la soumission
+    // implicite du formulaire, et non la touche du `<select>`, qui ouvre sa
+    // liste sur certaines plateformes.
+    await titre.focus()
+    await page.keyboard.press('Enter')
+
+    await expect(page.getByRole('checkbox', { name: 'Préparer la soutenance' })).toBeVisible()
+    await expect(etiquettes(page, 'Élevée')).toHaveCount(2)
+    await expect(
+      page.getByRole('button', { name: 'Modifier « Préparer la soutenance »' }),
+    ).toBeFocused()
+  })
+
+  test('annule une édition par Échap, sans rien enregistrer', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    await page.getByRole('button', { name: 'Modifier « Préparer l’entretien »' }).press('Enter')
+    await page.getByLabel('Titre').fill('Autre chose')
+    await page.keyboard.press('Escape')
+
+    await expect(page.getByRole('checkbox', { name: 'Préparer l’entretien' })).toBeVisible()
+    await expect(page.getByText('Autre chose')).toHaveCount(0)
+    await expect(
+      page.getByRole('button', { name: 'Modifier « Préparer l’entretien »' }),
+    ).toBeFocused()
+  })
+
+  /** La priorité se choisit à la création : pas de détour par l'édition. */
+  test('crée une tâche avec sa priorité', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    await page.getByLabel('Ajouter une tâche').fill('Acheter du pain')
+    await page.getByRole('combobox', { name: 'Priorité' }).first().focus()
+    await page.keyboard.press('ArrowDown')
+    await page.getByLabel('Ajouter une tâche').focus()
+    await page.keyboard.press('Enter')
+
+    await expect(page.getByRole('checkbox', { name: 'Acheter du pain' })).toBeVisible()
+    await expect(etiquettes(page, 'Élevée')).toHaveCount(2)
+  })
+
+  /**
+   * Deux boutons du même nom dans une page sont deux boutons qu'un lecteur
+   * d'écran ne distingue pas : le rattrapage de suppression porte « Annuler ».
+   */
+  test('nomme « Annuler la modification » le bouton du mode d’édition', async ({ page }) => {
+    await page.goto(demo)
+    await pret(page)
+
+    await page.getByRole('button', { name: 'Modifier « Préparer l’entretien »' }).press('Enter')
+
+    await expect(
+      page.getByRole('button', { name: 'Annuler la modification', exact: true }),
+    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Annuler', exact: true })).toHaveCount(0)
   })
 
   /**

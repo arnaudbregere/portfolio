@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { Todo, TodoFilter } from '~~/shared/todo/types'
+import type { Priority, Todo, TodoFilter } from '~~/shared/todo/types'
+import { DEFAULT_PRIORITY, PRIORITIES } from '~~/shared/todo/types'
 import { priorityLabel } from '~~/shared/todo/domain'
 import { TITLE_MAX } from '~~/shared/todo/validation'
 import type { TodoStore } from '~/adapters/todo-store'
@@ -48,6 +49,7 @@ const {
   undoable,
   load,
   add,
+  patch,
   toggle,
   remove: removeTodo,
   undo,
@@ -57,8 +59,27 @@ const {
 
 const draft = ref('')
 const ready = ref(false)
+const root = useTemplateRef<HTMLElement>('root')
 const addField = useTemplateRef<HTMLInputElement>('addField')
 const undoButton = useTemplateRef<HTMLButtonElement>('undoButton')
+
+/**
+ * La priorité du formulaire d'ajout. Elle **ne retombe pas** au défaut après
+ * un ajout : on saisit souvent plusieurs tâches de même rang à la suite, et
+ * remettre « moyenne » à chaque fois ferait recommencer le choix.
+ */
+const addPriority = ref<Priority>(DEFAULT_PRIORITY)
+
+/**
+ * Le mode d'édition, et il n'y en a qu'un : `null`, ou l'identifiant de la
+ * seule ligne ouverte. Deux lignes ouvertes poseraient deux fois la question
+ * « où revient le focus ? », et `DESIGN.md` § 5 n'en veut qu'une.
+ */
+const editing = ref<string | null>(null)
+const editTitle = ref('')
+const editPriority = ref<Priority>(DEFAULT_PRIORITY)
+
+const priorities = PRIORITIES.map((value) => ({ value, label: priorityLabel[value] }))
 
 const filters: readonly { value: TodoFilter; label: string }[] = [
   { value: 'all', label: 'Toutes' },
@@ -98,7 +119,7 @@ const sourceNotice = computed(() => store.status().notice)
 const announcement = computed(() => notice.value)
 
 const submit = async () => {
-  const added = await add(draft.value)
+  const added = await add(draft.value, addPriority.value)
 
   if (added) draft.value = ''
 
@@ -113,6 +134,9 @@ const submit = async () => {
  * focus retombe sur `<body>` (FR-024).
  */
 const onRemove = async (todo: Todo) => {
+  /* Supprimer la ligne ouverte en édition laisserait un mode sans ligne. */
+  editing.value = null
+
   await removeTodo(todo)
   await nextTick()
   undoButton.value?.focus()
@@ -124,10 +148,79 @@ const onUndo = async () => {
   await nextTick()
   addField.value?.focus()
 }
+
+/** Les exemples reviennent, donc les identifiants changent : le mode se ferme. */
+const onReset = async () => {
+  editing.value = null
+
+  await reset()
+}
+
+/**
+ * Le focus revient sur le bouton qui a ouvert le mode — jamais sur `<body>`.
+ *
+ * Le bouton est retrouvé par son `data-edit` et non gardé dans une référence :
+ * la ligne a été démontée puis remontée entre-temps, et une référence prise
+ * avant l'ouverture désignerait un élément qui n'est plus dans le document.
+ */
+const focusEditButton = (id: string) => {
+  root.value?.querySelector<HTMLButtonElement>(`[data-edit="${id}"]`)?.focus()
+}
+
+/**
+ * Le champ du mode d'édition, retrouvé dans le document plutôt que gardé dans
+ * une référence de gabarit : **un `ref` posé dans un `v-for` rend un tableau**,
+ * même quand une seule ligne le porte — `editField.value.focus` était alors
+ * `undefined`, relevé le 17/11/2026. Il n'y a qu'un mode ouvert à la fois,
+ * donc le sélecteur ne peut en désigner qu'un.
+ */
+const focusEditField = () => {
+  root.value?.querySelector<HTMLInputElement>('[data-edit-field]')?.focus()
+}
+
+const openEdit = async (todo: Todo) => {
+  editing.value = todo.id
+  editTitle.value = todo.title
+  editPriority.value = todo.priority
+
+  await nextTick()
+  focusEditField()
+}
+
+const cancelEdit = async () => {
+  const id = editing.value
+
+  if (!id) return
+
+  editing.value = null
+
+  await nextTick()
+  focusEditButton(id)
+}
+
+/**
+ * Un refus **laisse le mode ouvert** : le titre fautif est encore à l'écran,
+ * le focus retourne dessus, et le visiteur corrige. Fermer la ligne jetterait
+ * sa saisie pour lui annoncer qu'elle était mauvaise.
+ */
+const saveEdit = async (todo: Todo) => {
+  const saved = await patch(todo.id, { title: editTitle.value, priority: editPriority.value })
+
+  if (!saved) {
+    focusEditField()
+
+    return
+  }
+
+  editing.value = null
+
+  await nextTick()
+  focusEditButton(todo.id)
+}
 </script>
 
 <template>
-  <div class="o-todo">
+  <div ref="root" class="o-todo">
     <!-- Un vrai formulaire, pour que la touche Entrée valide. Rien n'est
          soumis : `form-action 'none'` de la politique de sécurité reste
          tenu. -->
@@ -143,9 +236,26 @@ const onUndo = async () => {
           name="title"
           autocomplete="off"
           :maxlength="TITLE_MAX + 1"
-          :aria-describedby="error ? 'todo-error' : undefined"
-          :aria-invalid="error ? 'true' : undefined"
+          :aria-describedby="error && !editing ? 'todo-error' : undefined"
+          :aria-invalid="error && !editing ? 'true' : undefined"
         >
+      </div>
+
+      <!-- La priorité se choisit à la création, et pas seulement en édition :
+           sans ce champ, toute tâche naît « moyenne » et il faut rouvrir la
+           ligne pour la corriger. `DESIGN.md` § 5, retours du 17/11/2026. -->
+      <div class="o-todo__field o-todo__field--priority">
+        <label class="o-todo__label" for="todo-priority">Priorité</label>
+
+        <span class="o-todo__select">
+          <select id="todo-priority" v-model="addPriority" class="o-todo__select-control">
+            <option v-for="option in priorities" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+
+          <Icon class="o-todo__select-chevron" name="chevron-down" />
+        </span>
       </div>
 
       <Button type="submit">Ajouter</Button>
@@ -181,30 +291,102 @@ const onUndo = async () => {
 
     <ul v-if="visible.length" class="o-todo__list">
       <li v-for="todo in visible" :key="todo.id" class="o-todo__item">
-        <!-- La case est un vrai `input` : un `div` cliquable coûterait
-             l'état, le clavier et l'annonce. La cible de 44px est portée par
-             le libellé, pas par le carré. -->
-        <label class="o-todo__check">
-          <input
-            :checked="todo.done"
-            type="checkbox"
-            @change="toggle(todo)"
-          >
-          <span :class="['o-todo__title', todo.done && 'o-todo__title--done']">
-            {{ todo.title }}
-          </span>
-        </label>
-
-        <TagList class="o-todo__priority" :items="[priorityLabel[todo.priority]]" label="Priorité" />
-
-        <button
-          type="button"
-          class="o-todo__remove"
-          @click="onRemove(todo)"
+        <!-- Un seul mode d'édition à la fois, et il porte les deux champs :
+             le titre et la priorité. `Entrée` enregistre — c'est un vrai
+             formulaire —, `Échap` annule. `DESIGN.md` § 5. -->
+        <form
+          v-if="editing === todo.id"
+          class="o-todo__edit"
+          @submit.prevent="saveEdit(todo)"
+          @keydown.esc="cancelEdit"
         >
-          <span class="visually-hidden">Supprimer « {{ todo.title }} »</span>
-          <span aria-hidden="true">✕</span>
-        </button>
+          <div class="o-todo__field">
+            <label class="o-todo__label" :for="`todo-edit-${todo.id}`">Titre</label>
+            <input
+              :id="`todo-edit-${todo.id}`"
+              v-model="editTitle"
+              data-edit-field
+              class="o-todo__input"
+              type="text"
+              autocomplete="off"
+              :maxlength="TITLE_MAX + 1"
+              :aria-describedby="error ? 'todo-error' : undefined"
+              :aria-invalid="error ? 'true' : undefined"
+            >
+          </div>
+
+          <div class="o-todo__field o-todo__field--priority">
+            <label class="o-todo__label" :for="`todo-edit-priority-${todo.id}`">Priorité</label>
+
+            <span class="o-todo__select">
+              <select
+                :id="`todo-edit-priority-${todo.id}`"
+                v-model="editPriority"
+                class="o-todo__select-control"
+              >
+                <option v-for="option in priorities" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+
+              <Icon class="o-todo__select-chevron" name="chevron-down" />
+            </span>
+          </div>
+
+          <Button type="submit">Enregistrer</Button>
+
+          <!-- Le nom accessible dit ce qui est annulé : « Annuler » seul
+               existe déjà sur le rattrapage de suppression, et deux boutons
+               du même nom dans la même page sont deux boutons qu'un lecteur
+               d'écran ne distingue pas. -->
+          <button type="button" class="o-todo__cancel" @click="cancelEdit">
+            Annuler<span class="visually-hidden"> la modification</span>
+          </button>
+        </form>
+
+        <template v-else>
+          <!-- La case est un vrai `input` : un `div` cliquable coûterait
+               l'état, le clavier et l'annonce. La cible de 44px est portée par
+               le libellé, pas par le carré. -->
+          <label class="o-todo__check">
+            <input
+              :checked="todo.done"
+              type="checkbox"
+              @change="toggle(todo)"
+            >
+            <span :class="['o-todo__title', todo.done && 'o-todo__title--done']">
+              {{ todo.title }}
+            </span>
+          </label>
+
+          <!-- Les trois priorités portent trois encres **déjà** dans la
+               palette, posées par `--tag-ink`. Le mot reste écrit : la couleur
+               le double, elle ne le remplace pas (WCAG 1.4.1). -->
+          <TagList
+            :class="['o-todo__priority', `o-todo__priority--${todo.priority}`]"
+            :items="[priorityLabel[todo.priority]]"
+            label="Priorité"
+          />
+
+          <button
+            type="button"
+            class="o-todo__action"
+            :data-edit="todo.id"
+            @click="openEdit(todo)"
+          >
+            <span class="visually-hidden">Modifier « {{ todo.title }} »</span>
+            <span aria-hidden="true">✎</span>
+          </button>
+
+          <button
+            type="button"
+            class="o-todo__action"
+            @click="onRemove(todo)"
+          >
+            <span class="visually-hidden">Supprimer « {{ todo.title }} »</span>
+            <span aria-hidden="true">✕</span>
+          </button>
+        </template>
       </li>
     </ul>
 
@@ -236,7 +418,7 @@ const onUndo = async () => {
         </button>
       </p>
 
-      <button type="button" class="o-todo__reset" @click="reset()">
+      <button type="button" class="o-todo__reset" @click="onReset">
         Réinitialiser
       </button>
     </div>
@@ -248,13 +430,28 @@ const onUndo = async () => {
 </template>
 
 <style scoped lang="scss">
+@use '../../styles/breakpoints' as bp;
+
 .o-todo {
-  max-width: 34rem;
   border: var(--rule-strong);
+}
+
+/* Le bloc déborde la mesure du texte à partir de `m`. Une ligne de tâche
+   n'est pas de la prose : elle porte une case, un titre court, une étiquette
+   et deux commandes, que 68 ch tassent. Même motif que la pellicule de
+   captures — `100cqi` mesure le gabarit (`.o-project` est le conteneur de
+   requête) là où `100vw` compterait la barre de défilement. Le plafond de
+   50 rem n'est pas décoratif : au-delà, le titre et son étiquette s'écartent
+   d'un vide que rien ne remplit. `DESIGN.md` § 5, retours du 17/11/2026. */
+.o-todo {
+  @include bp.respond-up(m) {
+    width: min(100cqi, 50rem);
+  }
 }
 
 .o-todo__add {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2xs);
   align-items: flex-end;
   padding: var(--space-s);
@@ -266,6 +463,12 @@ const onUndo = async () => {
   flex: 1;
   flex-direction: column;
   gap: var(--space-3xs);
+}
+
+/* Le champ de priorité ne s'étire pas : c'est le titre qui prend la place
+   restante, dans le formulaire d'ajout comme dans le mode d'édition. */
+.o-todo__field--priority {
+  flex: 0 0 auto;
 }
 
 .o-todo__label {
@@ -382,7 +585,10 @@ const onUndo = async () => {
   text-decoration: line-through;
 }
 
-.o-todo__remove {
+/* Modifier et supprimer partagent la forme : un pictogramme sans filet, à la
+   cible de 44 px, dont le nom accessible est un texte masqué visuellement —
+   le signe est `aria-hidden` et ne porte jamais le sens. */
+.o-todo__action {
   min-width: var(--control-min-height);
   min-height: var(--control-min-height);
   border: 0;
@@ -393,8 +599,82 @@ const onUndo = async () => {
   cursor: pointer;
 }
 
-.o-todo__remove:hover {
+.o-todo__action:hover {
   color: var(--color-ink);
+}
+
+/* Les trois encres de priorité. Aucune n'est nouvelle : `--color-ink` tient
+   6,30:1 en clair et 6,31:1 en sombre, `--color-fg` 17,04 et 16,44,
+   `--color-fg-muted` 5,26 et 6,36 — les trois couples sont déjà verrouillés
+   par `tests/unit/contrast.spec.ts`. L'encre carmin ne se dépense que sur ce
+   qui est sous examen (§ 2) : la priorité élevée l'est. */
+.o-todo__priority--high {
+  --tag-ink: var(--color-ink);
+}
+
+.o-todo__priority--medium {
+  --tag-ink: var(--color-fg);
+}
+
+.o-todo__priority--low {
+  --tag-ink: var(--color-fg-muted);
+}
+
+/* Le mode d'édition occupe la ligne entière : il remplace le contenu de la
+   ligne, il ne s'ajoute pas en dessous — sinon la liste se décale sous le
+   doigt à chaque ouverture. */
+.o-todo__edit {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+  align-items: flex-end;
+  padding-block: var(--space-2xs);
+}
+
+.o-todo__cancel {
+  min-height: var(--control-min-height);
+  padding: 0 var(--space-2xs);
+  border: 0;
+  background-color: transparent;
+  color: var(--color-fg-muted);
+  font-family: inherit;
+  font-size: var(--step--1);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Le premier `<select>` du site. Mêmes filet, hauteur et tokens de texte que
+   `Button` : c'est un contrôle, donc un rectangle à filet — l'arrondi reste
+   réservé à la taxonomie. `appearance: none` retire la flèche du système, qui
+   ne suit ni la police ni le thème ; le chevron de l'atome `Icon` la
+   remplace. `DESIGN.md` § 5. */
+.o-todo__select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.o-todo__select-control {
+  min-height: var(--control-min-height);
+  padding: var(--space-2xs) calc(var(--space-s) + var(--space-xs)) var(--space-2xs) var(--space-xs);
+  border: var(--rule-strong);
+  border-radius: 0;
+  background-color: transparent;
+  color: var(--color-fg);
+  font-family: inherit;
+  font-size: var(--step-0);
+  appearance: none;
+  cursor: pointer;
+}
+
+/* Le chevron ne reçoit aucun clic : c'est le `<select>` natif qui ouvre sa
+   liste, et lui seul. */
+.o-todo__select-chevron {
+  position: absolute;
+  right: var(--space-2xs);
+  color: var(--color-fg-muted);
+  pointer-events: none;
 }
 
 .o-todo__empty {

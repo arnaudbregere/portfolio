@@ -16,6 +16,7 @@ export const sitePages = [
   { path: '/projets/japan-manga-explorer', name: 'fiche Japan Manga Explorer' },
   { path: '/projets/agenda-app-event', name: 'fiche Agenda App Event' },
   { path: '/projets/calculatrice', name: 'fiche Calculatrice' },
+  { path: '/projets/todo-list', name: 'fiche Liste de tâches' },
   { path: '/a-propos', name: 'à propos' },
   { path: '/contact', name: 'contact' },
 ] as const

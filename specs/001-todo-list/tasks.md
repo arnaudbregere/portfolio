@@ -126,14 +126,14 @@ réinitialisation.
 **Test indépendant** : ouvrir le mode d'édition d'une ligne, changer les deux
 champs, enregistrer ; recommencer et abandonner.
 
-- [ ] T039 [US2] Ajouter un mode d'édition par ligne dans `app/components/organisms/TodoList.vue` : un champ texte **et** un `<select>` de priorité, « Enregistrer » et « Annuler »
-- [ ] T040 [US2] Décider la forme du `<select>` dans `DESIGN.md` **avant** de l'écrire — premier du site : filet, hauteur et tokens de texte de `Button`, chevron de l'atome `Icon` et non la flèche du système
-- [ ] T041 [US2] À l'ouverture du mode, poser le focus dans le champ texte, avec le titre courant et la priorité courante déjà renseignés
-- [ ] T042 [US2] `Entrée` enregistre, `Échap` annule, et le focus revient dans les deux cas sur le bouton qui a ouvert le mode
-- [ ] T043 [US2] Ouvrir le mode d'une ligne ferme celui d'une autre, sans enregistrer
-- [ ] T044 [US2] Refuser l'enregistrement d'un titre vide ou trop long : message, et le mode reste ouvert
-- [ ] T045 [P] [US2] Tester les six scénarios d'acceptation de US2 dans `tests/unit/todo-list.spec.ts`
-- [ ] T046 [P] [US2] Étendre `e2e/tests/todo-list.spec.ts` : ouvrir, modifier les deux champs, enregistrer, puis annuler — au clavier, et en vérifiant la restitution du focus
+- [x] T039 [US2] Ajouter un mode d'édition par ligne dans `app/components/organisms/TodoList.vue` : un champ texte **et** un `<select>` de priorité, « Enregistrer » et « Annuler »
+- [x] T040 [US2] Décider la forme du `<select>` dans `DESIGN.md` **avant** de l'écrire — premier du site : filet, hauteur et tokens de texte de `Button`, chevron de l'atome `Icon` et non la flèche du système
+- [x] T041 [US2] À l'ouverture du mode, poser le focus dans le champ texte, avec le titre courant et la priorité courante déjà renseignés
+- [x] T042 [US2] `Entrée` enregistre, `Échap` annule, et le focus revient dans les deux cas sur le bouton qui a ouvert le mode
+- [x] T043 [US2] Ouvrir le mode d'une ligne ferme celui d'une autre, sans enregistrer
+- [x] T044 [US2] Refuser l'enregistrement d'un titre vide ou trop long : message, et le mode reste ouvert
+- [x] T045 [P] [US2] Tester les six scénarios d'acceptation de US2 dans `tests/unit/todo-list.spec.ts`
+- [x] T046 [P] [US2] Étendre `e2e/tests/todo-list.spec.ts` : ouvrir, modifier les deux champs, enregistrer, puis annuler — au clavier, et en vérifiant la restitution du focus
 
 **Vérification** : les quatre commandes du paquet principal, et la planche `/_ds` ouverte si un token a bougé.
 
@@ -196,7 +196,7 @@ arrêté, l'option est refusée avec son motif.
 
 ## Phase 6 — Polish : la fiche, et le site entier
 
-- [ ] T079 Ajouter `/projets/todo-list` à `sitePages` de `e2e/tests/support/site.ts` — la liste est **écrite à la main**, et sans cette ligne la page échappe à tous les audits sans que rien ne rougisse
+- [x] T079 Ajouter `/projets/todo-list` à `sitePages` de `e2e/tests/support/site.ts` — la liste est **écrite à la main**, et sans cette ligne la page échappe à tous les audits sans que rien ne rougisse
 - [ ] T080 Ajouter l'entrée typée dans `content/projects.ts` : `slug: 'todo-list'`, problème, solution, `stack`, `links`, `featured: false`
 - [ ] T081 Relever les mesures du `result` sur l'adresse publique et **jamais** sur `localhost` : nombre de tests, audit axe, Lighthouse mobile, tenue à cent tâches — chacune avec sa date
 - [ ] T082 Écrire le `result` de la fiche depuis ces relevés seuls. Une fiche sans résultat mesuré ne se publie pas

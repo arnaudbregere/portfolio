@@ -641,6 +641,13 @@ un rouge et un vert de priorité demanderaient deux tokens, leurs ratios dans
 les deux thèmes, leur couple dans `tests/unit/contrast.spec.ts`, et diraient
 par la couleur seule ce que le mot dit déjà (WCAG 1.4.1).
 
+  **Précisé le soir même**, après le retour d'Arnaud sur la démo jouable : les
+  trois priorités se distinguent bien par la couleur, mais par trois encres
+  **déjà** dans la palette, sans qu'un token naisse. La sous-section « Les
+  quatre retours d'Arnaud du 17/11/2026 » porte les trois tokens et leurs
+  ratios. Ce qui reste refusé est inchangé : un rouge et un vert inventés pour
+  l'occasion.
+
 **Une tâche faite se lit sans couleur** : la case cochée, et le libellé barré.
 Le texte barré seul ne suffirait pas — la case porte l'état, le trait le
 double.
@@ -721,6 +728,69 @@ l'arrivée ne se joue pas.
 dort, et une démo qui prétend montrer deux adaptateurs tout en servant
 toujours le même mentirait sur la seule chose qu'elle est là pour prouver. Une
 sonde de santé décide, le refus se lit.
+
+#### Les quatre retours d'Arnaud du 17/11/2026, sur la démo jouable
+
+La démo a été regardée à l'écran le jour même de sa livraison, en thème sombre
+et sur un grand écran. Quatre retours, tranchés ici avant d'être écrits.
+
+**Le bloc s'élargit au-delà de la mesure du texte à partir de `m`** :
+`min(100cqi, 50rem)` au lieu de `34rem`. La mesure de 68 ch borne de la prose,
+et une ligne de tâche n'en est pas : elle porte une case, un titre court, une
+étiquette et une croix — quatre objets qu'une colonne étroite tasse. Le motif
+est celui de la pellicule de captures, déjà posé plus haut : `.o-project` est un
+conteneur de requête, et `100cqi` mesure le gabarit sans compter la barre de
+défilement, que `100vw` compterait. Le plafond de 50 rem n'est pas décoratif :
+au-delà, le titre et son étiquette s'écartent d'un vide que rien ne remplit.
+800 px est la largeur où la ligne reste une ligne.
+
+**Les trois priorités portent trois encres — et aucune n'est nouvelle.** La
+décision du matin même refusait toute couleur de priorité, au motif que deux
+tokens, leurs ratios dans les deux thèmes et leur couple dans
+`tests/unit/contrast.spec.ts` seraient à payer pour dire ce que le mot dit
+déjà. Le refus visait la bonne dépense, mais il manquait la troisième voie : la
+palette porte **déjà** trois encres hiérarchisées, et les trois priorités s'y
+rangent sans qu'un token naisse.
+
+| Priorité | Token | Clair | Sombre |
+|---|---|---|---|
+| Élevée | `--color-ink` | 6,30:1 | 6,31:1 |
+| Moyenne | `--color-fg` | 17,04:1 | 16,44:1 |
+| Faible | `--color-fg-muted` | 5,26:1 | 6,36:1 |
+
+Les trois couples sont verrouillés par `tests/unit/contrast.spec.ts` depuis le
+03/11/2026 : il n'y a rien à y ajouter, et c'est le sens de la décision. L'ordre
+n'est pas arbitraire — l'encre carmin ne se dépense que sur ce qui est sous
+examen (§ 2), et une tâche élevée est exactement cela. WCAG 1.4.1 est tenu sans
+effort : le mot reste écrit, la couleur ne fait que le doubler.
+
+**L'atome `TagList` reçoit `--tag-ink`**, et rien d'autre. Une propriété
+personnalisée posée par le parent, de repli `--color-ink` : les trois surfaces
+qui l'emploient déjà ne changent pas d'un pixel, et aucune prop de « ton » ne
+vient inventer une taxonomie de tons que le site n'a pas. L'atome reste en
+rendu de lecture, comme la décision du 13/11/2026 le lui réservait.
+
+**La priorité se choisit à la création**, et pas seulement en édition. Le
+cadrage du matin ne donnait au formulaire d'ajout qu'un champ de titre : une
+tâche naissait donc toujours « moyenne », et la seule façon d'en changer était
+d'ouvrir le mode d'édition d'une tâche qu'on vient d'écrire. C'est un détour
+pour un choix que le visiteur fait au moment où il tape. Le `<select>` est le
+même qu'en édition, posé à côté du champ : un contrôle, une forme, deux
+emplois.
+
+**Le bouton qui ferme le mode s'appelle « Annuler la modification »** dans
+l'arbre d'accessibilité, et « Annuler » à l'écran — le complément est masqué
+visuellement. Le rattrapage de suppression porte déjà « Annuler », et deux
+boutons du même nom dans la même page sont deux boutons qu'un lecteur d'écran
+ne distingue pas.
+
+**La forme du `<select>`** se fixe ici, puisqu'il s'écrit maintenant : rectangle
+à filet `--rule-strong`, `--control-min-height`, tokens de texte de `Button`,
+`appearance: none`, et le chevron de l'atome `Icon`. Le chevron descendant
+rejoint les deux chevrons latéraux déjà écrits — même `viewBox`, même trait,
+même famille. La flèche du système est écartée pour la raison déjà donnée : elle
+ne suit ni la police ni le thème. Le chevron est `aria-hidden` et ne reçoit
+aucun clic : c'est le `<select>` natif qui ouvre sa liste, et lui seul.
 
 ## 6. Navigation
 
