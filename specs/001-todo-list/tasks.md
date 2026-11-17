@@ -175,9 +175,9 @@ arrêté, l'option est refusée avec son motif.
 
 ### L'adaptateur HTTP et le sélecteur
 
-- [ ] T065 [US3] Écrire `app/adapters/http.ts` contre le port de T009, l'identifiant opaque de liste tiré côté client et gardé dans le stockage
-- [ ] T066 [P] [US3] Passer la suite de scénarios de T014 à l'adaptateur HTTP dans `tests/unit/todo-port.spec.ts`, service simulé — c'est la vérification de FR-020
-- [ ] T067 [US3] Implémenter `disponible()` dans `app/adapters/http.ts` par `GET /api/sante` ; il rend `false` et **ne lève jamais**
+- [x] T065 [US3] Écrire `app/adapters/http.ts` contre le port de T009, l'identifiant opaque de liste tiré côté client et gardé dans le stockage
+- [x] T066 [P] [US3] Passer la suite de scénarios de T014 à l'adaptateur HTTP dans `tests/unit/todo-port.spec.ts`, service simulé — c'est la vérification de FR-020
+- [x] T067 [US3] Implémenter `disponible()` dans `app/adapters/http.ts` par `GET /api/sante` ; il rend `false` et **ne lève jamais**
 - [ ] T068 [US3] Ajouter le sélecteur de source dans `TodoList.vue`, **en tête du bloc**, en `<input type="radio">` réels d'un `<fieldset>` nommé, rendus en rectangles à filet
 - [ ] T069 [US3] Désactiver l'option « API » quand `disponible()` rend `false`, et **écrire la raison en clair**. Aucun repli silencieux, dans aucun cas
 - [ ] T070 [US3] Fermer sans enregistrer un mode d'édition ouvert au moment d'un changement de source

@@ -128,6 +128,18 @@ describe('PUT /api/listes/:listeId/taches/:id', () => {
     ])
   })
 
+  /**
+   * L'`upsert` ne vaut que pour une restauration, reconnue à son corps
+   * complet. Sans cette limite, `update()` créerait la tâche qu'il prétend
+   * modifier, et les deux sources cesseraient de se comporter pareil.
+   */
+  it('rend 404 sur une modification partielle d’un identifiant absent', async () => {
+    const reponse = await request(app()).put(`${liste}/inconnue`).send({ done: true })
+
+    expect(reponse.status).toBe(404)
+    expect(reponse.body).toEqual({ erreur: 'Introuvable.' })
+  })
+
   it('refuse un titre trop long', async () => {
     const reponse = await request(app())
       .put(`${liste}/exemple-1`)
@@ -146,11 +158,16 @@ describe('DELETE /api/listes/:listeId/taches/:id', () => {
     expect(reponse.text).toBe('')
   })
 
-  it('rend 404 sur une tâche absente, sans dire si la liste existe', async () => {
+  /**
+   * `DELETE` est idempotent : une tâche absente rend `204`, pas `404`. C'est
+   * la sémantique HTTP, et c'est ce que le port exige — l'adaptateur
+   * navigateur traite ce cas comme ordinaire, et la suite de scénarios
+   * partagée a refusé la divergence le 17/11/2026.
+   */
+  it('rend 204 sur une tâche absente, comme sur une tâche présente', async () => {
     const reponse = await request(app()).delete(`${liste}/inconnue`)
 
-    expect(reponse.status).toBe(404)
-    expect(reponse.body).toEqual({ erreur: 'Introuvable.' })
+    expect(reponse.status).toBe(204)
   })
 })
 

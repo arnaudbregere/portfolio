@@ -19,8 +19,18 @@ vient du client, et le service ne lui donne aucun sens.
 
 Aucune autre route. Toute méthode non prévue sur un chemin connu rend `405`.
 
+**`DELETE` est idempotent** : supprimer une tâche absente rend `204`, et non
+`404`. C'est la sémantique HTTP, et c'est ce que le port exige — l'adaptateur
+navigateur traite ce cas comme ordinaire. Corrigé le 17/11/2026 pour la même
+raison que le `PUT` ci-dessous.
+
 **`PUT` sur un identifiant absent crée la tâche à l'identique** — identifiant
-du chemin, `createdAt` et `updatedAt` du corps — et rend `201`. C'est la forme
+du chemin, `createdAt` et `updatedAt` du corps — et rend `201`, **à la seule
+condition que le corps soit complet**, c'est-à-dire qu'il porte `createdAt`.
+Une modification partielle sur un identifiant absent rend `404`. Précisé le
+17/11/2026, la suite de scénarios du port ayant refusé la divergence :
+sans cette limite, `modifier()` créerait la tâche qu'il prétend modifier dès
+que la source est distante. C'est la forme
 HTTP de l'opération `restaurer` du port, née en écrivant l'adaptateur le
 17/11/2026 : sans elle, « Annuler » tire un nouvel identifiant dès que la
 source est distante, et la tâche remonte en tête au lieu de revenir à sa

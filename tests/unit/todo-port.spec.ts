@@ -1,6 +1,17 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { createBrowserStore } from '~/adapters/browser-store'
+import { createHttpStore } from '~/adapters/http'
 import type { TodoStore } from '~/adapters/todo-store'
+import type { Todo } from '~~/shared/todo/types'
+import {
+  createTodo,
+  removeTodo,
+  replaceTodo,
+  restoreTodo,
+  sortTodos,
+  updateTodo,
+} from '~~/shared/todo/domain'
+import { findTodo } from '~~/shared/todo/validation'
 import { exampleTodos } from '~~/shared/todo/examples'
 
 /**
@@ -212,3 +223,94 @@ export const portScenarios = (nom: string, build: () => TodoStore) => {
 }
 
 portScenarios('stockage du navigateur', () => createBrowserStore(fakeStorage()))
+
+/**
+ * Le même jeu de scénarios, rejoué contre l'adaptateur HTTP.
+ *
+ * **C'est la vérification de FR-020** : les deux sources produisent le même
+ * résultat observable pour une même suite d'opérations. Jusqu'ici la fiche
+ * l'affirmait ; à partir d'ici, la suite le prouve.
+ *
+ * Le service est simulé par un `fetch` de substitution et non monté : le
+ * paquet `api/` est indépendant, et l'importer d'ici créerait la dépendance
+ * croisée que `.claude/rules/e2e.md` et le plan écartent tous les deux. Ce que
+ * cette suite vérifie est le port, pas Express — `api/tests/` tient le contrat
+ * HTTP de son côté, route par route.
+ */
+const serviceSimule = (): typeof fetch => {
+  let todos: Todo[] = [...exampleTodos]
+
+  const json = (corps: unknown, status = 200) =>
+    new Response(JSON.stringify(corps), {
+      status,
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+  const estampe = () => ({ id: crypto.randomUUID(), now: new Date().toISOString() })
+
+  return (async (entree: RequestInfo | URL, init?: RequestInit) => {
+    const url = new URL(String(entree), 'http://service.test')
+    const methode = init?.method ?? 'GET'
+    const corps = init?.body ? JSON.parse(String(init.body)) : {}
+
+    if (url.pathname === '/api/sante') return json({ statut: 'ok' })
+
+    /* Le dernier segment : vide pour la collection, l'identifiant sinon. */
+    const segments = url.pathname.split('/').filter(Boolean)
+    const id = segments.length > 4 ? decodeURIComponent(segments[4]!) : null
+
+    if (!id) {
+      if (methode === 'GET') return json(sortTodos(todos))
+
+      const cree = createTodo({ title: corps.title, priority: corps.priority }, estampe())
+
+      if (!cree.ok) return json({ refus: cree.refusal }, 400)
+
+      todos = [cree.value, ...todos]
+
+      return json(cree.value, 201)
+    }
+
+    const trouvee = findTodo(todos, id)
+
+    if (methode === 'GET') {
+      return trouvee.ok ? json(trouvee.value) : json({ erreur: 'Introuvable.' }, 404)
+    }
+
+    /* `DELETE` est idempotent : une tâche absente rend `204`. */
+    if (methode === 'DELETE') {
+      todos = removeTodo(todos, id)
+
+      return new Response(null, { status: 204 })
+    }
+
+    /* `PUT` n'est un `upsert` que pour une restauration, reconnue à son corps
+       complet. Une modification partielle sur un identifiant absent rend
+       `404`. */
+    if (!trouvee.ok) {
+      if (typeof corps.createdAt !== 'string') {
+        return json({ refus: 'tache-introuvable' }, 404)
+      }
+
+      todos = restoreTodo(todos, corps as Todo)
+
+      return json(corps, 201)
+    }
+
+    const modifiee = updateTodo(trouvee.value, corps, new Date().toISOString())
+
+    if (!modifiee.ok) return json({ refus: modifiee.refusal }, 400)
+
+    todos = replaceTodo(todos, modifiee.value)
+
+    return json(modifiee.value)
+  }) as typeof fetch
+}
+
+portScenarios('service HTTP', () =>
+  createHttpStore({
+    origin: 'http://service.test',
+    storage: fakeStorage(),
+    fetcher: serviceSimule(),
+  }),
+)

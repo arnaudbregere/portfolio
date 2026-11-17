@@ -97,6 +97,17 @@ export const creerTaches = (listes: Listes, maintenant?: () => number) => {
     }
 
     const recu = (requete.body ?? {}) as Partial<Todo>
+
+    /* L'`upsert` ne vaut que pour une **restauration**, reconnue à son corps
+       complet : `createdAt` n'est servi que par le service, donc un corps qui
+       le porte vient d'une tâche qu'il a lui-même rendue. Une modification
+       partielle sur un identifiant absent reste un `404` — sans quoi
+       `update()` créerait la tâche qu'il prétend modifier, et le port cesserait
+       de se comporter pareil des deux côtés. Relevé le 17/11/2026 par la suite
+       de scénarios du port, en la rejouant contre l'adaptateur HTTP. */
+    if (typeof recu.createdAt !== 'string') {
+      return refuser(reponse, 'tache-introuvable')
+    }
     const restauree: Todo = {
       id,
       title: String(recu.title ?? ''),
@@ -113,10 +124,14 @@ export const creerTaches = (listes: Listes, maintenant?: () => number) => {
     reponse.status(201).json(restauree)
   })
 
+  /**
+   * `DELETE` est **idempotent** : supprimer une tâche absente rend `204`, pas
+   * `404`. C'est la sémantique HTTP, et c'est surtout ce que le port exige —
+   * l'adaptateur navigateur traite ce cas comme ordinaire, et deux sources qui
+   * en divergeraient feraient mentir FR-020.
+   */
   taches.delete('/:id', (requete: Request, reponse: Response) => {
-    const supprimee = listes.supprimer(parametre(requete, 'listeId'), parametre(requete, 'id'))
-
-    if (!supprimee.ok) return refuser(reponse, supprimee.refusal)
+    listes.supprimer(parametre(requete, 'listeId'), parametre(requete, 'id'))
 
     reponse.status(204).end()
   })
