@@ -39,7 +39,7 @@ source qui n'existe pas encore serait du code spéculatif.
 
 ## Phase 1 — Setup
 
-- [ ] T001 Ajouter `'shared/'` au tableau `sources` de `tests/unit/no-dead-code.spec.ts`, avec le commentaire disant pourquoi le domaine n'appartient ni à `app/` ni à `api/`
+- [x] T001 Ajouter `'shared/'` au tableau `sources` de `tests/unit/no-dead-code.spec.ts`, avec le commentaire disant pourquoi le domaine n'appartient ni à `app/` ni à `api/`
 
 **Porte** : sans T001, tout export de `shared/todo/` est déclaré mort dès le
 premier commit de la phase 2. T001 et T002 partent donc dans le **même
@@ -52,13 +52,13 @@ commit**.
 **Bloquant pour les trois histoires.** Aucune de ces tâches ne monte un
 composant, n'ouvre un réseau ni ne lit une horloge réelle.
 
-- [ ] T002 Créer `shared/todo/types.ts` : `Tache` (`id: string`, `title: string`, `done: boolean`, `priority`, `createdAt: string`, `updatedAt: string`), `Priorite` en **union de chaînes** `'low' | 'medium' | 'high'` — jamais un `enum`, que Node refuse en retrait de types —, et le type des codes de refus
-- [ ] T003 [P] Créer `shared/todo/validation.ts` : les quatre gardes rendant un refus **nommé** et jamais une exception — `titre-vide` (titre absent ou vide après retrait des espaces), `titre-trop-long` (plus de 120 caractères après retrait des espaces), `priorite-inconnue` (valeur hors des trois admises), `tache-introuvable` (identifiant absent de la liste)
-- [ ] T004 Créer `shared/todo/domaine.ts` : `creer` (retire les espaces de bord, `done: false`, `priority: 'medium'` par défaut, `updatedAt` égal à `createdAt`), `modifier` (pose `updatedAt`), `basculer`, `trier` (de la plus récemment créée à la plus ancienne), `filtrer`
-- [ ] T005 `creer` et `modifier` reçoivent l'identifiant et l'horodatage **en paramètres**, jamais `crypto.randomUUID()` ni `Date.now()` appelés dedans, dans `shared/todo/domaine.ts` — sans quoi aucun test ne peut affirmer une valeur
-- [ ] T006 [P] Tester les quatre codes de refus un par un dans `tests/unit/todo-validation.spec.ts`, titre d'espaces et titre de 121 caractères compris
-- [ ] T007 [P] Tester `creer`, `modifier`, `basculer`, `trier` et `filtrer` dans `tests/unit/todo-domaine.spec.ts`, avec horloge et identifiants injectés
-- [ ] T008 [P] Tester que `trier` rend le même ordre quelle que soit l'entrée, et que `filtrer` sur `faites` d'une liste sans tâche faite rend une liste vide sans erreur, dans `tests/unit/todo-domaine.spec.ts`
+- [x] T002 Créer `shared/todo/types.ts` : `Tache` (`id: string`, `title: string`, `done: boolean`, `priority`, `createdAt: string`, `updatedAt: string`), `Priorite` en **union de chaînes** `'low' | 'medium' | 'high'` — jamais un `enum`, que Node refuse en retrait de types —, et le type des codes de refus
+- [x] T003 [P] Créer `shared/todo/validation.ts` : les quatre gardes rendant un refus **nommé** et jamais une exception — `titre-vide` (titre absent ou vide après retrait des espaces), `titre-trop-long` (plus de 120 caractères après retrait des espaces), `priorite-inconnue` (valeur hors des trois admises), `tache-introuvable` (identifiant absent de la liste)
+- [x] T004 Créer `shared/todo/domaine.ts` : `creer` (retire les espaces de bord, `done: false`, `priority: 'medium'` par défaut, `updatedAt` égal à `createdAt`), `modifier` (pose `updatedAt`), `basculer`, `trier` (de la plus récemment créée à la plus ancienne), `filtrer`
+- [x] T005 `creer` et `modifier` reçoivent l'identifiant et l'horodatage **en paramètres**, jamais `crypto.randomUUID()` ni `Date.now()` appelés dedans, dans `shared/todo/domaine.ts` — sans quoi aucun test ne peut affirmer une valeur
+- [x] T006 [P] Tester les quatre codes de refus un par un dans `tests/unit/todo-validation.spec.ts`, titre d'espaces et titre de 121 caractères compris
+- [x] T007 [P] Tester `creer`, `modifier`, `basculer`, `trier` et `filtrer` dans `tests/unit/todo-domaine.spec.ts`, avec horloge et identifiants injectés
+- [x] T008 [P] Tester que `trier` rend le même ordre quelle que soit l'entrée, et que `filtrer` sur `faites` d'une liste sans tâche faite rend une liste vide sans erreur, dans `tests/unit/todo-domaine.spec.ts`
 
 **Vérification** : `npm test -- todo` et `npm run typecheck` au vert.
 
