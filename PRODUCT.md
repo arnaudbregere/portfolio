@@ -66,6 +66,23 @@ modèle de `e2e/` : un `package.json` à lui, aucune dépendance croisée avec l
 paquet principal, son propre travail d'intégration continue. Il se déploie à
 part — Vercel sert des fonctions, pas un serveur Express qui tourne.
 
+**Il est en TypeScript**, comme tout paquet de ce dépôt : `typescript` en
+devDependency, `tsconfig.json` strict, script `typecheck` et étape
+correspondante dans l'intégration continue. La règle que `.claude/rules/e2e.md`
+pose pour `e2e/` vaut pour `api/`, et pour la même raison — ni Vitest, ni
+Playwright, ni Node ne vérifient les types de ce qu'ils exécutent.
+
+**Sans étape de build pour autant.** Node 22 exécute un fichier `.ts`
+directement, par retrait des types, sans drapeau : vérifié le 17/11/2026 sur
+le `v22.23.4` de `.nvmrc`. Ni `tsc` en sortie, ni `ts-node`, ni `tsx` —
+`tsc --noEmit` ne sert plus qu'à juger, jamais à produire.
+
+Ce que ce mode coûte, et qui ne manque pas ici : il refuse `enum`, `namespace`
+et décorateur (`ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX`), et chaque import doit
+porter son extension `.ts`. Une union de chaînes remplace l'`enum`, et
+`erasableSyntaxOnly` du `tsconfig` fait échouer `typecheck` avant l'exécution
+plutôt qu'après.
+
 Le site reste donc **entièrement statique**, et la démo reste jouable si
 l'API ne répond pas : elle parle à un port de persistance dont le
 `localStorage` est l'implémentation par défaut.
