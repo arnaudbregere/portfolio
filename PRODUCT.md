@@ -25,6 +25,7 @@ Le site doit convaincre deux lecteurs en moins de deux minutes, sur mobile.
 | `/projets` | galerie des projets | chaque carte mène à `/projets/[slug]` |
 | `/projets/[slug]` | fiche projet détaillée | structure imposée : contexte, problème, solution, résultat, stack, liens |
 | `/projets/calculatrice` | fiche **et** démo jouable dans la page | décision du 03/11/2026 : une démo vaut mieux qu'une capture pour un exercice de base |
+| `/projets/liste-de-taches` | fiche **et** démo jouable dans la page | décision d'Arnaud du 17/11/2026 : même raison, et la démo marche sans réseau |
 | `/a-propos` | texte de présentation, parcours, compétences | prose lisible, pas de barres de pourcentage |
 | `/contact` | nom, téléphone, adresse e-mail, profils publics, disponibilité et poste recherché | **aucun formulaire** : décision du 05/11/2026 (issue #5) |
 Les projets mis en avant sont **deux** et non trois : décision du 04/11/2026
@@ -51,6 +52,28 @@ du PDF.
 Aucun test ne tient cette perte : `e2e/tests/cv.spec.ts` ne vérifie que le
 poids, le type MIME et le téléchargement.
 
+**Une seconde démo jouable entre au périmètre le 17/11/2026** : une liste de
+tâches, sur `/projets/liste-de-taches`. Décision d'Arnaud, qui reprend un
+projet de l'ancien portfolio.
+
+Elle se joue **sans réseau**. L'état vit dans le `localStorage` du visiteur,
+et rien n'en sort. C'est ce qui lui permet d'être prérendue comme les sept
+autres pages, de ne demander aucune route au site, et de fonctionner quand
+l'API décrite plus bas dort ou n'existe pas encore.
+
+**Le CRUD en Node et Express vit dans un paquet `api/` de ce dépôt**, sur le
+modèle de `e2e/` : un `package.json` à lui, aucune dépendance croisée avec le
+paquet principal, son propre travail d'intégration continue. Il se déploie à
+part — Vercel sert des fonctions, pas un serveur Express qui tourne.
+
+Le site reste donc **entièrement statique**, et la démo reste jouable si
+l'API ne répond pas : elle parle à un port de persistance dont le
+`localStorage` est l'implémentation par défaut.
+
+Ce que cette démo n'est pas : un service. Elle ne porte aucun compte, aucune
+authentification, aucune donnée de visiteur sur un serveur — voir « Données
+personnelles ».
+
 ## Projets retenus
 
 1. **agenda-app-event** — application calendrier Vue 3 + Express, développée avec
@@ -59,7 +82,11 @@ poids, le type MIME et le téléchargement.
 2. **japan-react** — application React. Angle : résultats mesurés (rapports
    Lighthouse et RGAA disponibles).
 3. **Calculatrice** — application Nuxt. Angle : exercice de base soigné.
-4. **Figaro Classifieds** et **Groupe La Poste** — expérience professionnelle,
+4. **Liste de tâches** — démo jouable dans la page, et une API Node/Express
+   dans le paquet `api/` du dépôt. Angle : une même logique métier servie par
+   deux adaptateurs de persistance — le `localStorage` du visiteur, et le
+   CRUD HTTP. Entrée au périmètre le 17/11/2026.
+5. **Figaro Classifieds** et **Groupe La Poste** — expérience professionnelle,
    présentée en fiches sans captures d'écran propriétaires.
 
 Hors périmètre : AccessiCheck (auditeur RGAA multi-agent) n'est pas repris.
@@ -113,6 +140,19 @@ une limitation de débit et un piège à robots, pour faire ce qu'un `mailto:`
 fait déjà. Sans formulaire, il n'y a aucune donnée de visiteur à recevoir, à
 stocker ni à justifier. Aucun cookie de mesure d'audience non plus, donc pas de
 bandeau.
+
+**La démo de liste de tâches ne change rien à cette ligne**, et c'est la
+condition de son entrée au périmètre (17/11/2026). Les tâches qu'un visiteur
+saisit restent dans le `localStorage` de son navigateur : elles n'atteignent
+ni le site, ni un journal, ni l'API du paquet `api/` tant qu'il ne l'a pas
+demandé. Aucun compte, aucune authentification, aucun identifiant qui
+désignerait une personne.
+
+Si l'adaptateur HTTP est un jour branché sur une instance publique, trois
+choses deviennent dues **avant** la mise en ligne, pas après : un identifiant
+opaque tiré côté client et cloisonnant les listes, une limitation de débit, et
+une purge automatique. Une API publique en écriture sans ces trois-là est
+ouverte au premier venu.
 
 L'adresse e-mail paraît en clair sur `/`, sur `/a-propos`, sur `/contact` et
 dans le JSON-LD `Person`. Cette règle renverse le 04/11/2026 (issue #17) celle d'origine, qui
