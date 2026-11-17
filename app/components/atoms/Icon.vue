@@ -11,7 +11,7 @@
  */
 withDefaults(
   defineProps<{
-    name: 'phone' | 'mail' | 'chevron-left' | 'chevron-right'
+    name: 'phone' | 'mail' | 'chevron-left' | 'chevron-right' | 'sun' | 'moon'
     /** Épaisseur du trait, en unités du `viewBox`. */
     stroke?: number
   }>(),
@@ -37,6 +37,24 @@ withDefaults(
     />
     <path v-else-if="name === 'chevron-left'" d="M12.5 3.8 6.3 10l6.2 6.2" />
     <path v-else-if="name === 'chevron-right'" d="M7.5 3.8 13.7 10l-6.2 6.2" />
+
+    <!-- Le soleil : un disque et huit rayons, tous de même longueur. Les
+         diagonales tombent à `r / √2` du centre, sinon la couronne paraît
+         carrée. -->
+    <template v-else-if="name === 'sun'">
+      <circle cx="10" cy="10" r="3.6" />
+      <path
+        d="M10 2v2.4M10 15.6V18M2 10h2.4M15.6 10H18M4.3 4.3 6 6M14 14l1.7 1.7M15.7 4.3 14 6M6 14l-1.7 1.7"
+      />
+    </template>
+
+    <!-- Le croissant : un arc de disque de rayon 7, refermé par un arc de
+         rayon 5,5 qui le creuse. Deux arcs et non un disque percé — un tracé
+         à `fill: none` ne peut pas se soustraire à lui-même. -->
+    <path
+      v-else-if="name === 'moon'"
+      d="M10 3a7 7 0 1 0 7 7 5.5 5.5 0 0 1-7-7Z"
+    />
     <template v-else>
       <rect x="2.4" y="4.4" width="15.2" height="11.2" rx="1.4" />
       <path d="m3 5.4 7 5.2 7-5.2" />

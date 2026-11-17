@@ -681,17 +681,47 @@ Relevé dans Chrome à **393px** : signature 113px, bascule 126px, déclencheur
 76px, deux écarts de 16px et 32px de gouttières, soit **379px** — aucun
 débordement.
 
-**La bascule garde la même largeur dans les deux thèmes.** « Thème clair » est
-plus court que « Thème sombre » : sans réserve, le bouton rétrécit au clic et
-toute la barre se décale. Le libellé de l'autre thème est donc rendu dans la
-même case de grille, invisible et hors de l'arbre d'accessibilité. Pas de
-largeur minimale en dur, qui deviendrait fausse au premier changement de police
-ou de libellé.
+**La bascule est un pictogramme depuis le 17/11/2026**, décision d'Arnaud.
+Elle portait jusque-là son libellé en clair, « Thème sombre » ou « Thème
+clair ». Relevé dans Chrome avant le changement : **149px** en desktop, 126px à
+393px — et le filet fort de `Button` lui donnait plus de poids qu'aux quatre
+rubriques, qui sont du texte nu. Un visiteur qui lit une candidature vient voir
+ce que le site contient, pas changer de thème. Le carré rend **105px** à la
+barre en desktop et **82px** au déclencheur « Menu » en mobile, et remet la
+bascule au rang qui est le sien.
 
-**La bascule est un bouton unique, nommé par son action** — « Thème sombre »
-quand le thème courant est clair. Un groupe de deux boutons `aria-pressed` a été
-écarté : avant le premier clic la préférence vaut `system`, et un
-`aria-pressed="true"` affirmerait un choix que le visiteur n'a pas fait.
+**Elle garde la même largeur dans les deux thèmes**, et pour une raison plus
+simple qu'avant : c'est un carré de 44px, `--control-min-height` sur les deux
+dimensions. La largeur ne dépend plus d'aucun libellé, donc rien ne peut la
+faire varier au clic. La réserve de grille qui tenait la case du plus long des
+deux libellés disparaît avec eux.
+
+**Le pictogramme dit la destination, pas l'état courant** : un croissant de
+lune quand le thème est clair, un soleil quand il est sombre. C'est la règle du
+libellé qu'il remplace. Les deux icônes sont dans le document et le CSS révèle
+celle qui convient, depuis la classe que `@nuxtjs/color-mode` pose sur `<html>`
+avant le premier affichage — le HTML du serveur ne dépend donc pas du thème
+(`.claude/rules/frontend.md`).
+
+**Le nom accessible reste du texte, et ne change pas d'un mot** : « Activer le
+Thème sombre » et « Activer le Thème clair » sont rendus tous les deux, masqués
+visuellement, et celui qui ne convient pas sort de l'arbre d'accessibilité par
+`visibility: hidden`. Toujours pas d'`aria-label` : un attribut rendu au
+serveur reste figé sur le mauvais thème, Vue corrigeant les textes divergents
+mais pas les attributs (issues #6 et #56). WCAG 2.5.3 cesse en revanche de
+s'appliquer — le bouton n'a plus de libellé visible que son nom doive contenir.
+
+**La bascule reste un bouton unique, nommé par son action.** Un groupe de deux
+boutons `aria-pressed`, un par thème, a été écarté une seconde fois le
+17/11/2026 : avant le premier clic la préférence vaut `system`, et un
+`aria-pressed="true"` affirmerait un choix que le visiteur n'a pas fait. Deux
+cibles de 44px coûteraient d'ailleurs 96px, à peine moins que le libellé
+qu'elles remplaceraient.
+
+**Elle reste un rectangle à filet** : le § 5 réserve l'arrondi à la taxonomie,
+et un contrôle n'en est pas. Le pictogramme se mesure en `em` et prend l'encre
+du bouton — `Icon` se donne l'encre atténuée pour les lignes de coordonnées de
+`/contact`, trop pâle sur un contrôle cerné.
 
 ### La page d'erreur
 
