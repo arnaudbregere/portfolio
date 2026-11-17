@@ -658,6 +658,70 @@ même région `aria-live` qui annonce les changements. Une démo dont une action
 ne se rattrape pas est une démo qu'un visiteur n'ose pas essayer — et le
 visiteur visé est un recruteur qui donne deux minutes à la page.
 
+**L'annulation n'a pas de minuteur.** Le message reste jusqu'à l'action
+suivante. Un rattrapage qui s'évanouit en cinq secondes est un rattrapage que
+personne n'atteint au clavier, et un lecteur d'écran qui lit l'annonce a déjà
+perdu le bouton quand il arrive dessus.
+
+#### Ce que `/impeccable shape` a tranché le 17/11/2026
+
+La composition, la hiérarchie et les états, décidés avec Arnaud. La route est
+`/projets/todo-list`.
+
+**Le sélecteur de source ouvre le bloc**, avant le champ de saisie et avant la
+liste. La démo montre une même logique servie par deux adaptateurs — le
+`localStorage` du visiteur, et le CRUD HTTP d'`api/` —, et ce commutateur
+commande tout ce qui le suit. Placé en dessous, il se lirait après coup ; placé
+en tête, il cadre la lecture et tombe dans la première vue, qui est ce qu'un
+recruteur regarde.
+
+**Deux groupes de choix, deux niveaux visuels.** Sinon six rectangles
+identiques, et rien ne dirait lequel change le système.
+
+| Groupe | Forme | Raison |
+|---|---|---|
+| Source : Navigateur / API | rectangles à filet, l'atome `Button` | c'est un contrôle, il change d'où viennent les données |
+| Filtres : Toutes / À faire / Faites | texte, l'actif à l'encre | c'est un tri ; la barre de l'en-tête emploie déjà ce motif pour `a[aria-current]` |
+
+**Les deux groupes sont des `<input type="radio">` réels**, dans un `<fieldset>`
+nommé. Le § 6 a pourtant écarté deux fois un groupe de boutons `aria-pressed`,
+pour la bascule de thème — mais la raison ne vaut pas ici. Elle tenait au
+troisième état de la préférence, `system`, qu'un couple de boutons ne sait pas
+annoncer. La source et le filtre valent **toujours exactement une** valeur. Le
+radio est donc la sémantique juste, et non un contournement de la décision
+voisine.
+
+**Un seul mode d'édition par ligne, et il porte deux champs** : le titre et la
+priorité. Ouvert par un bouton de la ligne, fermé par « Enregistrer » ou
+« Annuler ». `Entrée` enregistre, `Échap` annule, et le focus revient sur le
+bouton qui a ouvert le mode — jamais sur `<body>`.
+
+**La priorité ne se change donc pas au clic cyclique.** Un cycle n'offre aucune
+sélection directe : pour atteindre « faible » depuis « élevée », il faut passer
+par « moyenne », et le nom accessible du bouton doit annoncer à la fois la
+valeur courante et l'action, soit deux idées dans un nom. Un `<select>` natif
+fait mieux, et reste un rectangle à filet.
+
+Conséquence utile : **`TagList` garde son rôle de rendu en lecture** et ne
+devient jamais un contrôle, ce que la décision du 13/11/2026 lui réservait.
+
+**Le `<select>` est le premier du site.** Sa mise en forme se décide ici avant
+d'être écrite : mêmes filet, hauteur et tokens de texte que `Button`, et le
+chevron de l'atome `Icon` plutôt que la flèche du système, qui ne suit ni la
+police ni le thème.
+
+**La page s'ouvre sur trois tâches d'exemple**, dont une faite, et les trois
+priorités visibles. Un bouton « Réinitialiser » y ramène. L'état vide existe,
+mais il n'est plus la première vue : il s'atteint après suppression, et le
+champ y garde le focus. Décision d'Arnaud — une démo qui paraît vide à
+l'arrivée ne se joue pas.
+
+**Quand l'API ne répond pas, son option est désactivée, et la raison est
+écrite.** Jamais de repli silencieux sur le navigateur. L'instance gratuite
+dort, et une démo qui prétend montrer deux adaptateurs tout en servant
+toujours le même mentirait sur la seule chose qu'elle est là pour prouver. Une
+sonde de santé décide, le refus se lit.
+
 ## 6. Navigation
 
 **Deux formes de navigation, séparées par un point de rupture.** Décision

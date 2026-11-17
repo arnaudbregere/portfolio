@@ -25,7 +25,7 @@ Le site doit convaincre deux lecteurs en moins de deux minutes, sur mobile.
 | `/projets` | galerie des projets | chaque carte mène à `/projets/[slug]` |
 | `/projets/[slug]` | fiche projet détaillée | structure imposée : contexte, problème, solution, résultat, stack, liens |
 | `/projets/calculatrice` | fiche **et** démo jouable dans la page | décision du 03/11/2026 : une démo vaut mieux qu'une capture pour un exercice de base |
-| `/projets/liste-de-taches` | fiche **et** démo jouable dans la page | décision d'Arnaud du 17/11/2026 : même raison, et la démo marche sans réseau |
+| `/projets/todo-list` | fiche **et** démo jouable dans la page | décision d'Arnaud du 17/11/2026 : même raison, et la démo marche sans réseau |
 | `/a-propos` | texte de présentation, parcours, compétences | prose lisible, pas de barres de pourcentage |
 | `/contact` | nom, téléphone, adresse e-mail, profils publics, disponibilité et poste recherché | **aucun formulaire** : décision du 05/11/2026 (issue #5) |
 Les projets mis en avant sont **deux** et non trois : décision du 04/11/2026
@@ -53,7 +53,7 @@ Aucun test ne tient cette perte : `e2e/tests/cv.spec.ts` ne vérifie que le
 poids, le type MIME et le téléchargement.
 
 **Une seconde démo jouable entre au périmètre le 17/11/2026** : une liste de
-tâches, sur `/projets/liste-de-taches`. Décision d'Arnaud, qui reprend un
+tâches, sur `/projets/todo-list`. Décision d'Arnaud, qui reprend un
 projet de l'ancien portfolio.
 
 Elle se joue **sans réseau**. L'état vit dans le `localStorage` du visiteur,
