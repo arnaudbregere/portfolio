@@ -612,6 +612,52 @@ retournerait l'échelle. Les rubriques restent séparées par leur filet.
   alternative comme sa légende sont des propriétés de `content/cv.ts` :
   l'alternative décrit l'image, la légende nomme le sujet.
 
+### La démo de liste de tâches
+
+Entrée au périmètre le 17/11/2026 (`PRODUCT.md`). Elle amène au site ce qu'il
+n'a jamais eu : **une saisie**. Le formulaire de contact est abandonné depuis
+l'issue #5, et les six atomes de P1 — `Input` compris — ont été supprimés pour
+cette raison. Rien n'est donc à reprendre ; tout est à décider.
+
+Ce qui suit se déduit des règles déjà posées. Ce qui demande un œil —
+composition, hiérarchie, place du champ par rapport à la liste, état vide —
+**n'est pas tranché ici** : `/impeccable shape` passe avant le code.
+
+**Le champ de saisie est un rectangle à filet**, comme tout contrôle du site
+(§ 5). Même `--rule-strong`, même `--control-min-height`, mêmes tokens de
+texte que `Button`. Pas d'arrondi : les 5 px de `--radius-s` restent la forme
+de la taxonomie, et d'elle seule.
+
+**La case à cocher est un vrai `<input type="checkbox">`**, redessiné par
+`appearance: none` et un filet. Un `<div>` cliquable coûterait l'état, le
+clavier et l'annonce au lecteur d'écran — pour un dessin que le CSS donne de
+toute façon. Son libellé est la tâche elle-même, et c'est lui qui porte la
+cible de 44 px, pas le carré.
+
+**La priorité se rend en étiquette cernée d'encre**, par l'atome `TagList` déjà
+écrit. Une priorité est une taxonomie : c'est exactement ce que le § 5 réserve
+à cette forme depuis le 13/11/2026. Aucune couleur n'entre pour l'occasion —
+un rouge et un vert de priorité demanderaient deux tokens, leurs ratios dans
+les deux thèmes, leur couple dans `tests/unit/contrast.spec.ts`, et diraient
+par la couleur seule ce que le mot dit déjà (WCAG 1.4.1).
+
+**Une tâche faite se lit sans couleur** : la case cochée, et le libellé barré.
+Le texte barré seul ne suffirait pas — la case porte l'état, le trait le
+double.
+
+**Les tâches ne portent ni puce ni numéro.** Le § 5 interdit déjà de cumuler
+deux marqueurs, et la case à cocher en est un. L'ordre d'une liste de tâches
+ne porte aucune information : il n'y a rien à numéroter.
+
+**Rien ne s'anime à la frappe.** La figure d'entrée de `_motion.scss` est
+celle d'une page qui arrive, pas d'une liste qui se réécrit à chaque
+caractère. Une tâche ajoutée ou retirée paraît et disparaît, sans transition.
+
+**Une suppression s'annule.** Un message et un bouton « Annuler », dans la
+même région `aria-live` qui annonce les changements. Une démo dont une action
+ne se rattrape pas est une démo qu'un visiteur n'ose pas essayer — et le
+visiteur visé est un recruteur qui donne deux minutes à la page.
+
 ## 6. Navigation
 
 **Deux formes de navigation, séparées par un point de rupture.** Décision
