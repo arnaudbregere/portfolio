@@ -265,7 +265,7 @@ test.describe('Démo de liste de tâches', () => {
     await page.goto(demo)
     await settle(page)
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Liste de tâches')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Todo List')
     await expect(page.getByRole('heading', { name: 'Solution' })).toBeVisible()
   })
 })

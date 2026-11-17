@@ -179,16 +179,26 @@ export const projects: readonly Project[] = [
   },
   {
     slug: 'todo-list',
-    title: 'Liste de tâches',
+    title: 'Todo List',
     year: '2026',
     role: 'Conception et développement, seul',
     problem:
       'Une liste de tâches, l’exercice le plus recopié du web, et presque toujours le même : un tableau en mémoire, une case à cocher, aucune règle écrite deux fois.',
     solution:
-      'Un domaine pur, sans dépendance, qui ne connaît ni rendu ni réseau ni stockage, et que deux adaptateurs de persistance servent — le stockage du navigateur, et un CRUD HTTP. Le composable qui tient l’état ne connaît que le port : changer de source ne change aucune ligne de la logique.',
+      'La logique — créer, modifier, filtrer, trier, valider — tient dans des fonctions pures : aucun import de Vue, aucun accès au réseau ni au stockage, l’horodatage et l’identifiant reçus en paramètres. Elle se teste donc sans monter de composant ni simuler de navigateur. Le stockage passe par une interface de huit méthodes, que deux implémentations servent : le stockage local du navigateur, et une API HTTP. Le composable qui tient l’état ne connaît que cette interface, donc changer de source ne modifie aucune ligne de logique ni de rendu.',
     result:
-      '98 tests unitaires couvrent le domaine, le port et ses adaptateurs, cas limites compris : titre vide, titre fait d’espaces, limite de 120 caractères éprouvée à un caractère près, priorité inconnue, identifiant absent, stockage indisponible en navigation privée, quota d’écriture atteint et contenu enregistré illisible. Les 15 scénarios du port sont écrits pour le contrat et non pour une implémentation : chaque source de données les rejoue, ce qui rend vérifiable — et non simplement affirmé — qu’elles produisent le même résultat.',
-    stack: ['Vue 3', 'Nuxt 4', 'TypeScript', 'Vitest', 'SCSS'],
+      '98 tests unitaires et 13 tests de bout en bout. Les cas limites sont traités nommément : titre vide ou fait d’espaces, limite de 120 caractères vérifiée à un caractère près, priorité inconnue, identifiant absent, stockage inaccessible en navigation privée, quota d’écriture atteint, données enregistrées illisibles ou écrites par une version antérieure du format. 15 de ces tests décrivent le contrat de stockage et non une implémentation : chaque source les rejoue, ce qui démontre qu’elles se comportent de la même façon au lieu de l’affirmer. Le parcours complet — ajouter, cocher, filtrer, modifier, supprimer, annuler — se fait au clavier seul, et l’audit axe-core ne relève aucune violation dans les deux thèmes.',
+    stack: [
+      'Vue 3',
+      'Nuxt 4',
+      'TypeScript',
+      'Vitest',
+      'Playwright',
+      'axe-core',
+      'SCSS',
+      'Web Storage API',
+      'Vercel',
+    ],
     links: [{ label: 'Démo jouable', url: 'https://arnaud-bregere.fr/projets/todo-list' }],
     featured: false,
   },

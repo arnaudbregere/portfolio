@@ -99,7 +99,7 @@ personnelles ».
 2. **japan-react** — application React. Angle : résultats mesurés (rapports
    Lighthouse et RGAA disponibles).
 3. **Calculatrice** — application Nuxt. Angle : exercice de base soigné.
-4. **Liste de tâches** — démo jouable dans la page, et une API Node/Express
+4. **Todo List** — démo jouable dans la page, et une API Node/Express
    dans le paquet `api/` du dépôt. Angle : une même logique métier servie par
    deux adaptateurs de persistance — le `localStorage` du visiteur, et le
    CRUD HTTP. Entrée au périmètre le 17/11/2026.
