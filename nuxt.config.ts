@@ -9,7 +9,15 @@ export default defineNuxtConfig({
   // Les captures sont déjà converties en WebP et bornées à 1440 px dans
   // `public/` : le module ne sert qu'à poser les tailles servies, pas à
   // rattraper des fichiers trop lourds.
+  //
+  // `provider: 'none'` sert ces fichiers tels quels, sans passer par
+  // l'optimiseur d'images de Vercel. En production, ce service a renvoyé
+  // `402 Payment Required` sur les deux variantes du portrait, et les
+  // visiteurs dont le point de présence avait le cache froid ont vu une image
+  // cassée. La transformation n'apportait rien : la sortie en `w=480` comme en
+  // `w=640` pesait 32100 octets, soit le fichier source à l'octet près.
   image: {
+    provider: 'none',
     format: ['webp'],
     screens: { s: 480, m: 768, l: 1024, xl: 1440 },
   },
